@@ -146,6 +146,7 @@ const SideNav = ({ openSlide, closeSideBar }) => {
                 <ul className="list-unstyled w-100">
                     {[
                         { href: "/", label: "Home" },
+                        { href: "/collection", label: "Collection" },
                         { href: "/blog", label: "Blog" },
                         { href: "/about", label: "About" },
                         { href: "/contact", label: "Contact" }
