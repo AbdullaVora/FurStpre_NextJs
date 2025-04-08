@@ -158,7 +158,7 @@ const Cart = ({ id, img, title, price, quantity }) => {
                 />
                 <div className="mx-3 flex-grow-1">
                     <h6 className="fw-bold mb-2">{title}</h6>
-                    <span className="fw-bold d-block mb-2">${price * quantity}</span>
+                    <span className="fw-bold d-block mb-2">{price * quantity}</span>
                     <div className="quantity d-flex align-items-center">
                         <div className="dic" onClick={handledic}>
                             <TiMinusOutline style={{ cursor: 'pointer' }} size={20} />
@@ -266,7 +266,7 @@ const CartBar = ({ openSlide, closeSideBar }) => {
                 >
                     <div className="d-flex justify-content-between mb-3">
                         <h6 className="fw-bold fs-6">TOTAL</h6>
-                        <h6 className="fw-bold fs-6">${total}</h6>
+                        <h6 className="fw-bold fs-6">{total}</h6>
                     </div>
                     <Link href='/cart' className="text-decoration-none">
                         <button

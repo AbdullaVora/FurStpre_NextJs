@@ -26,6 +26,7 @@ import LatestNews from '@/components/LatestNews';
 import GramGallery from '@/components/GramGallery';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
+import { fetchProducts as fetchHomeProducts } from '@/redux/slice/CollectionSlice';
 import { fetchBanners, fetchProducts, fetchSliders } from '@/redux/slice/HomeSlice';
 
 export default function Home() {
@@ -42,9 +43,11 @@ export default function Home() {
     dispatch(fetchBanners());
     dispatch(fetchSliders());
     dispatch(fetchProducts())
+    dispatch(fetchHomeProducts())
   }, [dispatch])
 
-  const data = useSelector((state) => state.Home.Home)
+  const { Home, loading: Loading } = useSelector((state) => state.Home)
+  const data = Home;
   const {
     galleryImage,
     policy,
@@ -55,7 +58,7 @@ export default function Home() {
     sliders,
     banners
   } = data;
-
+  
   // console.log(sliders)
   const banner = banners.filter((item) => item.forPage === 'Home' && item.forSection === 'Main' && item.status === true);
   const testimonials = sliders.filter((item) => item.forPage === 'Home' && item.forSection === "Testimonials" && item.status === true);
@@ -108,15 +111,24 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
+  if (Loading) {
+    return (
+      <div className='loader-container'>
+        <span class="loader"></span>
+      </div>
+    );
+  }
+
+
   return (
     <>
       <Header />
       {/* Banner Start */}
-      <div className="banner pb-5" data-aos="fade-in" style={{ backgroundImage: banner[0]?.desktopImage ? `url(${banner[0]?.desktopImage})` : 'none' }}>
+      <div className="banner pb-5" data-aos="zoom-out" style={{ backgroundImage: banner[0]?.desktopImage ? `url(${banner[0]?.desktopImage})` : 'none' }}>
         <div className="contents">
           <h1 className='text-white h1-response fw-normal'>Modern Living Room</h1>
           <p className='text-white p-response text-capitalize'>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-          <button className='bg-transparent border-light py-2 px-3 py-sm-3 px-sm-5 text-white rounded-1'>Learn More</button>
+          <Link href="/collection"><button className='bg-transparent border-light py-2 px-3 py-sm-3 px-sm-5 text-white rounded-1'>SHOP NOW</button></Link>
         </div>
       </div>
       {/* Banner End */}
@@ -188,7 +200,7 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-      <div className="container">
+      <div className="container" data-aos='zoom-out'>
         <div className="arrival py-3 py-md-5 mt-3 mt-md-5">
           <h2 className='text-center display-5 fw-normal mb-3 mb-md-5'>New Arrival</h2>
           <div className="sideCards col-12 d-flex flex-wrap justify-content-between">
@@ -317,7 +329,7 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-      <div className="container">
+      <div className="container" data-aos='zoom-out'>
         <div className="our-products py-3 py-md-5 mt-3 mt-md-5">
           <h2 className='text-center display-5 fw-normal mb-3 mb-md-5'>Our Products</h2>
           <div className="sideCards col-12 d-flex flex-wrap justify-content-between">
@@ -394,7 +406,7 @@ export default function Home() {
           >
             {flashDeals.map((flash, index) => (
               <SwiperSlide key={index}>
-                <FlahCard title={flash.title} price={flash.price} img={flash.image} />
+                <FlahCard id={flash._id} title={flash.title} price={flash.price} img={flash.image} />
               </SwiperSlide>
             ))}
           </Swiper>

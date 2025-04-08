@@ -368,15 +368,19 @@ import Footer from '@/components/Footer';
 import { FaCheck, FaCreditCard, FaMoneyBill, FaPaypal } from 'react-icons/fa';
 import { SiRazorpay, SiStripe, SiPaytm, SiGooglepay, SiPhonepe } from 'react-icons/si';
 import { toast, ToastContainer } from 'react-toastify';
-import { fetchCoupons, fetchPaymentsMethods } from '@/redux/slice/CollectionSlice';
+import { fetchCoupons, fetchPaymentsMethods, fetchProducts } from '@/redux/slice/CollectionSlice';
 import apiInstance from '@/api/instance';
+import OrderPlacedPopup from '@/components/OrderPlaced';
 
 const CheckoutPage = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.Collection.Cart);
-    const coupons = useSelector((state) => state.Collection.coupons);
+    const { coupons, loading: Loading } = useSelector((state) => state.Collection);
     const mockPaymentMethods = useSelector((state) => state.Collection.paymentMethods);
 
+    // console.log("final cart: ",cart)
+
+    const [orderPlaced, setOrderPlaced] = useState(false)
     // Form states
     const [email, setEmail] = useState('');
     const [newsletter, setNewsletter] = useState(true);
@@ -411,8 +415,15 @@ const CheckoutPage = () => {
     // Fetch coupons and payment methods on component mount
     useEffect(() => {
         dispatch(fetchCoupons());
+        dispatch(fetchProducts())
         dispatch(fetchPaymentsMethods());
     }, [dispatch]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setOrderPlaced(false)
+        }, 1000);
+    }, [orderPlaced])
 
     // Process payment methods whenever mockPaymentMethods changes
     useEffect(() => {
@@ -532,7 +543,7 @@ const CheckoutPage = () => {
         }
 
         if (subtotal < coupon.minAmount) {
-            toast.error(`Minimum order amount of $${coupon.minAmount} required for this coupon`);
+            toast.error(`Minimum order amount of ${coupon.minAmount} required for this coupon`);
             return;
         }
 
@@ -652,7 +663,9 @@ const CheckoutPage = () => {
             sendOrder(orderData)
         }
 
-        toast.success('Order placed successfully!');
+        // toast.success('Order placed successfully!');
+        setOrderPlaced(true)
+
     };
 
     const sendOrder = async (orderData) => {
@@ -665,6 +678,14 @@ const CheckoutPage = () => {
         } catch (error) {
             toast.error(error.message, { autoClose: 2000 });
         }
+    }
+
+    if (Loading) {
+        return (
+            <div className='loader-container'>
+                <span class="loader"></span>
+            </div>
+        );
     }
 
     return (
@@ -975,7 +996,7 @@ const CheckoutPage = () => {
                                                 </div>
                                             </div>
                                             <div className="text-end">
-                                                <div className="fw-semibold">${(item.price * item.quantity).toFixed(2)}</div>
+                                                <div className="fw-semibold">{(item.price * item.quantity).toFixed(2)}</div>
                                             </div>
                                         </div>
                                     ))}
@@ -1020,13 +1041,13 @@ const CheckoutPage = () => {
                                 {/* Order Totals */}
                                 <div className="mb-2 d-flex justify-content-between">
                                     <span>Subtotal</span>
-                                    <span className="fw-semibold">${subtotal.toFixed(2)}</span>
+                                    <span className="fw-semibold">{subtotal.toFixed(2)}</span>
                                 </div>
 
                                 {appliedCoupon && (
                                     <div className="mb-2 d-flex justify-content-between text-danger">
                                         <span>Discount ({appliedCoupon.name})</span>
-                                        <span className="fw-semibold">-${discount.toFixed(2)}</span>
+                                        <span className="fw-semibold">-{discount.toFixed(2)}</span>
                                     </div>
                                 )}
 
@@ -1039,14 +1060,14 @@ const CheckoutPage = () => {
                                                 Free
                                             </span>
                                         ) : (
-                                            `$${shippingFee.toFixed(2)}`
+                                            `${shippingFee.toFixed(2)}`
                                         )}
                                     </span>
                                 </div>
 
                                 <div className="d-flex justify-content-between fw-bold fs-5 mt-3 rounded">
                                     <span>Total</span>
-                                    <span>USD ${total.toFixed(2)}</span>
+                                    <span>{total.toFixed(2)}</span>
                                 </div>
 
                                 <button
@@ -1063,6 +1084,7 @@ const CheckoutPage = () => {
                 <ToastContainer />
             </div>
             <Footer />
+            {orderPlaced && <OrderPlacedPopup />}
         </>
     );
 };

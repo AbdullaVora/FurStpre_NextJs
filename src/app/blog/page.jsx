@@ -9,13 +9,23 @@ import { fetchBanners } from '@/redux/slice/HomeSlice';
 
 const Blog = () => {
     const dispatch = useDispatch()
-    const data = useSelector((state) => state.Home.Home)
+    const { Home, loading: Loading } = useSelector((state) => state.Home)
+
+    const data = Home
 
     useEffect(() => {
         dispatch(fetchBanners());
     }, [dispatch])
 
     const Blog = data.banners?.filter((item) => item.forPage === 'Blog' && item.forSection === 'Blogs' && item.status === true) || [];
+
+    if (Loading) {
+        return (
+            <div className='loader-container'>
+                <span class="loader"></span>
+            </div>
+        );
+    }
 
     return (
         <>

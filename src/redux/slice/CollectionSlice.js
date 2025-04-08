@@ -283,9 +283,36 @@ const CollectionSlice = createSlice({
     name: "Collection",
     initialState,
     reducers: {
+        // addProductToCart(state, action) {
+        //     const productId = action.payload;
+        //     console.log(state.products.length)
+        //     if (state.products.length === 0) {
+        //         console.error('Products not loaded yet');
+        //         return;
+        //     }
+
+        //     const product = state.products.find(product => product._id === productId);
+        //     if (!product) {
+        //         console.error(`Product with ID ${productId} not found.`);
+        //         return;
+        //     }
+
+        //     // Check if product already exists in cart
+        //     const existingItemIndex = state.Cart.findIndex(item => item._id === productId);
+
+        //     if (existingItemIndex !== -1) {
+        //         // If product exists, increment its quantity
+        //         state.Cart[existingItemIndex].quantity += 1;
+        //     } else {
+        //         // If product doesn't exist, add it with quantity 1
+        //         state.Cart.push({ ...product, quantity: 1 });
+        //     }
+        // },
+
         addProductToCart(state, action) {
-            const productId = action.payload;
-            console.log(state.products.length)
+            const { id, selectedVariant } = action.payload;
+            const productId = id;
+
             if (state.products.length === 0) {
                 console.error('Products not loaded yet');
                 return;
@@ -296,18 +323,43 @@ const CollectionSlice = createSlice({
                 console.error(`Product with ID ${productId} not found.`);
                 return;
             }
-            // Check if product already exists in cart
-            const existingItemIndex = state.Cart.findIndex(item => item._id === productId);
+
+            // Create a unique key for this product+variant combination
+            const variantKey = selectedVariant
+                ? selectedVariant.map(v => `${v.label}:${v.value}`).sort().join('|')
+                : 'no-variants';
+
+            // Check if this exact product+variant combination already exists in cart
+            const existingItemIndex = state.Cart.findIndex(item => {
+                if (item._id !== productId) return false;
+
+                // If no variants in cart item and no selection, it's the same
+                if (!item.variant && !selectedVariant) return true;
+
+                // Compare variants - now using item.variant.data instead of item.selectedVariant
+                const itemVariantKey = item.variant && item.variant.data
+                    ? item.variant.data.map(v => `${v.label}:${v.value}`).sort().join('|')
+                    : 'no-variants';
+
+                return itemVariantKey === variantKey;
+            });
 
             if (existingItemIndex !== -1) {
-                // If product exists, increment its quantity
+                // If exists, increment quantity
                 state.Cart[existingItemIndex].quantity += 1;
             } else {
-                // If product doesn't exist, add it with quantity 1
-                state.Cart.push({ ...product, quantity: 1 });
+                // If new, add to cart with selected variants
+                state.Cart.push({
+                    ...product,
+                    quantity: 1,
+                    variant: selectedVariant ? {
+                        id: Date.now().toString(), // Using timestamp as ID
+                        data: selectedVariant
+                    } : null
+                });
+                console.log("Added item with variants:", selectedVariant);
             }
         },
-
         removeProductFromCart(state, action) {
             const productId = action.payload;
             state.Cart = state.Cart.filter(product => product._id !== productId);

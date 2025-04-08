@@ -29,6 +29,13 @@ const Login = () => {
     const loginUser = async () => {
         try {
             const response = await apiInstance.post('/api/auth/login', input);
+            if (response.loading) {
+                return (
+                    <div className='loader-container'>
+                        <span class="loader"></span>
+                    </div>
+                )
+            }
             if (response.status === 200) {
                 toast.success('Login Success', { autoClose: 2000 });
                 localStorage.setItem('token', response.data.token);

@@ -22,7 +22,7 @@ const WishList = () => {
             <div className='wishlist py-5 border-bottom'>
                 <div className="container">
                     <h2 className='text-center fw-bolder display-5 mt-5 mb-5'>PAGE WISHLIST</h2>
-                    {wishlist.length <= 0 ? <h2 className='fw-bold' style={{ textAlign: 'center' }}>YOUR WishList IS EMPTY</h2>
+                    {wishlist.length <= 0 ? <h4 className='fw-bold' style={{ textAlign: 'center' }}>Your WishList Is Empty</h4>
                         :
                         <div className={`cards d-flex flex-wrap ${wishlist.length >= 4 ? "justify-content-between" : "justify-content-start"}`}>
                             {wishlist.map((card, index) => (

@@ -989,9 +989,12 @@ import { fetchBrands, fetchCategories, fetchProducts } from '@/redux/slice/Colle
 
 const Collections = () => {
     // Get data from Redux store
-    const data = useSelector((state) => state.Collection.products);
-    const categories = useSelector((state) => state.Collection.categories);
-    const brands = useSelector((state) => state.Collection.brands);
+    const { products, loading: Loading } = useSelector((state) => state.Collection);
+    const { categories, loading: CatLoading } = useSelector((state) => state.Collection);
+    const { brands, loading: brdLoading } = useSelector((state) => state.Collection);
+
+    const data = products;
+
 
     const [collection, setCollection] = useState(true);
     const [product, setProductData] = useState([]);
@@ -1013,9 +1016,9 @@ const Collections = () => {
 
     // Dropdown states
     const [dropdownOpen, setDropdownOpen] = useState({
-        categories: false,
-        subcategories: false,
-        brands: false
+        categories: true,
+        subcategories: true,
+        brands: true
     });
 
     // Fetch products on component mount
@@ -1194,6 +1197,14 @@ const Collections = () => {
     const availableSubcategories = categories?.filter(cat =>
         cat.parent && selectedCategories.includes(cat.parent)
     ) || [];
+
+    if (Loading && CatLoading && brdLoading) {
+        return (
+            <div className='loader-container'>
+                <span class="loader"></span>
+            </div>
+        );
+    }
 
     return (
         <>

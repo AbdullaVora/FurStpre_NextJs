@@ -153,7 +153,7 @@ const SideBar = ({ openSlide, closeSideBar }) => {
                         { href: "/login", label: "Login" },
                         { href: "/register", label: "Register" },
                         { href: "/wishlist", label: "Wishlist" },
-                        { href: "/cart", label: "Check out" }
+                        { href: "/myOrders", label: "My Orders" }
                     ].map((item) => (
                         <Link
                             key={item.href}

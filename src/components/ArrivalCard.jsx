@@ -18,23 +18,14 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
   };
 
   const handleCart = (id) => {
-    dispatch(addProductToCart(id));
-
-    toast.dismiss(); // Dismiss existing toast before showing a new one
-    toast.success('Product Added to Cart', {
-      position: "top-right",
-      autoClose: 1000
-    });
+    dispatch(addProductToCart({id: id}));
+    toast.dismiss()
+    toast.success('Product Added to Cart');
   };
 
   const handleWish = (id) => {
     dispatch(addToWishList(id));
-
-    toast.dismiss();
-    toast.success('Product Added to WishList', {
-      position: "top-right",
-      autoClose: 1000
-    });
+    toast.success('Product Added to WishList');
   };
 
   return (
@@ -53,12 +44,12 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
       </div>
       <div className={`content text-center ${isCollection || iswish ? "mb-5 mt-3" : "mb-5 mt-3"}`}>
         <h6 className="fw-normal">{title}</h6>
-        <span style={{ display: hover && !isCollection ? 'none' : 'block' }}>${price}</span>
+        <span style={{ display: hover && !isCollection ? 'none' : 'block' }}>{price}</span>
       </div>
 
       {!isCollection && (
         <button
-          onClick={() => iswish ? dispatch(removeFromWishList(id)) : handleCart(id)}
+          onClick={() => iswish ? dispatch(removeFromWishList(id)) : onDetail(id)}
           className="bg-transparent rounded-1 mx-auto w-100 py-2 mb-3 mt-2"
         >
           {iswish ? 'Remove Wish' : 'Quick Add'}
@@ -75,7 +66,12 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
       </div>
 
       {/* Toast Notification */}
-      <ToastContainer pauseOnHover={false} />
+      {!isCollection && (
+        <ToastContainer
+          position="top-right"
+          autoClose={1000}
+        />
+      )}
     </div>
   );
 };

@@ -22,7 +22,56 @@ html {
   outline: 0;
 }
 
+
+/* Clean toast style */
+.Toastify button{
+  border: none !important;
+  box-shadow: none !important;
+}
+
+
+
 /* ************************************ Universal Style start ********************************** */
+
+
+/* ************************************ loader Style start ********************************** */
+/* HTML: <div class="loader"></div> */
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #f0f0f0;
+  /* background: linear-gradient(135deg, #478585, #34baba 20%, #e6e6e6); */
+
+}
+
+.loader {
+  width: fit-content;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 75px;
+  color: #0000;
+  background: linear-gradient(90deg, #0a5d5d calc(50% + 0.5ch), #000 0) right/calc(200% + 1ch) 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: l7 2s infinite steps(11);
+}
+
+.loader:before {
+  content: "FurStore..."
+}
+
+
+@keyframes l7 {
+  to {
+    background-position: left
+  }
+}
+
+/* ************************************ loader Style ens ********************************** */
 
 :root {
   --gutter-padding: 0 100px;
@@ -122,7 +171,7 @@ h1 {
   width: 100%;
 }
 
-h2{
+h2 {
   font-size: 30px !important;
 }
 

@@ -1,137 +1,3 @@
-// "use client";
-
-// import React, { useEffect, useState } from 'react'
-// import Footer from '@/components/Footer'
-// import { useDispatch, useSelector } from 'react-redux';
-// import { RiDeleteBin5Line } from "react-icons/ri";
-// import { TiMinusOutline, TiPlusOutline } from 'react-icons/ti';
-// import { fetchCoupons, removeProductFromCart, updateProductQuantity } from '@/redux/slice/CollectionSlice';
-// import { FaTruckFast } from "react-icons/fa6";
-// import OrderPlacedPopup from '@/components/OrderPlaced';
-// import Header from '@/components/Header';
-
-
-
-// const CartPage = () => {
-
-//     const [orderDone, setOrderDone] = useState(false);
-//     const dispatch = useDispatch()
-//     const cart = useSelector((state) => state.Collection.Cart);
-//     const coupons = useSelector((state) => state.Collection.coupons);
-
-//     useEffect(() => {
-//         dispatch(fetchCoupons());
-//     }, [dispatch])
-
-//     const couponsData = coupons ? coupons.filter((coupon) => coupon.status === true) : [];
-
-//     console.log(coupons)
-
-//     const handleinc = (id, quantity) => {
-//         // console.log(quantity);
-//         dispatch(updateProductQuantity({ id: id, quantity: quantity + 1 }))
-//     }
-//     const handledic = (id, quantity) => {
-//         if (quantity > 1) {
-//             dispatch(updateProductQuantity({ id: id, quantity: quantity - 1 }))
-//         } else {
-//             dispatch(removeProductFromCart(id));
-//             dispatch(updateProductQuantity({ id: id, quantity: 0 }))
-//         }
-//     }
-
-//     const orderPlace = () => {
-//         setOrderDone(true);
-//         setTimeout(() => setOrderDone(false), 1000);
-//     }
-
-//     return (
-//         <>
-//             <Header />
-//             <div className='wishlist py-5 border-bottom' style={{ overflow: orderDone ? 'hidden' : '', pointerEvents: orderDone ? 'none' : 'auto' }}>
-//                 <div className="container">
-//                     <h2 className='text-center fw-bolder display-5 mt-5 mb-5'>YOUR SHOPPING CART</h2>
-
-//                     {cart.length <= 0 ? <h2 className='fw-bold' style={{ textAlign: 'center' }}>YOUR CART IS EMPTY</h2>
-//                         :
-//                         <div className="row justify-content-between">
-//                             <div className="border position-relative" style={{ marginRight: '1px', width: '65%', height: '100%' }}>
-//                                 <div className="cartTable">
-//                                     <div className="row py-2 border-bottom" style={{ backgroundColor: '#f2f2f2', color: '#6b7280' }}>
-//                                         <div className="col-md-5 fw-bold ps-5">Product</div>
-//                                         <div className="col-md-2 fw-bold ps-3" >Price</div>
-//                                         <div className="col-md-2 fw-bold ps-3">Quantity</div>
-//                                         <div className="col-md-1 fw-bold ps-3">Subtotal</div>
-//                                         <div className="col-md-1 fw-bold ps-5">Remove</div>
-//                                     </div>
-//                                     {cart.map((item, index) => (
-//                                         <div key={index} className="row align-items-center border-bottom ps-3 pb-3 mt-3">
-//                                             <div className="col-md-5 p-0">
-//                                                 <img src={item.thumbnail} alt={item.name} className='img-fluid' style={{ width: '120px' }} />
-//                                                 <span className='mx-2'>{item.name}</span>
-//                                             </div>
-//                                             <div className="col-md-2 ">
-//                                                 <span>{item.price}</span>
-//                                             </div>
-//                                             <div className="col-md-2 d-flex align-items-center">
-//                                                 <div className="dic" onClick={() => handledic(item._id, item.quantity)}>
-//                                                     <TiMinusOutline style={{ cursor: 'pointer' }} size={20} />
-//                                                 </div>
-//                                                 <span className='mx-2'>{item.quantity}</span>
-//                                                 <div className="inc" onClick={() => handleinc(item._id, item.quantity)}>
-//                                                     <TiPlusOutline style={{ cursor: 'pointer' }} size={20} />
-//                                                 </div>
-//                                             </div>
-//                                             <div className="col-md-1 ">
-//                                                 <span>${item.price * item.quantity}</span>
-//                                             </div>
-//                                             <div className="col-md-2 ps-5">
-//                                                 <span onClick={() => dispatch(removeProductFromCart(item._id))}><RiDeleteBin5Line size={26} /></span>
-//                                             </div>
-//                                         </div>
-//                                     ))}
-//                                 </div>
-//                             </div>
-//                             <div className="border p-0 position-relative" style={{ width: '32%', height: '100%' }}>
-//                                 <div className="cartItems border-bottom" style={{ padding: '10px 0' }}>
-//                                     <span style={{ fontSize: '12px', color: '#6b7280' }} className='fw-bold d-block px-3'>THERE ARE {cart.length} ITEMS IN YOUR CART</span>
-//                                 </div>
-//                                 <div className="total p-3" style={{ backgroundColor: '#f2f2f2' }}>
-//                                     <div className="d-flex align-items-center justify-content-between mb-2">
-//                                         <span className='fw-bold' style={{ fontSize: '14px' }}>DISCOUNT COUPON:</span>
-//                                         <input type="text" className='border-0 p-2 w-50 fw-semibold' style={{ fontSize: '12px' }} placeholder='Enter Code' />
-//                                     </div>
-//                                     <div className="d-flex align-items-center justify-content-between mb-2">
-//                                         <span className='fw-bold' style={{ fontSize: '14px' }}>TOTAL:</span>
-//                                         <span className='fs-4 fw-bold'>${cart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0).toFixed(2)}</span>
-//                                     </div>
-//                                     <div className="d-flex align-items-center justify-content-between mb-4">
-//                                         <span className='fw-bold' style={{ fontSize: '14px' }}>SHIPPING:</span>
-//                                         <span className='fw-bold' style={{ fontSize: '10px', color: '#6b7280' }}>Shipping & taxes calculated at checkout</span>
-//                                     </div>
-//                                     <div className="d-flex justify-content-between align-items-center mb-2">
-//                                         <span className='fw-bold' style={{ color: 'green' }}>Congratulations! You've got free shipping!</span>
-//                                         <FaTruckFast size={26} style={{ marginLeft: '10px', color: 'green' }} />
-//                                     </div>
-//                                     <span style={{ fontSize: '12px', color: '#6b7280' }}>Free shipping for any orders above <span className='fw-bold' style={{ color: 'green' }}>$200.00</span></span>
-//                                     <span className='fw-bold d-block my-3' style={{ fontSize: '14px' }}>Add a note to your order :</span>
-//                                     <textarea name="note" id="note" cols={64} rows={7} className='border-0 p-2 fw-bold' style={{ fontSize: '10px' }} placeholder='ADD YOUR NOTE HERE'></textarea>
-//                                 </div>
-//                                 <button onClick={orderPlace} className='py-1 border-0 text-white fw-bold orderbtn my-2 position-absolute start-50 w-100 translate-middle-x'>PLACE ORDER</button>
-//                             </div>
-//                         </div>
-//                     }
-//                 </div>
-//             </div>
-//             {orderDone && <OrderPlacedPopup />} {/* Show popup when orderDone is true */}
-
-//             <Footer />
-//         </>
-//     )
-// }
-
-// export default CartPage
-
 "use client";
 
 import React, { useEffect, useState } from 'react'
@@ -143,13 +9,11 @@ import { fetchCoupons, removeProductFromCart, updateProductQuantity } from '@/re
 import { FaTruckFast } from "react-icons/fa6";
 import OrderPlacedPopup from '@/components/OrderPlaced';
 import Header from '@/components/Header';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import Link from 'next/link';
 
-
 const CartPage = () => {
-    const [orderDone, setOrderDone] = useState(false);
-    const coupons = useSelector((state) => state.Collection.coupons);
+    const { coupons, loading: Loading } = useSelector((state) => state.Collection);
     const cart = useSelector((state) => state.Collection.Cart);
     const dispatch = useDispatch()
 
@@ -179,90 +43,130 @@ const CartPage = () => {
 
     // Calculate subtotal before any discounts
     const total = cart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
+
+    if (Loading) {
+        return (
+            <div className='loader-container'>
+                <span class="loader"></span>
+            </div>
+        );
+    }
+
     return (
         <>
             <Header />
-            <div className='wishlist py-5 border-bottom' style={{ overflow: orderDone ? 'hidden' : '', pointerEvents: orderDone ? 'none' : 'auto' }}>
+
+            <div className='wishlist py-5 border-bottom'>
                 <div className="container">
-                    <h2 className='text-center fw-bolder display-5 mt-5 mb-5'>YOUR SHOPPING CART</h2>
+                    <h4 className='text-center fw-bolder display-5 mt-5 mb-5'>YOUR SHOPPING CART</h4>
 
                     {cart.length <= 0 ? <h2 className='fw-bold' style={{ textAlign: 'center' }}>YOUR CART IS EMPTY</h2>
                         :
-                        <div className="row justify-content-between">
-                            <div className="border position-relative" style={{ marginRight: '1px', width: '65%', height: '100%', boxShadow: '0 0.5rem 1.0rem rgba(0, 0, 0, 0.15)' }}>
-                                <div className="cartTable" >
-                                    <div className="row py-2 border-bottom" style={{ backgroundColor: '#f2f2f2', color: '#6b7280' }}>
-                                        <div className="col-md-5 fw-bold ps-5">Product</div>
-                                        <div className="col-md-2 fw-bold ps-3" >Price</div>
-                                        <div className="col-md-2 fw-bold ps-3">Quantity</div>
-                                        <div className="col-md-1 fw-bold ps-3">Subtotal</div>
-                                        <div className="col-md-1 fw-bold ps-5">Remove</div>
-                                    </div>
-                                    {cart.map((item, index) => (
-                                        <div key={index} className="row align-items-center border-bottom ps-3 pb-3 mt-3">
-                                            <div className="col-md-5 p-0">
-                                                <img src={item.thumbnail} alt={item.name} className='img-fluid' style={{ width: '120px' }} />
-                                                <span className='mx-2'>{item.name}</span>
-                                            </div>
-                                            <div className="col-md-2 ">
-                                                <span>{item.price}</span>
-                                            </div>
-                                            <div className="col-md-2 d-flex align-items-center">
-                                                <div className="dic" onClick={() => handledic(item._id, item.quantity)}>
-                                                    <TiMinusOutline style={{ cursor: 'pointer' }} size={20} />
-                                                </div>
-                                                <span className='mx-2'>{item.quantity}</span>
-                                                <div className="inc" onClick={() => handleinc(item._id, item.quantity)}>
-                                                    <TiPlusOutline style={{ cursor: 'pointer' }} size={20} />
-                                                </div>
-                                            </div>
-                                            <div className="col-md-1 ">
-                                                <span>${item.price * item.quantity}</span>
-                                            </div>
-                                            <div className="col-md-2 ps-5">
-                                                <span onClick={() => dispatch(removeProductFromCart(item._id))}><RiDeleteBin5Line size={26} /></span>
-                                            </div>
+                        <div className="row">
+                            <div className="col-lg-8 col-md-12 mb-4">
+                                <div className="border position-relative overflow-hidden" style={{ height: 'auto', boxShadow: '0 0.5rem 1.0rem rgba(0, 0, 0, 0.15)' }}>
+                                    <div className="cartTable" >
+                                        {/* Headers - Hide on mobile */}
+                                        <div className="row py-2 border-bottom d-none d-md-flex" style={{ backgroundColor: '#f2f2f2', color: '#6b7280' }}>
+                                            <div className="col-md-5 fw-bold ps-md-5">Product</div>
+                                            <div className="col-md-2 fw-bold ps-md-4" >Price</div>
+                                            <div className="col-md-2 fw-bold ps-md-2">Quantity</div>
+                                            <div className="col-md-2 fw-bold ps-md-2">Subtotal</div>
+                                            <div className="col-md-1 fw-bold" style={{ marginLeft: '-4%' }}>Remove</div>
                                         </div>
-                                    ))}
+
+                                        {/* Cart items */}
+                                        {cart.map((item, index) => (
+                                            <div key={index} className="row align-items-center border-bottom p-3 mt-2">
+                                                {/* Product image and name */}
+                                                <div className="col-12 col-md-5 mb-3 mb-md-0 d-flex align-items-center">
+                                                    <img src={item.thumbnail} alt={item.name} className='img-fluid' style={{ width: '100px', height: 'auto' }} />
+                                                    <span className='ms-3 text-truncate' style={{ maxWidth: '200px' }}>{item.name}</span>
+                                                </div>
+
+                                                {/* Price - Stack on mobile */}
+                                                <div className="col-6 col-md-2 mb-2 mb-md-0">
+                                                    <div className="d-md-none fw-bold">Price:</div>
+                                                    <span>{item.price}</span>
+                                                </div>
+
+                                                {/* Quantity controls - Stack on mobile */}
+                                                <div className="col-6 col-md-2 mb-2 mb-md-0">
+                                                    <div className="d-md-none fw-bold">Quantity:</div>
+                                                    <div className="d-flex align-items-center">
+                                                        <div className="dic" onClick={() => handledic(item._id, item.quantity)}>
+                                                            <TiMinusOutline style={{ cursor: 'pointer' }} size={20} />
+                                                        </div>
+                                                        <span className='mx-2'>{item.quantity}</span>
+                                                        <div className="inc" onClick={() => handleinc(item._id, item.quantity)}>
+                                                            <TiPlusOutline style={{ cursor: 'pointer' }} size={20} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Subtotal - Stack on mobile */}
+                                                <div className="col-6 col-md-2 mb-2 mb-md-0">
+                                                    <div className="d-md-none fw-bold">Subtotal:</div>
+                                                    <span>{(item.price * item.quantity).toFixed(2)}</span>
+                                                </div>
+
+                                                {/* Remove button - Stack on mobile */}
+                                                <div className="col-6 col-md-1 text-end d-flex align-items-center gap-2 text-md-center">
+                                                    <div className="d-md-none fw-bold">Remove:</div>
+                                                    <span onClick={() => dispatch(removeProductFromCart(item._id))} style={{ cursor: 'pointer' }}>
+                                                        <RiDeleteBin5Line size={20} />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                            <div className="border p-0" style={{
-                                width: '33%', height: '100%', position: 'sticky',
-                                top: '20px',
-                                maxHeight: 'calc(100vh - 40px)',
-                                overflowY: 'auto',
-                                boxShadow: '0 0.5rem 1.0rem rgba(0, 0, 0, 0.15)'
-                            }}>
-                                <div className="cartItems border-bottom" style={{ padding: '10px 0' }}>
-                                    <span style={{ fontSize: '12px', color: '#6b7280' }} className='fw-bold d-block px-3'>THERE ARE {cart.length} ITEMS IN YOUR CART</span>
+
+                            {/* Order summary section */}
+                            <div className="col-lg-4 col-md-12 mt-4 mt-lg-0">
+                                <div className="border p-0 h-100" style={{
+                                    position: 'sticky',
+                                    top: '20px',
+                                    maxHeight: 'calc(100vh - 40px)',
+                                    overflowY: 'auto',
+                                    boxShadow: '0 0.5rem 1.0rem rgba(0, 0, 0, 0.15)'
+                                }}>
+                                    <div className="cartItems border-bottom" style={{ padding: '10px 0' }}>
+                                        <span style={{ fontSize: '12px', color: '#6b7280' }} className='fw-bold d-block px-3'>THERE ARE {cart.length} ITEMS IN YOUR CART</span>
+                                    </div>
+                                    <div className="total p-3" style={{ backgroundColor: '#f2f2f2' }}>
+                                        <div className="d-flex align-items-center justify-content-between mb-2">
+                                            <span className='fw-bold' style={{ fontSize: '14px' }}>TOTAL:</span>
+                                            <span className='fs-4 fw-bold'>{total.toFixed(2)}</span>
+                                        </div>
+                                        <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-2">
+                                            <span className='fw-bold mb-1 mb-md-0' style={{ fontSize: '14px' }}>SHIPPING:</span>
+                                            <span className='fw-bold' style={{ fontSize: '10px', color: '#6b7280' }}>Shipping & taxes calculated at checkout</span>
+                                        </div>
+                                        <div className="d-flex justify-content-between align-items-center mb-2">
+                                            <span className='fw-bold' style={{ color: 'green', fontSize: '14px' }}>Congratulations! You've got free shipping!</span>
+                                            <FaTruckFast size={26} style={{ marginLeft: '10px', color: 'green' }} />
+                                        </div>
+                                        <span style={{ fontSize: '12px', color: '#6b7280' }}>Free shipping for any orders above <span className='fw-bold' style={{ color: 'green' }}>200.00</span></span>
+                                        <span className='fw-bold d-block my-2' style={{ fontSize: '14px' }}>Add a note to your order :</span>
+                                        <textarea
+                                            name="note"
+                                            id="note"
+                                            className='border-0 p-2 fw-bold w-100'
+                                            style={{ fontSize: '10px', minHeight: '100px' }}
+                                            placeholder='ADD YOUR NOTE HERE'
+                                        ></textarea>
+                                    </div>
+                                    <Link href="/checkOut">
+                                        <button className='py-3 border-0 text-white fw-bold orderbtn w-100'>CHECK OUT ORDER</button>
+                                    </Link>
                                 </div>
-                                <div className="total p-3" style={{ backgroundColor: '#f2f2f2' }}>
-                                    <div className="d-flex align-items-center justify-content-between mb-2">
-                                        <span className='fw-bold' style={{ fontSize: '14px' }}>TOTAL:</span>
-                                        <span className='fs-4 fw-bold'>${total.toFixed(2)}</span>
-                                    </div>
-                                    <div className="d-flex align-items-center justify-content-between mb-2">
-                                        <span className='fw-bold' style={{ fontSize: '14px' }}>SHIPPING:</span>
-                                        <span className='fw-bold' style={{ fontSize: '10px', color: '#6b7280' }}>Shipping & taxes calculated at checkout</span>
-                                    </div>
-                                    <div className="d-flex justify-content-between align-items-center mb-2">
-                                        <span className='fw-bold' style={{ color: 'green' }}>Congratulations! You've got free shipping!</span>
-                                        <FaTruckFast size={26} style={{ marginLeft: '10px', color: 'green' }} />
-                                    </div>
-                                    <span style={{ fontSize: '12px', color: '#6b7280' }}>Free shipping for any orders above <span className='fw-bold' style={{ color: 'green' }}>$200.00</span></span>
-                                    <span className='fw-bold d-block my-2' style={{ fontSize: '14px' }}>Add a note to your order :</span>
-                                    <textarea name="note" id="note" cols={64} rows={7} className='border-0 p-2 fw-bold' style={{ fontSize: '10px' }} placeholder='ADD YOUR NOTE HERE'></textarea>
-                                </div>
-                                <Link href="/checkOut">
-                                    <button className='py-3 border-0 text-white fw-bold orderbtn w-100'>CHECK OUT ORDER</button>
-                                </Link>
                             </div>
                         </div>
                     }
                 </div>
             </div>
-            {orderDone && <OrderPlacedPopup />}
-
             <Footer />
         </>
     )
