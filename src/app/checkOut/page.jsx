@@ -374,6 +374,10 @@ import OrderPlacedPopup from '@/components/OrderPlaced';
 
 const CheckoutPage = () => {
     const dispatch = useDispatch();
+
+
+
+
     const cart = useSelector((state) => state.Collection.Cart);
     const { coupons, loading: Loading } = useSelector((state) => state.Collection);
     const mockPaymentMethods = useSelector((state) => state.Collection.paymentMethods);
@@ -381,6 +385,7 @@ const CheckoutPage = () => {
     // console.log("final cart: ",cart)
 
     const [orderPlaced, setOrderPlaced] = useState(false)
+    const [userId, setUserId] = useState(null);
     // Form states
     const [email, setEmail] = useState('');
     const [newsletter, setNewsletter] = useState(true);
@@ -411,6 +416,14 @@ const CheckoutPage = () => {
     // Coupon states
     const [couponCode, setCouponCode] = useState('');
     const [appliedCoupon, setAppliedCoupon] = useState(null);
+
+
+    // get id and email
+    useEffect(() => {
+        const userId = localStorage.getItem('userId');
+        setUpiId(userId);
+    }, [dispatch])
+
 
     // Fetch coupons and payment methods on component mount
     useEffect(() => {
@@ -618,6 +631,11 @@ const CheckoutPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if(!userId){
+            toast.error('Please Login First');
+            return;
+        }
 
         if (!validatePaymentDetails()) {
             return;
