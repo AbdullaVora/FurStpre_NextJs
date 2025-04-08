@@ -421,7 +421,9 @@ const CheckoutPage = () => {
     // get id and email
     useEffect(() => {
         const userId = localStorage.getItem('userId');
+        const userEmail = localStorage.getItem('userEmail');
         setUpiId(userId);
+        setEmail(userEmail);
     }, [dispatch])
 
 

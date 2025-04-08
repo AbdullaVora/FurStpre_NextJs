@@ -97,6 +97,8 @@ const SideNav = ({ openSlide, closeSideBar }) => {
         if (typeof window !== "undefined") {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("userEmail");
         }
         closeSideBar();
         router.push("/login");

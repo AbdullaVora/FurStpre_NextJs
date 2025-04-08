@@ -105,6 +105,7 @@ const Register = () => {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('user', response.data.name);
                 localStorage.setItem('userId', response.data.id);
+                localStorage.setItem('userEmail', response.data.email);
                 router.push('/');
             }
         } catch (error) {
