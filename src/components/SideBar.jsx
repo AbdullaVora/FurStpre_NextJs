@@ -99,6 +99,7 @@ const SideBar = ({ openSlide, closeSideBar }) => {
         if (typeof window !== "undefined") {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
+            localStorage.removeItem("userId")
         }
         closeSideBar();
         router.push("/login");
