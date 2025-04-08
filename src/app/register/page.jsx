@@ -104,6 +104,7 @@ const Register = () => {
                 toast.success('Account created successfully!', { autoClose: 2000 });
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('user', response.data.name);
+                localStorage.setItem('userId', response.data.id);
                 router.push('/');
             }
         } catch (error) {
