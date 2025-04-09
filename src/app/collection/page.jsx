@@ -1201,7 +1201,7 @@ const Collections = () => {
     if (Loading && CatLoading && brdLoading) {
         return (
             <div className='loader-container'>
-                <span class="loader"></span>
+                <span className="loader"></span>
             </div>
         );
     }

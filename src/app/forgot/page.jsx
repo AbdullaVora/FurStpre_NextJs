@@ -74,7 +74,7 @@ const Forgot = () => {
                     <div className="col-12 col-sm-10 col-md-8 col-lg-6 py-3 py-md-5">
                         <div className="login px-3 px-sm-4">
                             <h4 className='fw-bold mb-2'>FORGOT PASSWORD</h4>
-                            <span className='d-block' style={{ fontSize: '13px' }}>Insert Your Email: </span>
+                            <span className='d-block' style={{ fontSize: '13px' }}>{otpSend ? "Insert Your Email And Password : " : "Insert Your Email: "}</span>
                             <form onSubmit={handleSubmit}>
                                 <input
                                     type="text"

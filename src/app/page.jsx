@@ -114,7 +114,7 @@ export default function Home() {
   if (Loading) {
     return (
       <div className='loader-container'>
-        <span class="loader"></span>
+        <span className="loader"></span>
       </div>
     );
   }
@@ -493,7 +493,7 @@ export default function Home() {
       {/* Deal Start */}
       <div className="deal py-3 py-md-5 mt-3 mt-md-5">
         <div className="container">
-          <div className="bg py-3 py-md-5 rounded-2">
+          <div className="bg py-3 py-md-5 shadow-lg rounded-2">
             <div className="row g-3 g-md-5 px-3 px-md-5 align-items-center">
               {/* Image Column - Full width on mobile, half on desktop */}
               <div className="col-12 col-md-6 order-2 order-md-1">

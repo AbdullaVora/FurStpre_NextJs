@@ -159,7 +159,7 @@ const SideNav = ({ openSlide, closeSideBar }) => {
                             className="text-decoration-none text-dark"
                             onClick={closeSideBar}
                         >
-                            <li className="fs-5 py-3 text-center hover-bg-light">
+                            <li className="fs-5 py-3 text-center hover-bg-light border">
                                 {item.label}
                             </li>
                         </Link>
