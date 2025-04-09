@@ -22,8 +22,8 @@ const ResetPassword = () => {
 
     useEffect(() => {
         // Get email from localStorage or sessionStorage if available
-        const token = localStorage.getItem('token');
-        if (!token) {
+        const email = localStorage.getItem('resetEmail');
+        if (!email) {
             router.push('/login');
         }
 
@@ -32,7 +32,7 @@ const ResetPassword = () => {
             router.push('/forgot');
         }
 
-        const storedEmail = localStorage.getItem('userEmail');
+        const storedEmail = localStorage.getItem('resetEmail');
         if (storedEmail) {
             setInput(prev => ({ ...prev, email: storedEmail }));
         } else {
@@ -88,6 +88,7 @@ const ResetPassword = () => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 localStorage.removeItem('resetPermission');
+                localStorage.removeItem('resetEmail');
 
                 setTimeout(() => {
                     router.push('/login');

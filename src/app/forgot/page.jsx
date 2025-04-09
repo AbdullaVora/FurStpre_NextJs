@@ -51,6 +51,7 @@ const Forgot = () => {
                     }, 1000);
                 } else {
                     toast.success(response.data.message, { autoClose: 2000 });
+                    localStorage.setItem('resetEmail', response.data.email);
                     localStorage.setItem('resetPermission', true);
                     setTimeout(() => {
                         router.push('/reset-password');
