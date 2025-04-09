@@ -153,7 +153,8 @@ const SideBar = ({ openSlide, closeSideBar }) => {
                 <ul className="list-unstyled w-100">
                     {[
                         { href: "/login", label: "Login" },
-                        { href: "/register", label: "Register" },
+                        // Only show Register if user is not logged in
+                        ...(!name ? [{ href: "/register", label: "Register" }] : []),
                         { href: "/wishlist", label: "Wishlist" },
                         { href: "/myOrders", label: "My Orders" }
                     ].map((item) => (
@@ -168,13 +169,15 @@ const SideBar = ({ openSlide, closeSideBar }) => {
                             </li>
                         </Link>
                     ))}
-                    <li
-                        className="fs-5 py-3 text-center hover-bg-light"
-                        style={{ cursor: 'pointer' }}
-                        onClick={handleLogout}
-                    >
-                        Log Out
-                    </li>
+                    {name && (
+                        <li
+                            className="fs-5 py-3 text-center hover-bg-light"
+                            style={{ cursor: 'pointer' }}
+                            onClick={handleLogout}
+                        >
+                            Log Out
+                        </li>
+                    )}
                 </ul>
             </div>
         </div>

@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import { IoIosMail } from "react-icons/io";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import apiInstance from '@/api/instance';
@@ -12,8 +13,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 const Login = () => {
-
     const [input, setInput] = useState({});
+    const [showPassword, setShowPassword] = useState(false);
     const router = useRouter()
 
     const handleChange = (e) => {
@@ -26,13 +27,17 @@ const Login = () => {
         loginUser();
     }
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    }
+
     const loginUser = async () => {
         try {
             const response = await apiInstance.post('/api/auth/login', input);
             if (response.loading) {
                 return (
                     <div className='loader-container'>
-                        <span class="loader"></span>
+                        <span className="loader"></span>
                     </div>
                 )
             }
@@ -43,6 +48,8 @@ const Login = () => {
                 localStorage.setItem('userId', response.data.id);
                 localStorage.setItem('userEmail', response.data.email);
                 router.push('/');
+            } else {
+                toast.error(response.data.message, { autoClose: 2000 });
             }
         } catch (error) {
             toast.error(error.message, { autoClose: 2000 });
@@ -52,21 +59,53 @@ const Login = () => {
     return (
         <>
             <Header />
-            <h2 className='text-center fw-bolder display-5 mt-5 mb-5'>ACCOUNT</h2>
-            <div className="d-flex flex-column align-items-center justify-contant-center py-5">
-                <div className="login" style={{ width: "500px" }}>
-                    <h4 className='fw-bold mb-2'>SIGN IN</h4>
-                    <span className='d-block' style={{ fontSize: '13px' }}>Insert Your Account Information: </span>
-                    <form onSubmit={handleSubmit} >
-                        <input type="text" name="email" id="email" onChange={handleChange} className='form-control mt-3 py-3' placeholder='ENTER YOUR EMAIL' />
-                        <input type="password" name="password" id="password" onChange={handleChange} className='form-control mt-3 py-3 mb-2' placeholder='ENTER YOUR PASSWORD' />
-                        <Link href="#" className='text-decoration-none text-black'><span style={{ fontSize: '12px' }} className='d-flex mb-2 align-items-center'><IoIosMail color='#0a5d5d' size={20} className='me-1' />Forgot Your <span className='fw-bold greenHover'>&nbsp;Password ?</span></span></Link>
-                        <span style={{ fontSize: '13px', opacity: '80%' }}>If you don't have an account, please <Link href="/register" className='text-decoration-none text-black'><span className='greenHover fw-bold'>Register Here.</span></Link></span>
-                        <button className='d-block w-100 mt-2 py-3 border-0 fw-semibold text-white rounded-1' type='submit'>Login</button>
-                    </form>
+            <div className="container-fluid px-3">
+                <h2 className='text-center fw-bolder display-5 mt-4 mb-4'>ACCOUNT</h2>
+                <div className="d-flex flex-column align-items-center justify-contant-center py-3 py-md-5">
+                    <div className="login w-100" style={{ maxWidth: "500px" }}>
+                        <h4 className='fw-bold mb-2'>SIGN IN</h4>
+                        <span className='d-block' style={{ fontSize: '13px' }}>Insert Your Account Information: </span>
+                        <form onSubmit={handleSubmit}>
+                            <input 
+                                type="text" 
+                                name="email" 
+                                id="email" 
+                                onChange={handleChange} 
+                                className='form-control mt-3 py-3' 
+                                placeholder='ENTER YOUR EMAIL' 
+                            />
+                            <div className="position-relative">
+                                <input 
+                                    type={showPassword ? "text" : "password"} 
+                                    name="password" 
+                                    id="password" 
+                                    onChange={handleChange} 
+                                    className='form-control mt-3 py-3 mb-2' 
+                                    placeholder='ENTER YOUR PASSWORD' 
+                                />
+                                <button 
+                                    type="button" 
+                                    className="position-absolute end-0 top-0 bg-transparent border-0 h-100 px-3"
+                                    onClick={togglePasswordVisibility}
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
+                            </div>
+                            <Link href="/forgot" className='text-decoration-none text-black'>
+                                <span style={{ fontSize: '12px' }} className='d-flex mb-2 align-items-center'>
+                                    <IoIosMail color='#0a5d5d' size={20} className='me-1' />
+                                    Forgot Your <span className='fw-bold greenHover'>&nbsp;Password ?</span>
+                                </span>
+                            </Link>
+                            <span style={{ fontSize: '13px', opacity: '80%' }}>
+                                If you don't have an account, please <Link href="/register" className='text-decoration-none text-black'><span className='greenHover fw-bold'>Register Here.</span></Link>
+                            </span>
+                            <button className='d-block w-100 mt-3 py-3 border-0 fw-semibold text-white rounded-1' type='submit'>Login</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-
             <ToastContainer />
         </>
     )
