@@ -34,7 +34,7 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
       onMouseEnter={handleHover}
       onMouseLeave={handleHover}
     >
-      <div className="img" onClick={onDetail}>
+      <div className="img shadow-lg" onClick={onDetail}>
         <img
           src={img}
           alt="arrival-img"
