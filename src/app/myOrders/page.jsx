@@ -45,7 +45,7 @@ const page = () => {
                 return "#dc3545";
             case "complete":
                 return "#02c402";
-            case "processs":
+            case "process":
                 return "#4343ff";
             default:
                 return "bg-gray-300 text-gray-700";
