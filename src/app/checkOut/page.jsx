@@ -422,7 +422,7 @@ const CheckoutPage = () => {
     useEffect(() => {
         const userId = localStorage.getItem('userId');
         const userEmail = localStorage.getItem('userEmail');
-        setUpiId(userId);
+        setUserId(userId);
         setEmail(userEmail);
     }, [dispatch])
 
@@ -647,6 +647,7 @@ const CheckoutPage = () => {
 
         // Handle form submission and payment processing
         const orderData = {
+            userId,
             orderCode: `ORDER-${Date.now()}`,
             email,
             firstName,
@@ -696,7 +697,7 @@ const CheckoutPage = () => {
                 router.push('/');
             }
         } catch (error) {
-            toast.error(error.message, { autoClose: 2000 });
+            console.log(error.message)
         }
     }
 
