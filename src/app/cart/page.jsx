@@ -41,6 +41,17 @@ const CartPage = () => {
         setTimeout(() => setOrderDone(false), 1000);
     }
 
+    const handleCheckOut = () => {
+        const userId = localStorage.getItem("userId");
+        if (userId) {
+            closeSideBar();
+            router.push("/checkout")
+        } else {
+            toast.error("Please Login First")
+        }
+    }
+
+
     // Calculate subtotal before any discounts
     const total = cart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
 
@@ -158,9 +169,7 @@ const CartPage = () => {
                                             placeholder='ADD YOUR NOTE HERE'
                                         ></textarea>
                                     </div>
-                                    <Link href="/checkOut">
-                                        <button className='py-3 border-0 text-white fw-bold orderbtn w-100'>CHECK OUT ORDER</button>
-                                    </Link>
+                                    <button onClick={handleCheckOut} className='py-3 border-0 text-white fw-bold orderbtn w-100'>CHECK OUT ORDER</button>
                                 </div>
                             </div>
                         </div>

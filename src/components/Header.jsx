@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 import { FaRegUser } from "react-icons/fa";
-import { RiStarSmileLine } from "react-icons/ri";
+import { RiHeart2Line, RiHeartLine, RiStarSmileLine, RiUserHeartLine } from "react-icons/ri";
 import { MdMenuOpen } from "react-icons/md";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import SideBar from './SideBar';
@@ -58,8 +58,8 @@ const Header = () => {
                             {/* <FiSearch size={38} className='me-2 rounded-3 p-2 iconHover' /> */}
                             <FaRegUser size={38} className='me-sm-2 me-1 rounded-3 px-2 iconHover' onClick={() => setSideBar(true)} />
                             <div className="wish position-relative">
-                                <Link href="/wishlist" className='text-decoration-none text-black'><RiStarSmileLine size={38} className='me-sm-2 me-1 rounded-3 px-2 pt-1 iconHover' /></Link>
-                                <sup className='position-absolute end-0 translate-middle rounded-circle text-white' style={{ backgroundColor: '#0a5d5d', padding: '8px 6px', top: '22%' }}>{Wishcount}</sup>
+                                <Link href="/wishlist" className='text-decoration-none text-black'><RiHeart2Line size={40} className='me-sm-2 me-1 rounded-3 px-2 pt-1 iconHover' /></Link>
+                                <sup className='position-absolute end-0 translate-middle rounded-circle text-white' style={{ backgroundColor: '#0a5d5d', padding: '8px 6px', top: '28%'}}>{Wishcount}</sup>
                             </div>
                             <div className="cart position-relative">
                                 <HiOutlineShoppingCart size={38} className='me-sm-2 me-1 rounded-3 px-2 iconHover' onClick={() => setCartBar(true)} />

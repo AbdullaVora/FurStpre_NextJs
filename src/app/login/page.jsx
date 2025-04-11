@@ -52,7 +52,8 @@ const Login = () => {
                 toast.error(response.data.message, { autoClose: 2000 });
             }
         } catch (error) {
-            toast.error(error.message, { autoClose: 2000 });
+            const errMsg = error.response?.data?.message || error.message;
+            toast.error(errMsg, { autoClose: 2000 });
         }
     }
 
@@ -66,25 +67,25 @@ const Login = () => {
                         <h4 className='fw-bold mb-2'>SIGN IN</h4>
                         <span className='d-block' style={{ fontSize: '13px' }}>Insert Your Account Information: </span>
                         <form onSubmit={handleSubmit}>
-                            <input 
-                                type="text" 
-                                name="email" 
-                                id="email" 
-                                onChange={handleChange} 
-                                className='form-control mt-3 py-3' 
-                                placeholder='ENTER YOUR EMAIL' 
+                            <input
+                                type="text"
+                                name="email"
+                                id="email"
+                                onChange={handleChange}
+                                className='form-control mt-3 py-3'
+                                placeholder='ENTER YOUR EMAIL'
                             />
                             <div className="position-relative">
-                                <input 
-                                    type={showPassword ? "text" : "password"} 
-                                    name="password" 
-                                    id="password" 
-                                    onChange={handleChange} 
-                                    className='form-control mt-3 py-3 mb-2' 
-                                    placeholder='ENTER YOUR PASSWORD' 
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    id="password"
+                                    onChange={handleChange}
+                                    className='form-control mt-3 py-3 mb-2'
+                                    placeholder='ENTER YOUR PASSWORD'
                                 />
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     className="position-absolute end-0 top-0 bg-transparent border-0 h-100 px-3"
                                     onClick={togglePasswordVisibility}
                                     aria-label={showPassword ? "Hide password" : "Show password"}
@@ -93,15 +94,15 @@ const Login = () => {
                                 </button>
                             </div>
                             <Link href="/forgot" className='text-decoration-none text-black'>
-                                <span style={{ fontSize: '12px' }} className='d-flex mb-2 align-items-center'>
+                                <span style={{ fontSize: '13px' }} className='d-flex mb-2 align-items-center'>
                                     <IoIosMail color='#0a5d5d' size={20} className='me-1' />
                                     Forgot Your <span className='fw-bold greenHover'>&nbsp;Password ?</span>
                                 </span>
                             </Link>
-                            <span style={{ fontSize: '13px', opacity: '80%' }}>
+                            <button className='d-block w-100 mt-3 py-3 mb-2 border-0 fw-semibold text-white rounded-1' type='submit'>Login</button>
+                            <span style={{ fontSize: '14px', opacity: '80%' }}>
                                 If you don't have an account, please <Link href="/register" className='text-decoration-none text-black'><span className='greenHover fw-bold'>Register Here.</span></Link>
                             </span>
-                            <button className='d-block w-100 mt-3 py-3 border-0 fw-semibold text-white rounded-1' type='submit'>Login</button>
                         </form>
                     </div>
                 </div>

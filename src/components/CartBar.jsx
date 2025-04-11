@@ -131,6 +131,8 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import { removeProductFromCart, updateProductQuantity } from "../redux/slice/CollectionSlice";
 import { usePreventScroll } from "@/hook/usePreventScroll";
+import { useRouter } from "next/navigation";
+import { toast, ToastContainer } from "react-toastify";
 
 const Cart = ({ id, img, title, price, quantity }) => {
     const dispatch = useDispatch();
@@ -181,6 +183,7 @@ const CartBar = ({ openSlide, closeSideBar }) => {
     const cart = useSelector((state) => state.Collection.Cart);
 
     const [total, setTotal] = useState(0);
+    const router = useRouter()
 
     // Safely parse cart data
     const parsedCart = cart
@@ -194,6 +197,16 @@ const CartBar = ({ openSlide, closeSideBar }) => {
     }, [parsedCart]);
 
     usePreventScroll(openSlide);
+
+    const handleCheckOut = () => {
+        const userId = localStorage.getItem("userId");
+        if (userId) {
+            closeSideBar();
+            router.push("/checkout")
+        } else {
+            toast.error("Please Login First")
+        }
+    }
 
     return (
         <div className="Cartbar position-relative">
@@ -276,16 +289,15 @@ const CartBar = ({ openSlide, closeSideBar }) => {
                             VIEW CART
                         </button>
                     </Link>
-                    <Link href="/checkOut" className="text-decoration-none">
-                        <button
-                            onClick={closeSideBar}
-                            className="btn btn-dark fw-bold w-100"
-                        >
-                            Check Out
-                        </button>
-                    </Link>
+                    <button
+                        onClick={handleCheckOut}
+                        className="btn btn-dark fw-bold w-100"
+                    >
+                        CHECK OUT
+                    </button>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

@@ -68,7 +68,6 @@ const Register = () => {
                                 onChange={handleInput}
                                 className='form-control mt-3 py-3'
                                 placeholder='ENTER YOUR NAME'
-                                required
                             />
                             <input
                                 type="email"
@@ -77,7 +76,6 @@ const Register = () => {
                                 onChange={handleInput}
                                 className='form-control mt-3 py-3'
                                 placeholder='ENTER YOUR EMAIL'
-                                required
                             />
                             <div className='mt-3'>
                                 <PhoneInput
@@ -87,7 +85,6 @@ const Register = () => {
                                     onChange={setPhone}
                                     className='form-control py-3'
                                     placeholder="ENTER YOUR PHONE NUMBER"
-                                    required
                                 />
                             </div>
                             <div className="position-relative">
@@ -97,7 +94,6 @@ const Register = () => {
                                     onChange={handleInput}
                                     className='form-control mt-3 py-3 mb-2'
                                     placeholder='ENTER YOUR PASSWORD'
-                                    required
                                     minLength="6"
                                 />
                                 <button

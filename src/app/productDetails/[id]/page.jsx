@@ -335,7 +335,7 @@ const ProductDetail = () => {
                                             src={image}
                                             alt={`Thumbnail ${index}`}
                                             className="img-fluid cursor-pointer"
-                                            style={{ objectFit: 'cover', height: '80px', width: '100%' }}
+                                            style={{ objectFit: 'cover', height: '100%', width: '100%' }}
                                         />
                                     </SwiperSlide>
                                 ))}
@@ -354,21 +354,21 @@ const ProductDetail = () => {
                             <div className="priceArea py-3 d-flex align-items-center">
                                 <span className='fw-bold fs-5 opacity-50'><del>{product[0]?.mrp}</del></span>
                                 <span className='fw-bold opacity-50'>&nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;</span>
-                                <span className='discount_price fw-bold'>{product[0]?.price}</span>
+                                <span className='discount_price fw-bold fs-5'>{product[0]?.price}</span>
                                 <span className='discount_per mx-3 fw-bold text-white py-1 px-3 rounded-5' style={{ backgroundColor: '#ff6400', fontSize: '12px' }}>-- {product[0]?.discount}%</span>
                             </div>
-                            <p className='opacity-75 fw-medium' style={{ fontSize: '13px' }}>{product[0]?.description}</p>
+                            <p className='opacity-75 fw-medium' style={{ fontSize: '16px' }}>{product[0]?.description}</p>
                             <div className="position-relative mb-2 rounded-5" style={{ width: '100%', height: '8px', backgroundColor: '#d4d4d4' }}>
                                 <div className="position-absolute top-0 start-0 rounded-5" style={{ width: '60%', height: '100%', backgroundColor: '#ff6400' }}></div>
                             </div>
-                            <span className='fw-bold opacity-50' style={{ fontSize: '13px' }}>60% items are sold -- only 40% left</span>
-                            <span className="fw-bold d-block mt-4" style={{ fontSize: '13px' }}>SKU: <span className='opacity-75'>{product[0]?.skuCode}</span></span>
-                            <span className="fw-bold d-block mt-1" style={{ fontSize: '13px' }}>SLUG: <span className='opacity-75'>{product[0]?.slug}</span></span>
-                            <span className="fw-bold d-block mt-2 mb-3" style={{ fontSize: '13px' }}>CATEGORY: <span className='opacity-75'>
+                            <span className='fw-bold opacity-50' style={{ fontSize: '16px' }}>60% items are sold -- only 40% left</span>
+                            <span className="fw-bold d-block mt-4" style={{ fontSize: '16px' }}>SKU: <span className='opacity-75'>{product[0]?.skuCode}</span></span>
+                            <span className="fw-bold d-block mt-1" style={{ fontSize: '16px' }}>SLUG: <span className='opacity-75'>{product[0]?.slug}</span></span>
+                            <span className="fw-bold d-block mt-2 mb-3" style={{ fontSize: '16px' }}>CATEGORY: <span className='opacity-75'>
                                 Armchair, Bathroom, Bedroom, Clocks, Flash Deals, Flower vase, Hanging Light, Home page, Kitchen, Sofa, Tables</span></span>
 
                             {/* Dynamic variant dropdowns */}
-                            {Object.keys(variantOptions).map(label => (
+                            {/* {Object.keys(variantOptions).map(label => (
                                 <div key={label}>
                                     <span className="fw-bold d-block mt-4" style={{ fontSize: '13px' }}>{label.toUpperCase()}:</span>
                                     <select
@@ -385,12 +385,39 @@ const ProductDetail = () => {
                                         ))}
                                     </select>
                                 </div>
-                            ))}
+                            ))} */}
+                            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                                {Object.keys(variantOptions).map(label => (
+                                    <div
+                                        key={label}
+                                        style={{ width: '50%', boxSizing: 'border-box' }}
+                                        className="p-2"
+                                    >
+                                        <span className="fw-bold d-block mt-4" style={{ fontSize: '13px' }}>
+                                            {label.toUpperCase()}:
+                                        </span>
+                                        <select
+                                            className="border-none outline-none p-2 fw-semibold opacity-75 mb-2"
+                                            style={{ width: '100%',backgroundColor: '#f1f1f1', fontSize: '13px' }}
+                                            value={selectedVariants[label] || ''}
+                                            onChange={(e) => handleVariantChange(label, e.target.value)}
+                                        >
+                                            <option value="">Select {label}</option>
+                                            {variantOptions[label].map(value => (
+                                                <option key={value} value={value}>
+                                                    {value}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                ))}
+                            </div>
+
 
                             {
                                 product[0]?.additional && (
                                     product[0].additional.additional.map((data, index) => (
-                                        <span key={index} className="fw-bold d-block mt-1" style={{ fontSize: '13px' }}>{data.title}: <span className='opacity-75'>{data.value}</span></span>
+                                        <span key={index} className="fw-bold d-block mt-1" style={{ fontSize: '15px' }}>{data.title}: <span className='opacity-75'>{data.value}</span></span>
                                     ))
                                 )
                             }
@@ -398,7 +425,7 @@ const ProductDetail = () => {
                             {
                                 product[0]?.details && (
                                     product[0].details.details.map((data, index) => (
-                                        <span key={index} className="fw-bold d-block mt-1" style={{ fontSize: '13px' }}>{data.title}: <span className='opacity-75'>{data.value}</span></span>
+                                        <span key={index} className="fw-bold d-block mt-1" style={{ fontSize: '15px' }}>{data.title}: <span className='opacity-75'>{data.value}</span></span>
                                     ))
                                 )
                             }
@@ -484,7 +511,7 @@ const ProductDetail = () => {
 
                 .product-thumbs-swiper {
                     width: 100%;
-                    height: 80px;
+                    height: 120px;
                 }
 
                 .product-thumbs-swiper .swiper-slide {
