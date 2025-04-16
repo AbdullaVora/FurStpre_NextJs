@@ -87,7 +87,7 @@ const Profile = () => {
 
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <div className="container-fluid px-3">
                 <h2 className='text-center fw-bolder display-5 mt-4 mb-4'>PROFILE</h2>
                 <div className="d-flex flex-column align-items-center justify-contant-center py-3 py-md-5">

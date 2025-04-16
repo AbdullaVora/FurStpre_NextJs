@@ -3,17 +3,24 @@
         {
             "img": "/images/new-plant.webp",
             "title_1": "New",
-            "title_2": "Plants"
+            "title_2": "Plants",
+            "category": "Homes & Appliances",
+            "subcategory": "Plants"
+            
         },
         {
             "img": "/images/chain-lamp.webp",
             "title_1": "Chain",
-            "title_2": "Lamp"
+            "title_2": "Lamp",
+            "category": "Homes & Appliances",
+            "subcategory": "Lamps"
         },
         {
             "img": "/images/chair.webp",
             "title_1": "New",
-            "title_2": "Chair"
+            "title_2": "Chair",
+            "category": "Homes & Appliances",
+            "subcategory": "Chairs"
         }
     ],
     "policy": [

@@ -528,7 +528,13 @@ const CheckoutPage = () => {
     // Coupon application logic
     const applyCoupon = () => {
         if (!couponCode.trim()) {
-            toast.error('Please enter a coupon code');
+            // toast.error('Please enter a coupon code');
+            Swal.fire({
+                icon: 'error',
+                title: 'Please Enter Coupon Code.',
+                timer: 2000,
+                showConfirmButton: false
+            });
             return;
         }
 
@@ -537,7 +543,13 @@ const CheckoutPage = () => {
         );
 
         if (!coupon) {
-            toast.error('Invalid coupon code');
+            // toast.error('Invalid coupon code');
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Coupon Code.',
+                timer: 2000,
+                showConfirmButton: false
+            });
             return;
         }
 
@@ -548,28 +560,59 @@ const CheckoutPage = () => {
         const endDate = new Date(endDateStr);
 
         if (currentDate < startDate) {
-            toast.error('This coupon is not valid yet');
+            // toast.error('This coupon is not valid yet');
+            Swal.fire({
+                icon: 'error',
+                title: 'Coupon Code Not valid.',
+                timer: 2000,
+                showConfirmButton: false
+            });
             return;
         }
 
         if (currentDate > endDate) {
-            toast.error('This coupon has expired');
+            // toast.error('This coupon has expired');
+            Swal.fire({
+                icon: 'error',
+                title: 'Coupon Code Expired.',
+                timer: 2000,
+                showConfirmButton: false
+            });
             return;
         }
 
         if (subtotal < coupon.minAmount) {
-            toast.error(`Minimum order amount of ${coupon.minAmount} required for this coupon`);
+            // toast.error(`Minimum order amount of ${coupon.minAmount} required for this coupon`);
+            Swal.fire({
+                icon: 'error',
+                title: `Minimum order amount of ${coupon.minAmount} required for this coupon`,
+                timer: 2000,
+                showConfirmButton: false
+            });
             return;
         }
 
         setAppliedCoupon(coupon);
-        toast.success('Coupon applied successfully!');
+        // toast.success('Coupon applied successfully!');
+        Swal.fire({
+            icon: 'success',
+            title: 'Coupon Applied Successfully.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+
     };
 
     const removeCoupon = () => {
         setAppliedCoupon(null);
         setCouponCode('');
-        toast.info('Coupon removed');
+        // toast.info('Coupon removed');
+        Swal.fire({
+            icon: 'success',
+            title: 'Coupon Code Removed.',
+            timer: 2000,
+            showConfirmButton: false
+        });
     };
 
     const calculateDiscount = () => {
@@ -593,7 +636,13 @@ const CheckoutPage = () => {
 
     const validatePaymentDetails = () => {
         if (!selectedPaymentMethod) {
-            toast.error('Please select a payment method');
+            // toast.error('Please select a payment method');
+            Swal.fire({
+                icon: 'error',
+                title: 'Please Select Payment Method.',
+                timer: 2000,
+                showConfirmButton: false
+            });
             return false;
         }
 
@@ -603,19 +652,43 @@ const CheckoutPage = () => {
         // Validate card details for Stripe or other card-based payment methods
         if (needsCardDetails(method.paymentMethod)) {
             if (!cardNumber.trim() || cardNumber.replace(/\s/g, '').length < 16) {
-                toast.error('Please enter a valid card number');
+                // toast.error('Please enter a valid card number');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Please Enter Valid Card Number.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 return false;
             }
             if (!cardName.trim()) {
-                toast.error('Please enter the name on your card');
+                // toast.error('Please enter the name on your card');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Please Enter Name On Your Card.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 return false;
             }
             if (!expiryDate.trim() || expiryDate.length < 5) {
-                toast.error('Please enter a valid expiry date');
+                // toast.error('Please enter a valid expiry date');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Please Enter Valid Expiry Date.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 return false;
             }
             if (!cvv.trim() || cvv.length < 3) {
-                toast.error('Please enter a valid CVV');
+                // toast.error('Please enter a valid CVV');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Please Enter Valid CVV.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 return false;
             }
         }
@@ -623,7 +696,13 @@ const CheckoutPage = () => {
         // Validate UPI ID for UPI payment methods
         if (needsUpiDetails(method.paymentMethod)) {
             if (!upiId.trim() || !upiId.includes('@')) {
-                toast.error('Please enter a valid UPI ID (e.g. name@upi)');
+                // toast.error('Please enter a valid UPI ID (e.g. name@upi)');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Please Enter Valid UPI ID.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 return false;
             }
         }
@@ -634,8 +713,14 @@ const CheckoutPage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if(!userId){
-            toast.error('Please Login First');
+        if (!userId) {
+            // toast.error('Please Login First');
+            Swal.fire({
+                icon: 'error',
+                title: 'Please Login.',
+                timer: 2000,
+                showConfirmButton: false
+            });
             return;
         }
 
@@ -693,11 +778,23 @@ const CheckoutPage = () => {
         try {
             const response = await apiInstance.post('/api/dashboard/addOrder', orderData);
             if (response.status === 201) {
-                toast.success('Order placed successfully!', { autoClose: 2000 });
+                // toast.success('Order placed successfully!', { autoClose: 2000 });
+                // Swal.fire({
+                //     icon: 'success',
+                //     title: 'Order Placed Successfully.',
+                //     timer: 2000,
+                //     showConfirmButton: false
+                // });
                 router.push('/');
             }
         } catch (error) {
             console.log(error.message)
+            Swal.fire({
+                icon: 'error',
+                title: error.message,
+                timer: 2000,
+                showConfirmButton: false
+            });
         }
     }
 
@@ -711,7 +808,7 @@ const CheckoutPage = () => {
 
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <div className="checkout-page py-5">
                 <div className="container">
                     <div className="row">
@@ -1102,9 +1199,9 @@ const CheckoutPage = () => {
                         </div>
                     </div>
                 </div>
-                <ToastContainer />
+                {/* <ToastContainer /> */}
             </div>
-            <Footer />
+            {/* <Footer /> */}
             {orderPlaced && <OrderPlacedPopup />}
         </>
     );

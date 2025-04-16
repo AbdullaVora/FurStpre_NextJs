@@ -8,7 +8,7 @@ import Header from '@/components/Header';
 const ContactUs = () => {
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <div className='contact pb-5 border-bottom'>
                 <div className="container">
                     <h2 className='text-center fw-bolder display-5 mt-5 mb-5'>CONTACT US</h2>
@@ -82,7 +82,7 @@ const ContactUs = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }

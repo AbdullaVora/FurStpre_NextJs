@@ -5,16 +5,18 @@ import Footer from '@/components/Footer'
 import { useDispatch, useSelector } from 'react-redux';
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { TiMinusOutline, TiPlusOutline } from 'react-icons/ti';
-import { fetchCoupons, removeProductFromCart, updateProductQuantity } from '@/redux/slice/CollectionSlice';
+import { fetchCoupons } from '@/redux/slice/CollectionSlice';
 import { FaTruckFast } from "react-icons/fa6";
 import OrderPlacedPopup from '@/components/OrderPlaced';
 import Header from '@/components/Header';
-import { toast, ToastContainer } from 'react-toastify';
+// import { toast, ToastContainer } from 'react-toastify';
 import Link from 'next/link';
+import Swal from 'sweetalert2';
+import { removeProductFromCart, updateProductQuantity } from '@/redux/slice/addToCartSlice';
 
 const CartPage = () => {
     const { coupons, loading: Loading } = useSelector((state) => state.Collection);
-    const cart = useSelector((state) => state.Collection.Cart);
+    const cart = useSelector((state) => state.addToCart.Cart);
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -47,8 +49,24 @@ const CartPage = () => {
             closeSideBar();
             router.push("/checkout")
         } else {
-            toast.error("Please Login First")
+            // toast.error("Please Login First")
+            Swal.fire({
+                icon: 'error',
+                title: 'Please Login After Shopping.',
+                timer: 2000,
+                showConfirmButton: false
+            });
         }
+    }
+
+    const handleRemoveCart = (id) => {
+        dispatch(removeProductFromCart(id))
+        Swal.fire({
+            icon: 'success',
+            title: 'Product Removed From Cart.',
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
 
 
@@ -65,7 +83,7 @@ const CartPage = () => {
 
     return (
         <>
-            <Header />
+            {/* <Header /> */}
 
             <div className='wishlist py-5 border-bottom'>
                 <div className="container">
@@ -91,14 +109,14 @@ const CartPage = () => {
                                             <div key={index} className="row align-items-center border-bottom p-3 mt-2">
                                                 {/* Product image and name */}
                                                 <div className="col-12 col-md-5 mb-3 mb-md-0 d-flex align-items-center">
-                                                    <img src={item.thumbnail} alt={item.name} className='img-fluid' style={{ width: '100px', height: 'auto' }} />
-                                                    <span className='ms-3 text-truncate' style={{ maxWidth: '200px' }}>{item.name}</span>
+                                                    <img src={item.product.thumbnail} alt={item.product.name} className='img-fluid' style={{ width: '100px', height: 'auto' }} />
+                                                    <span className='ms-3 text-truncate' style={{ maxWidth: '200px' }}>{item.product.name}</span>
                                                 </div>
 
                                                 {/* Price - Stack on mobile */}
                                                 <div className="col-6 col-md-2 mb-2 mb-md-0">
                                                     <div className="d-md-none fw-bold">Price:</div>
-                                                    <span>{item.price}</span>
+                                                    <span>{item.product.price}</span>
                                                 </div>
 
                                                 {/* Quantity controls - Stack on mobile */}
@@ -118,13 +136,13 @@ const CartPage = () => {
                                                 {/* Subtotal - Stack on mobile */}
                                                 <div className="col-6 col-md-2 mb-2 mb-md-0">
                                                     <div className="d-md-none fw-bold">Subtotal:</div>
-                                                    <span>{(item.price * item.quantity).toFixed(2)}</span>
+                                                    <span>{(item.product.price * item.quantity).toFixed(2)}</span>
                                                 </div>
 
                                                 {/* Remove button - Stack on mobile */}
                                                 <div className="col-6 col-md-1 text-end d-flex align-items-center gap-2 text-md-center">
                                                     <div className="d-md-none fw-bold">Remove:</div>
-                                                    <span onClick={() => dispatch(removeProductFromCart(item._id))} style={{ cursor: 'pointer' }}>
+                                                    <span onClick={() => handleRemoveCart(item._id)} style={{ cursor: 'pointer' }}>
                                                         <RiDeleteBin5Line size={20} />
                                                     </span>
                                                 </div>
@@ -176,7 +194,7 @@ const CartPage = () => {
                     }
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }

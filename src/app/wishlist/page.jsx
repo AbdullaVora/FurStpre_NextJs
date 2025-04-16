@@ -1,37 +1,47 @@
 "use client";
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Footer from '@/components/Footer'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import ArrivalCard from '@/components/ArrivalCard';
 import Header from '@/components/Header';
+import { getUserWishlist } from '@/redux/slice/wishSlice';
 
-const WishList = () => {
+const WishListComp = () => {
+    const { wishList = [], loading: Loading } = useSelector((state) => state.wish);
+    const dispatch = useDispatch()
 
-    const wishlist = useSelector((state) => state.Collection.WishList);
+    useEffect(() => {
+        dispatch(getUserWishlist())
+    }, [dispatch])
 
-    // Update the product state whenever data changes
+    console.log(wishList)
 
-    const parsedWish = wishlist
-        ? wishlist.map(item => (item))
-        : [];
-    console.log(wishlist)
+    if (Loading) {
+        return (
+            <div className='loader-container'>
+                <span className="loader"></span>
+            </div>
+        );
+    }
+    
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <div className='wishlist py-5 border-bottom'>
                 <div className="container">
                     <h2 className='text-center fw-bolder display-5 mt-5 mb-5'>PAGE WISHLIST</h2>
-                    {wishlist.length <= 0 ? <h4 className='fw-bold' style={{ textAlign: 'center' }}>Your WishList Is Empty</h4>
+                    {!wishList || wishList.length === 0 ? 
+                        <h4 className='fw-bold' style={{ textAlign: 'center' }}>Your WishList Is Empty</h4>
                         :
-                        <div className={`cards d-flex flex-wrap ${wishlist.length >= 4 ? "justify-content-between" : "justify-content-start"}`}>
-                            {wishlist.map((card, index) => (
+                        <div className={`cards d-flex flex-wrap ${wishList.length >= 4 ? "justify-content-between" : "justify-content-start"}`}>
+                            {wishList.map((card, index) => (
                                 <ArrivalCard
                                     key={index}
-                                    img={card.thumbnail}
-                                    id={card._id}
-                                    title={card.name}
-                                    price={card.price}
+                                    img={card.product.thumbnail}
+                                    id={card.product._id}
+                                    title={card.product.name}
+                                    price={card.product.price}
                                     iswish={true}
                                 />
                             ))}
@@ -39,9 +49,9 @@ const WishList = () => {
                     }
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }
 
-export default WishList
+export default WishListComp

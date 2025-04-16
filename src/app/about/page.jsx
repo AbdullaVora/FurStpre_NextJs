@@ -7,7 +7,7 @@ import Header from '@/components/Header';
 const About = () => {
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <div className="about">
                 <div className="container">
                     <h2 className='my-3 my-md-5 display-4 display-md-5 text-center fw-bold'>ABOUT US</h2>
@@ -86,7 +86,7 @@ const About = () => {
                         </div>
                     </div>
 
-                    <Footer />
+                    {/* <Footer /> */}
                 </div>
             </div>
 

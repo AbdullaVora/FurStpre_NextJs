@@ -45,12 +45,26 @@ const Forgot = () => {
             }
             if (response.status === 200) {
                 if (response.data.message === "OTP sent to email") {
-                    toast.success(response.data.message, { autoClose: 2000 });
+                    localStorage.setItem('resetEmail', response.data.email);
+                    localStorage.setItem('resetPermission', true);
+                    // toast.success(response.data.message, { autoClose: 2000 });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'OTP Sent To Email',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                     setTimeout(() => {
                         router.push('/verify-otp');
                     }, 1000);
                 } else {
-                    toast.success(response.data.message, { autoClose: 2000 });
+                    // toast.success(response.data.message, { autoClose: 2000 });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Email And Password Verified',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                     localStorage.setItem('resetEmail', response.data.email);
                     localStorage.setItem('resetPermission', true);
                     setTimeout(() => {
@@ -58,16 +72,28 @@ const Forgot = () => {
                     }, 1000);
                 }
             } else {
-                toast.error(response.data.message, { autoClose: 2000 });
+                // toast.error(response.data.message, { autoClose: 2000 });
+                Swal.fire({
+                    icon: 'error',
+                    title: response.data.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
             }
         } catch (error) {
-            toast.error(error.message, { autoClose: 2000 });
+            // toast.error(error.message, { autoClose: 2000 });
+            Swal.fire({
+                icon: 'error',
+                title: error.message,
+                timer: 2000,
+                showConfirmButton: false
+            });
         }
     }
 
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <h2 className='text-center fw-bolder display-5 mt-4 mt-md-5 mb-3 mb-md-5'>ACCOUNT</h2>
             <div className="container">
                 <div className="row justify-content-center">

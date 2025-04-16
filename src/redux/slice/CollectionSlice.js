@@ -283,133 +283,108 @@ const CollectionSlice = createSlice({
     name: "Collection",
     initialState,
     reducers: {
-        // addProductToCart(state, action) {
-        //     const productId = action.payload;
-        //     console.log(state.products.length)
-        //     if (state.products.length === 0) {
-        //         console.error('Products not loaded yet');
-        //         return;
-        //     }
+      
+    //   addProductToCart(state, action) {
+    //         const { id, selectedVariant } = action.payload;
+    //         const productId = id;
 
-        //     const product = state.products.find(product => product._id === productId);
-        //     if (!product) {
-        //         console.error(`Product with ID ${productId} not found.`);
-        //         return;
-        //     }
+    //         if (state.products.length === 0) {
+    //             console.error('Products not loaded yet');
+    //             return;
+    //         }
 
-        //     // Check if product already exists in cart
-        //     const existingItemIndex = state.Cart.findIndex(item => item._id === productId);
+    //         const product = state.products.find(product => product._id === productId);
+    //         if (!product) {
+    //             console.error(`Product with ID ${productId} not found.`);
+    //             return;
+    //         }
 
-        //     if (existingItemIndex !== -1) {
-        //         // If product exists, increment its quantity
-        //         state.Cart[existingItemIndex].quantity += 1;
-        //     } else {
-        //         // If product doesn't exist, add it with quantity 1
-        //         state.Cart.push({ ...product, quantity: 1 });
-        //     }
-        // },
+    //         // Create a unique key for this product+variant combination
+    //         const variantKey = selectedVariant
+    //             ? selectedVariant.map(v => `${v.label}:${v.value}`).sort().join('|')
+    //             : 'no-variants';
 
-        addProductToCart(state, action) {
-            const { id, selectedVariant } = action.payload;
-            const productId = id;
+    //         // Check if this exact product+variant combination already exists in cart
+    //         const existingItemIndex = state.Cart.findIndex(item => {
+    //             if (item._id !== productId) return false;
 
-            if (state.products.length === 0) {
-                console.error('Products not loaded yet');
-                return;
-            }
+    //             // If no variants in cart item and no selection, it's the same
+    //             if (!item.variant && !selectedVariant) return true;
 
-            const product = state.products.find(product => product._id === productId);
-            if (!product) {
-                console.error(`Product with ID ${productId} not found.`);
-                return;
-            }
+    //             // Compare variants - now using item.variant.data instead of item.selectedVariant
+    //             const itemVariantKey = item.variant && item.variant.data
+    //                 ? item.variant.data.map(v => `${v.label}:${v.value}`).sort().join('|')
+    //                 : 'no-variants';
 
-            // Create a unique key for this product+variant combination
-            const variantKey = selectedVariant
-                ? selectedVariant.map(v => `${v.label}:${v.value}`).sort().join('|')
-                : 'no-variants';
+    //             return itemVariantKey === variantKey;
+    //         });
 
-            // Check if this exact product+variant combination already exists in cart
-            const existingItemIndex = state.Cart.findIndex(item => {
-                if (item._id !== productId) return false;
+    //         if (existingItemIndex !== -1) {
+    //             // If exists, increment quantity
+    //             state.Cart[existingItemIndex].quantity += 1;
+    //         } else {
+    //             // If new, add to cart with selected variants
+    //             state.Cart.push({
+    //                 ...product,
+    //                 quantity: 1,
+    //                 variant: selectedVariant ? {
+    //                     id: Date.now().toString(), // Using timestamp as ID
+    //                     data: selectedVariant
+    //                 } : null
+    //             });
+    //             console.log("Added item with variants:", selectedVariant);
+    //         }
+    //     },
+    //     removeProductFromCart(state, action) {
+    //         const productId = action.payload;
+    //         state.Cart = state.Cart.filter(product => product._id !== productId);
+    //     },
 
-                // If no variants in cart item and no selection, it's the same
-                if (!item.variant && !selectedVariant) return true;
+    //     updateProductQuantity(state, action) {
+    //         const { id, quantity } = action.payload;
 
-                // Compare variants - now using item.variant.data instead of item.selectedVariant
-                const itemVariantKey = item.variant && item.variant.data
-                    ? item.variant.data.map(v => `${v.label}:${v.value}`).sort().join('|')
-                    : 'no-variants';
+    //         // Find the product
+    //         const productIndex = state.Cart.findIndex(item => item._id === id);
 
-                return itemVariantKey === variantKey;
-            });
+    //         if (productIndex !== -1) {
+    //             if (quantity <= 0) {
+    //                 // Remove the product if quantity is 0 or less
+    //                 state.Cart.splice(productIndex, 1);
+    //             } else {
+    //                 // Update the quantity
+    //                 state.Cart[productIndex].quantity = quantity;
+    //             }
+    //         }
+    //     },
 
-            if (existingItemIndex !== -1) {
-                // If exists, increment quantity
-                state.Cart[existingItemIndex].quantity += 1;
-            } else {
-                // If new, add to cart with selected variants
-                state.Cart.push({
-                    ...product,
-                    quantity: 1,
-                    variant: selectedVariant ? {
-                        id: Date.now().toString(), // Using timestamp as ID
-                        data: selectedVariant
-                    } : null
-                });
-                console.log("Added item with variants:", selectedVariant);
-            }
-        },
-        removeProductFromCart(state, action) {
-            const productId = action.payload;
-            state.Cart = state.Cart.filter(product => product._id !== productId);
-        },
+    //     addToWishList(state, action) {
+    //         const productId = action.payload;
 
-        updateProductQuantity(state, action) {
-            const { id, quantity } = action.payload;
+    //         // Find the product in our products list
+    //         const product = state.products.find(product => product._id === productId);
 
-            // Find the product
-            const productIndex = state.Cart.findIndex(item => item._id === id);
+    //         if (!product) {
+    //             console.error(`Product with ID ${productId} not found.`);
+    //             return;
+    //         }
 
-            if (productIndex !== -1) {
-                if (quantity <= 0) {
-                    // Remove the product if quantity is 0 or less
-                    state.Cart.splice(productIndex, 1);
-                } else {
-                    // Update the quantity
-                    state.Cart[productIndex].quantity = quantity;
-                }
-            }
-        },
+    //         // Check if product already exists in wishlist
+    //         const existingItemIndex = state.WishList.findIndex(item => item._id === productId);
 
-        addToWishList(state, action) {
-            const productId = action.payload;
+    //         if (existingItemIndex === -1) {
+    //             // If product doesn't exist in the WishList, add it
+    //             state.WishList.push(product);
+    //         }
+    //     },
 
-            // Find the product in our products list
-            const product = state.products.find(product => product._id === productId);
+    //     removeFromWishList(state, action) {
+    //         const productId = action.payload;
+    //         state.WishList = state.WishList.filter(product => product._id !== productId);
+    //     },
 
-            if (!product) {
-                console.error(`Product with ID ${productId} not found.`);
-                return;
-            }
-
-            // Check if product already exists in wishlist
-            const existingItemIndex = state.WishList.findIndex(item => item._id === productId);
-
-            if (existingItemIndex === -1) {
-                // If product doesn't exist in the WishList, add it
-                state.WishList.push(product);
-            }
-        },
-
-        removeFromWishList(state, action) {
-            const productId = action.payload;
-            state.WishList = state.WishList.filter(product => product._id !== productId);
-        },
-
-        clearCart(state) {
-            state.Cart = [];
-        }
+    //     clearCart(state) {
+    //         state.Cart = [];
+    //     }
     },
     extraReducers: (builder) => {
         builder
@@ -419,7 +394,7 @@ const CollectionSlice = createSlice({
             })
             .addCase(fetchProducts.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log(action.payload)
+                // console.log(action.payload)
                 state.products = action.payload;
             })
             .addCase(fetchProducts.rejected, (state, action) => {

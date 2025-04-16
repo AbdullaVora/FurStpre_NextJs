@@ -21,6 +21,9 @@
     "react-phone-number-input": "^3.4.12",
     "react-redux": "^9.2.0",
     "react-toastify": "^11.0.5",
+    "sonner": "^2.0.3",
+    "sweetalert2": "^11.19.1",
+    "sweetalert2-react-content": "^5.1.0",
     "swiper": "^11.2.6"
   },
   "devDependencies": {

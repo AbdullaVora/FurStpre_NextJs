@@ -117,7 +117,7 @@ const VerifyOtp = () => {
 
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <h2 className='text-center fw-bolder display-5 mt-4 mt-md-5 mb-3 mb-md-5'>ACCOUNT</h2>
             <div className="container">
                 <div className="row justify-content-center">

@@ -24,7 +24,7 @@ html {
 
 
 /* Clean toast style */
-.Toastify button{
+.Toastify button {
   border: none !important;
   box-shadow: none !important;
 }
@@ -90,6 +90,8 @@ html {
   background-color: rgba(0, 0, 0, 0.7);
 }
 
+
+
 /* ************************************ Universal Style End ********************************** */
 
 /* ************************************ Header Style Start ********************************** */
@@ -149,6 +151,45 @@ nav a:hover::after {
 
 .sidebar ul li:hover {
   color: var(--secondary-color);
+  cursor: pointer;
+}
+
+/* Dropdown styles */
+.dropdown-item-parent {
+  position: relative;
+  /* This establishes a stacking context */
+  z-index: 1000;
+  /* High enough to be above other page elements */
+}
+
+.dropdown-item-parent:hover {
+  z-index: 1001;
+  /* Slightly higher on hover */
+}
+
+.dropdown-item-children {
+  display: none;
+  position: absolute;
+  left: 90%;
+  /* Position to the right of the parent */
+  top: 0;
+  background: white;
+  min-width: 200px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  z-index: 1000;
+  /* Same as parent, but within parent's context */
+}
+
+.dropdown-item-parent:hover .dropdown-item-children {
+  display: block;
+}
+
+.hover-bg-light:hover {
+  background-color: #f8f9fa;
+}
+
+.cursor-pointer {
   cursor: pointer;
 }
 

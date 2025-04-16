@@ -195,6 +195,7 @@ import Header from "@/components/Header";
 import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 
+
 // Import Swiper components and styles
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination, Thumbs } from 'swiper/modules';
@@ -203,7 +204,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/thumbs';
 // import { fetchProducts } from "@/redux/slice/HomeSlice";
-import { addProductToCart, fetchProducts } from "@/redux/slice/CollectionSlice";
+// import { addProductToCart, fetchProducts } from "@/redux/slice/CollectionSlice";
+import { addProductToCart, fetchProducts } from "@/redux/slice/addToCartSlice";
 
 
 const ProductDetail = () => {
@@ -211,13 +213,16 @@ const ProductDetail = () => {
     const [selectedVariants, setSelectedVariants] = useState({});
     // Swiper related states
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
+    const [userId, setUserId] = useState('null')
 
     const { id } = useParams();
     const dispatch = useDispatch();
     const router = useRouter()
 
     useEffect(() => {
-        dispatch(fetchProducts());
+        // dispatch(fetchProducts());
+        const id = localStorage.getItem('userId');
+        setUserId(id)
     }, [dispatch]);
 
     const { products, loading: Loading } = useSelector((state) => state.Home.Home);
@@ -268,8 +273,11 @@ const ProductDetail = () => {
             .map(([label, value]) => ({ label, value }));
 
         dispatch(addProductToCart({
+            userId,
             id: product[0]._id,
-            selectedVariant: selectedVariantArray.length > 0 ? selectedVariantArray : null
+            selectedVariant: selectedVariantArray.length > 0 ? selectedVariantArray : null,
+            product: product[0]
+
         }));
     }
 
@@ -299,7 +307,7 @@ const ProductDetail = () => {
 
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <div className="productDetail py-5 border-bottom">
                 <div className="container">
                     <div className="row">
@@ -398,7 +406,7 @@ const ProductDetail = () => {
                                         </span>
                                         <select
                                             className="border-none outline-none p-2 fw-semibold opacity-75 mb-2"
-                                            style={{ width: '100%',backgroundColor: '#f1f1f1', fontSize: '13px' }}
+                                            style={{ width: '100%', backgroundColor: '#f1f1f1', fontSize: '13px' }}
                                             value={selectedVariants[label] || ''}
                                             onChange={(e) => handleVariantChange(label, e.target.value)}
                                         >
@@ -492,7 +500,7 @@ const ProductDetail = () => {
                     </div>
                 </div>
             </div >
-            <Footer />
+            {/* <Footer /> */}
 
             {/* Add some basic styles for the Swiper */}
             <style jsx global>{`

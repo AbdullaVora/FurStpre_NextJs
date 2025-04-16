@@ -28,6 +28,7 @@ import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { fetchProducts as fetchHomeProducts } from '@/redux/slice/CollectionSlice';
 import { fetchBanners, fetchProducts, fetchSliders } from '@/redux/slice/HomeSlice';
+import { getUserWishlist } from '@/redux/slice/wishSlice';
 
 export default function Home() {
 
@@ -39,12 +40,22 @@ export default function Home() {
     });
   }, []);
 
-  useEffect(() => {
-    dispatch(fetchBanners());
-    dispatch(fetchSliders());
-    dispatch(fetchProducts())
-    dispatch(fetchHomeProducts())
-  }, [dispatch])
+  // useEffect(() => {
+  //   dispatch(fetchBanners());
+  //   dispatch(fetchSliders());
+  //   dispatch(fetchProducts())
+  //   dispatch(fetchHomeProducts())
+  // }, [dispatch])
+
+  // useEffect(() => {
+  //   const hasFetched = { current: false };
+
+  //   if (!hasFetched.current) {
+  //     dispatch(getUserWishlist());
+  //     hasFetched.current = true;
+  //   }
+  // }, [dispatch])
+
 
   const { Home, loading: Loading } = useSelector((state) => state.Home)
   const data = Home;
@@ -58,7 +69,24 @@ export default function Home() {
     sliders,
     banners
   } = data;
-  
+
+  useEffect(() => {
+    // Only fetch data if it hasn't been loaded yet
+    if (!banners || banners.length === 0) {
+      dispatch(fetchBanners());
+    }
+    if (!sliders || sliders.length === 0) {
+      dispatch(fetchSliders());
+    }
+    if (!products || products.length === 0) {
+      dispatch(fetchProducts());
+    }
+    if (!Home || !Home.product) {
+      dispatch(fetchHomeProducts());
+    }
+  }, [dispatch, banners, sliders, products, Home]);
+
+
   // console.log(sliders)
   const banner = banners.filter((item) => item.forPage === 'Home' && item.forSection === 'Main' && item.status === true);
   const testimonials = sliders.filter((item) => item.forPage === 'Home' && item.forSection === "Testimonials" && item.status === true);
@@ -122,7 +150,7 @@ export default function Home() {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       {/* Banner Start */}
       <div className="banner pb-5" data-aos="zoom-out" style={{ backgroundImage: banner[0]?.desktopImage ? `url(${banner[0]?.desktopImage})` : 'none' }}>
         <div className="contents">
@@ -138,14 +166,13 @@ export default function Home() {
         <div className="container">
           <div className="img-group row g-4">
             {galleryImage.map((img, index) => (
-              <div
-                key={index}
-                className="col-12 col-md-6 col-lg-4"
-              >
+              <div key={index} className="col-12 col-md-6 col-lg-4">
                 <GalleryBox
                   img={img.img}
                   title_1={img.title_1}
                   title_2={img.title_2}
+                  category={img.category}      // Pass category
+                  subcategory={img.subcategory} // Pass subcategory
                 />
               </div>
             ))}
@@ -570,7 +597,7 @@ export default function Home() {
       {/* ****************************** Gallery End ***************************** */}
 
       {/* Footer Start */}
-      <Footer />
+      {/* <Footer /> */}
       {/* Footer End */}
     </>
   )

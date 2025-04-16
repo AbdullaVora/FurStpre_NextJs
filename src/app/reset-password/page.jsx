@@ -103,7 +103,7 @@ const ResetPassword = () => {
 
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <div className="container">
                 <h2 className='text-center fw-bolder display-5 mt-3 mt-md-5 mb-3 mb-md-5'>ACCOUNT</h2>
                 <div className="d-flex flex-column align-items-center justify-contant-center py-3 py-md-5 px-2">

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import { RiStarSmileLine } from "react-icons/ri";
 import { useDispatch } from 'react-redux';
-import { addProductToCart } from '../redux/slice/CollectionSlice';
+import { addProductToCart, fetchProducts } from '../redux/slice/addToCartSlice';
 import { useRouter } from 'next/navigation';
 
 
@@ -10,21 +10,29 @@ import { useRouter } from 'next/navigation';
 const OurProductBox = ({ id, img, title, Cwidth, price }) => {
     const [hover, setHover] = useState(false);
     const dispatch = useDispatch()
+
     const router = useRouter()
 
     const handleHover = () => setHover(!hover);
+    const products = useSelector(state => state.addToCart.products);
+
+    useEffect(() => {
+        dispatch(fetchProducts());
+        const id = localStorage.getItem('userId');
+        setUserId(id)
+    }, [dispatch])
 
     const onDetail = (id) => {
         router.push(`/productDetails/${id}`)
     }
 
- const handleCart = (id) => {
-    dispatch(addProductToCart(id));
-  };
+    const handleCart = (id) => {
+        dispatch(addProductToCart({ userId, id, products: products[0] }));
+    };
 
-  const handleWish = (id) => {
-    dispatch(addToWishList(id));
-  };
+    const handleWish = (id) => {
+        dispatch(addToWishList(id));
+    };
 
     return (
         <div

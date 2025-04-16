@@ -29,7 +29,7 @@ const Blog = () => {
 
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <div className="blog-page">
                 <h2 className='text-center fw-bolder display-5 mt-3 mt-lg-5 mb-4 mb-lg-5'>BLOGS</h2>
                 <div className="container">
@@ -47,7 +47,7 @@ const Blog = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }

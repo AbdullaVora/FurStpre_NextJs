@@ -62,7 +62,7 @@ const page = () => {
 
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <div className="container px-3 px-md-4 px-lg-5">
                 <div className="my-orders">
                     <h2 className='text-center fw-bolder display-5 mt-5 mb-5'>MY ORDERS</h2>
@@ -169,7 +169,7 @@ const page = () => {
                 </div>
                 <ToastContainer />
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }
