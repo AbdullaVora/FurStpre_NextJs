@@ -1,11 +1,68 @@
 "use client";
 
-import React from 'react'
+import React, { useState } from 'react';
 import { FaFacebookF, FaTwitter, FaPinterestP, FaInstagram } from "react-icons/fa";
+import axios from 'axios';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
+import apiInstance from '@/api/instance';
+import Swal from 'sweetalert2';
 
 const ContactUs = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        number: '',
+        message: ''
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState({
+        success: false,
+        message: ''
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setSubmitStatus({ success: false, message: '' });
+
+        try {
+            const response = await apiInstance.post('/api/e-commerce/inquiry', formData);
+
+            if (response.status === 200) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Inquiry Submited',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+            // Reset form after successful submission
+            setFormData({
+                name: '',
+                email: '',
+                number: '',
+                message: ''
+            });
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setSubmitStatus({
+                success: false,
+                message: error.response?.data?.message || 'Failed to submit inquiry. Please try again.'
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <>
             {/* <Header /> */}
@@ -26,9 +83,16 @@ const ContactUs = () => {
 
                     <div className="row align-items-center mt-4">
                         <div className="col-lg-6 col-md-12 mb-4 mb-lg-0">
-                            <form action="">
+                            <form onSubmit={handleSubmit}>
                                 <h4 className='mt-3 mt-md-5 fw-bold'>GET IN TOUCH</h4>
                                 <p>Please enter the details of your request. A member of our support staff will respond as soon as possible.</p>
+
+                                {submitStatus.message && (
+                                    <div className={`alert ${submitStatus.success ? 'alert-success' : 'alert-danger'}`}>
+                                        {submitStatus.message}
+                                    </div>
+                                )}
+
                                 <div className="row mb-3">
                                     <div className="col-md-6 col-12 mb-3 mb-md-0">
                                         <input
@@ -36,6 +100,9 @@ const ContactUs = () => {
                                             name="name"
                                             className='form-control fw-semibold opacity-75'
                                             placeholder='YOUR NAME'
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            required
                                         />
                                     </div>
                                     <div className="col-md-6 col-12">
@@ -44,6 +111,9 @@ const ContactUs = () => {
                                             name="email"
                                             className='form-control fw-semibold opacity-75'
                                             placeholder='YOUR EMAIL'
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            required
                                         />
                                     </div>
                                 </div>
@@ -52,18 +122,25 @@ const ContactUs = () => {
                                     name="number"
                                     className='form-control mb-3 fw-semibold opacity-75'
                                     placeholder='YOUR PHONE NUMBER'
+                                    value={formData.number}
+                                    onChange={handleChange}
+                                    required
                                 />
                                 <textarea
                                     rows={5}
                                     name="message"
                                     className='form-control fw-semibold opacity-75 mb-3'
                                     placeholder='YOUR MESSAGE'
+                                    value={formData.message}
+                                    onChange={handleChange}
+                                    required
                                 />
                                 <button
                                     className='py-2 px-5 border-0 text-white mt-3 rounded-2'
                                     type='submit'
+                                    disabled={isSubmitting}
                                 >
-                                    Submit
+                                    {isSubmitting ? 'Submitting...' : 'Submit'}
                                 </button>
                             </form>
                         </div>
