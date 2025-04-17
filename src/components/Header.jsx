@@ -24,27 +24,15 @@ const Header = () => {
     const [cart, setCart] = useState([])
     const [wish, setWish] = useState([])
     const [userId, setUserId] = useState('null')
-    const [isScrolled, setIsScrolled] = useState(false);
 
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 10) {
-                setIsScrolled(true);
-            } else {
-                setIsScrolled(false);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
+    // Replace your useEffect with this:
     useEffect(() => {
         const id = localStorage.getItem('userId');
         setUserId(id);
 
+        // Using a ref to track initialization
         const initRef = { current: false };
 
         if (!initRef.current) {
@@ -53,12 +41,14 @@ const Header = () => {
             dispatch(getUserWishlist());
             initRef.current = true;
         }
-    }, [dispatch]);
+    }, [dispatch]); // Empty dependency array to run only once
 
     const cartData = useSelector((state) => state.addToCart.Cart);
     const wishData = useSelector((state) => state.wish.wishList);
     const allCategories = useSelector((state) => state.Collection.categories);
 
+    // Update local state when Redux state changes
+    // Fixed dependency array - changed 'wish' to 'wishData'
     useEffect(() => {
         if (userId) {
             const filterCart = cartData.filter((data) => data.userId === userId);
@@ -74,9 +64,13 @@ const Header = () => {
             setCartCount(cartData.length);
             setWishCount(wishData.length);
         }
-    }, [userId, cartData, wishData]);
+    }, [userId, cartData, wishData]); // Fixed 'wish' to 'wishData'
+
 
     useEffect(() => {
+
+
+        // Organize categories and subcategories
         if (allCategories) {
             const parentCategories = allCategories.filter(cat => cat.parent === 'N/A');
             const categoriesWithSubs = parentCategories.map(parent => ({
@@ -103,7 +97,7 @@ const Header = () => {
                 onClick={() => { setSideBar(false); setCartBar(false); setNavBar(false); }}
                 style={{ background: 'rgba(0, 0, 0, 0.5)', zIndex: '998' }}
             ></div>
-            <div className={`shadow-sm sticky-header ${isScrolled ? 'scrolled' : ''}`}>
+            <div className="shadow-sm">
                 <div className="container-lg">
                     <header className='p-3 d-flex align-items-center justify-content-between'>
                         <div className="logo">
@@ -112,12 +106,16 @@ const Header = () => {
                         <nav className='d-md-flex d-none align-items-center'>
                             <Link href='/' className='px-2 py-2 px-lg-4 text-decoration-none'>Home</Link>
 
+                            {/* Collection Dropdown */}
                             <div
                                 className="position-relative"
                                 onMouseEnter={() => setCollectionDropdown(true)}
                                 onMouseLeave={() => setCollectionDropdown(false)}
                             >
                                 <Link href='/collection' className='text-decoration-none px-2 py-2 px-lg-4'>Collection</Link>
+                                {/* <div className="d-flex align-items-center cursor-pointer">
+                                    <FaChevronDown className="ms-1" size={12} />
+                                </div> */}
 
                                 {collectionDropdown && (
                                     <div
@@ -175,20 +173,6 @@ const Header = () => {
                     </header>
                 </div>
             </div>
-
-            <style jsx>{`
-                .sticky-header {
-                    position: sticky;
-                    top: 0;
-                    background: white;
-                    z-index: 999;
-                    transition: all 0.3s ease;
-                }
-                
-                .sticky-header.scrolled {
-                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                }
-            `}</style>
         </>
     );
 };
