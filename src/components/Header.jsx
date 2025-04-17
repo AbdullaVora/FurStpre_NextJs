@@ -1,84 +1,3 @@
-// 'use client'
-// import { useEffect, useState } from 'react';
-// import Link from "next/link";
-// import { FaRegUser } from "react-icons/fa";
-// import { RiHeart2Line, RiHeartLine, RiStarSmileLine, RiUserHeartLine } from "react-icons/ri";
-// import { MdMenuOpen } from "react-icons/md";
-// import { HiOutlineShoppingCart } from "react-icons/hi";
-// import SideBar from './SideBar';
-// import CartBar from './CartBar';
-// import { useSelector } from 'react-redux';
-// import SideNav from './SideNav';
-
-// const Header = () => {
-//     const [sideBar, setSideBar] = useState(false);
-//     const [sideNav, setNavBar] = useState(false);
-//     const [cartBar, setCartBar] = useState(false);
-//     const [Cartcount, setCartCount] = useState(0);
-//     const [Wishcount, setWishCount] = useState(0);
-
-//     const cart = useSelector((state) => state.Collection.Cart);
-//     const wish = useSelector((state) => state.Collection.WishList);
-
-//     useEffect(() => {
-//         setCartCount(cart.length)
-//         setWishCount(wish.length)
-//     }, [cart, wish])
-
-//     const closeSideBar = () => {
-//         setSideBar(false);
-//         setCartBar(false);
-//         setNavBar(false);
-//     };
-
-//     return (
-//         <>
-//             <SideBar openSlide={sideBar} closeSideBar={closeSideBar} />
-//             <CartBar openSlide={cartBar} closeSideBar={closeSideBar} />
-//             <SideNav openSlide={sideNav} closeSideBar={closeSideBar} />
-//             <div
-//                 className={`trans-bg vh-100 w-100 position-fixed top-0 start-0 ${sideBar || sideNav || cartBar ? 'd-block' : 'd-none'}`}
-//                 onClick={() => { setSideBar(false); setCartBar(false); setNavBar(false); }}
-//                 style={{ background: 'rgba(0, 0, 0, 0.5)', zIndex: '998' }}
-//             ></div>
-//             <div className="shadow-sm">
-//                 <div className="container-lg">
-//                     <header className='p-3 d-flex align-items-center justify-content-between'>
-//                         <div className="logo">
-//                             <img src="/images/Logo.webp" alt="logo" className='img-fluid' />
-//                         </div>
-//                         <nav className='d-md-flex d-none'>
-//                             <Link href='/' className='px-2 py-2 px-lg-4 text-decoration-none'>Home</Link>
-//                             <Link href='/collection' className='px-2 py-2 px-lg-4 text-decoration-none'>Collection</Link>
-//                             <Link href='/blog' className='px-2 py-2 px-lg-4 text-decoration-none'>Blog</Link>
-//                             <Link href='/about' className='px-2 py-2 px-lg-4 text-decoration-none'>About Us</Link>
-//                             <Link href='/contact' className='px-2 py-2 px-lg-4 text-decoration-none'>Contact Us</Link>
-//                         </nav>
-//                         <div className='icons d-flex align-items-center'>
-//                             {/* <FiSearch size={38} className='me-2 rounded-3 p-2 iconHover' /> */}
-//                             <FaRegUser size={38} className='me-sm-2 me-1 rounded-3 px-2 iconHover' onClick={() => setSideBar(true)} />
-//                             <div className="wish position-relative">
-//                                 <Link href="/wishlist" className='text-decoration-none text-black'><RiHeart2Line size={40} className='me-sm-2 me-1 rounded-3 px-2 pt-1 iconHover' /></Link>
-//                                 <sup className='position-absolute end-0 translate-middle rounded-circle text-white' style={{ backgroundColor: '#0a5d5d', padding: '8px 6px', top: '28%'}}>{Wishcount}</sup>
-//                             </div>
-//                             <div className="cart position-relative">
-//                                 <HiOutlineShoppingCart size={38} className='me-sm-2 me-1 rounded-3 px-2 iconHover' onClick={() => setCartBar(true)} />
-//                                 <sup className='position-absolute end-0 translate-middle rounded-circle text-white' style={{ backgroundColor: '#0a5d5d', padding: '8px 6px', top: '22%' }}>{Cartcount}</sup>
-//                             </div>
-//                             <div className="navIcon d-md-none">
-//                                 <MdMenuOpen size={40} className='rounded-3 p-1 iconHover' onClick={() => setNavBar(true)} />
-//                             </div>
-//                         </div>
-//                     </header>
-//                 </div>
-//             </div>
-//         </>
-//     );
-// };
-
-// export default Header;
-
-
 'use client'
 import React, { useEffect, useState } from 'react';
 import Link from "next/link";
@@ -105,15 +24,27 @@ const Header = () => {
     const [cart, setCart] = useState([])
     const [wish, setWish] = useState([])
     const [userId, setUserId] = useState('null')
+    const [isScrolled, setIsScrolled] = useState(false);
 
     const dispatch = useDispatch();
 
-    // Replace your useEffect with this:
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 10) {
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     useEffect(() => {
         const id = localStorage.getItem('userId');
         setUserId(id);
 
-        // Using a ref to track initialization
         const initRef = { current: false };
 
         if (!initRef.current) {
@@ -122,14 +53,12 @@ const Header = () => {
             dispatch(getUserWishlist());
             initRef.current = true;
         }
-    }, [dispatch]); // Empty dependency array to run only once
+    }, [dispatch]);
 
     const cartData = useSelector((state) => state.addToCart.Cart);
     const wishData = useSelector((state) => state.wish.wishList);
     const allCategories = useSelector((state) => state.Collection.categories);
 
-    // Update local state when Redux state changes
-    // Fixed dependency array - changed 'wish' to 'wishData'
     useEffect(() => {
         if (userId) {
             const filterCart = cartData.filter((data) => data.userId === userId);
@@ -145,13 +74,9 @@ const Header = () => {
             setCartCount(cartData.length);
             setWishCount(wishData.length);
         }
-    }, [userId, cartData, wishData]); // Fixed 'wish' to 'wishData'
-
+    }, [userId, cartData, wishData]);
 
     useEffect(() => {
-
-
-        // Organize categories and subcategories
         if (allCategories) {
             const parentCategories = allCategories.filter(cat => cat.parent === 'N/A');
             const categoriesWithSubs = parentCategories.map(parent => ({
@@ -178,7 +103,7 @@ const Header = () => {
                 onClick={() => { setSideBar(false); setCartBar(false); setNavBar(false); }}
                 style={{ background: 'rgba(0, 0, 0, 0.5)', zIndex: '998' }}
             ></div>
-            <div className="shadow-sm">
+            <div className={`shadow-sm sticky-header ${isScrolled ? 'scrolled' : ''}`}>
                 <div className="container-lg">
                     <header className='p-3 d-flex align-items-center justify-content-between'>
                         <div className="logo">
@@ -187,16 +112,12 @@ const Header = () => {
                         <nav className='d-md-flex d-none align-items-center'>
                             <Link href='/' className='px-2 py-2 px-lg-4 text-decoration-none'>Home</Link>
 
-                            {/* Collection Dropdown */}
                             <div
                                 className="position-relative"
                                 onMouseEnter={() => setCollectionDropdown(true)}
                                 onMouseLeave={() => setCollectionDropdown(false)}
                             >
                                 <Link href='/collection' className='text-decoration-none px-2 py-2 px-lg-4'>Collection</Link>
-                                {/* <div className="d-flex align-items-center cursor-pointer">
-                                    <FaChevronDown className="ms-1" size={12} />
-                                </div> */}
 
                                 {collectionDropdown && (
                                     <div
@@ -254,6 +175,20 @@ const Header = () => {
                     </header>
                 </div>
             </div>
+
+            <style jsx>{`
+                .sticky-header {
+                    position: sticky;
+                    top: 0;
+                    background: white;
+                    z-index: 999;
+                    transition: all 0.3s ease;
+                }
+                
+                .sticky-header.scrolled {
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                }
+            `}</style>
         </>
     );
 };
