@@ -288,10 +288,9 @@ const CartBar = ({ openSlide, closeSideBar }) => {
     // }, [dispatch, dispatchFlag])
 
     // Replace your useEffect with this:
+    const id = localStorage.getItem('userId');
     useEffect(() => {
-        const id = localStorage.getItem('userId');
         setUserId(id);
-
         // Using a ref to track if we've dispatched
         const hasFetched = { current: false };
 
@@ -321,9 +320,10 @@ const CartBar = ({ openSlide, closeSideBar }) => {
     usePreventScroll(openSlide);
 
     const handleCheckOut = () => {
+        console.log(userId)
         if (userId) {
             closeSideBar();
-            router.push("/checkout");
+            router.push("/checkOut");
         } else {
             // toast.error("Please Login First");
             Swal.fire({
