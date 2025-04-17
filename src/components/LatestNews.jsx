@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const LatestNews = ({ title, img, description, author }) => {
+    const [showFullDescription, setShowFullDescription] = useState(false);
+
+    const toggleDescription = () => {
+        setShowFullDescription(prev => !prev);
+    };
+
     return (
         <div className="latest-news-item">
             <div className="row align-items-center">
-                {/* Image Column - Full width on mobile, half on desktop */}
+                {/* Image Column */}
                 <div className="col-12 col-md-6 mb-4 mb-md-0">
                     <div className="img-container">
                         <img
@@ -16,7 +22,7 @@ const LatestNews = ({ title, img, description, author }) => {
                     </div>
                 </div>
 
-                {/* Content Column - Full width on mobile, half on desktop */}
+                {/* Content Column */}
                 <div className="col-12 col-md-6 px-3 px-md-5">
                     <div className="content">
                         <div className="meta mb-2">
@@ -26,11 +32,18 @@ const LatestNews = ({ title, img, description, author }) => {
                         <h2 className='h3 fw-normal pt-1'>{title}</h2>
                         <hr className='my-3' />
                         <p className='text-muted pb-3'>
-                            {description.length > 150 ? `${description.substring(0, 150)}...` : description}
+                            {showFullDescription ? description : (
+                                description.length > 150 ? `${description.substring(0, 150)}...` : description
+                            )}
                         </p>
-                        <button className='btn btn-outline-primary px-4 py-2'>
-                            Read More
-                        </button>
+                        {description.length > 150 && (
+                            <button
+                                className='btn btn-outline-primary px-4 py-2'
+                                onClick={toggleDescription}
+                            >
+                                {showFullDescription ? 'Show Less' : 'Read More'}
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

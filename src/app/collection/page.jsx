@@ -433,7 +433,7 @@ const Collections = () => {
         cat.parent && selectedCategories.includes(cat.parent)
     ) || [];
 
-    if (Loading && CatLoading && brdLoading) {
+    if (Loading) {
         return (
             <div className='loader-container'>
                 <span className="loader"></span>
