@@ -86,6 +86,7 @@ import { usePreventScroll } from "@/hook/usePreventScroll";
 import { useDispatch } from "react-redux";
 import { fetchCartCart, resetCart } from "@/redux/slice/addToCartSlice";
 import { getUserWishlist, resetWish } from "@/redux/slice/wishSlice";
+import Swal from "sweetalert2";
 
 const SideBar = ({ openSlide, closeSideBar }) => {
     const [name, setName] = useState("");
@@ -99,6 +100,12 @@ const SideBar = ({ openSlide, closeSideBar }) => {
     }, [openSlide]);
 
     const handleLogout = () => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Log Out Success',
+            timer: 2000,
+            showConfirmButton: false
+        })
         if (typeof window !== "undefined") {
             localStorage.removeItem("token");
             localStorage.removeItem("user");

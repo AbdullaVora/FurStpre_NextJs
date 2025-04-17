@@ -622,7 +622,7 @@ const ProductDetail = () => {
     );
 
 
-    console.log(product)
+    // console.log(product)
     // Process variants to group by label
     const variantOptions = {};
     if (product.length > 0 && product[0].variants && product[0].variants.variants) {
