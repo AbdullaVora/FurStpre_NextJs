@@ -66,7 +66,7 @@ const wishSlice = createSlice({
         checking: {},
     },
     reducers: {
-        clearWishlist: (state) => {
+        resetWish: (state) => {
             state.wishList = [];
             state.error = null;
         },
@@ -133,7 +133,7 @@ const wishSlice = createSlice({
 });
 
 // Export actions
-export const { clearWishlist } = wishSlice.actions;
+export const { resetWish } = wishSlice.actions;
 
 // Export reducer
 export default wishSlice.reducer;

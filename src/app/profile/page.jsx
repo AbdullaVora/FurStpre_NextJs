@@ -9,6 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import apiInstance from '@/api/instance';
 import Header from '@/components/Header';
+import Swal from 'sweetalert2';
 
 const Profile = () => {
     const [formData, setFormData] = useState({
@@ -54,18 +55,30 @@ const Profile = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!hasChanges()) {
-            toast.info('No changes made', { autoClose: 2000 });
+            // toast.info('No changes made', { autoClose: 2000 });
+            Swal.fire({
+                icon: 'info',
+                title: 'No Changes Made',
+                timer: 2000,
+                showConfirmButton: false
+            });
             return;
         }
 
-        console.log(formData)
+        // console.log(formData)
 
         setIsLoading(true);
         try {
             const response = await apiInstance.put(`/api/auth/editUser/${id}`, formData);
 
             if (response.status === 200) {
-                toast.success('Profile updated successfully', { autoClose: 2000 });
+                // toast.success('Profile updated successfully', { autoClose: 2000 });
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Profile Updated Successfully',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 localStorage.setItem('user', response.data.name);
                 localStorage.setItem('userEmail', response.data.email);
                 setOriginalData({
@@ -76,10 +89,22 @@ const Profile = () => {
                     ...prev
                 }));
             } else {
-                toast.error(response.data.message || 'Update failed', { autoClose: 2000 });
+                // toast.error(response.data.message || 'Update failed', { autoClose: 2000 });
+                Swal.fire({
+                    icon: 'error',
+                    title: response.data.messsage,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || error.message || 'Update failed', { autoClose: 2000 });
+            // toast.error(error.response?.data?.message || error.message || 'Update failed', { autoClose: 2000 });
+            Swal.fire({
+                icon: 'error',
+                title: error.response?.data?.message,
+                timer: 2000,
+                showConfirmButton: false
+            });
         } finally {
             setIsLoading(false);
         }
@@ -153,7 +178,7 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
-            <ToastContainer />
+            {/* <ToastContainer /> */}
         </>
     )
 }

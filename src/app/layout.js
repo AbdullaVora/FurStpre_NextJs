@@ -4,6 +4,7 @@ import "./mediaqueries.css";
 import ReduxProvider from "../redux/ReduxProvider"; // Import Redux Provider
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import LoadingWrapper from "@/components/Loader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,9 +26,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ReduxProvider> {/* Wrap app in Redux Provider */}
-          <Header />
-          {children}
-          <Footer />
+          <LoadingWrapper>
+            <Header />
+            {children}
+            <Footer />
+          </LoadingWrapper>
         </ReduxProvider>
       </body>
     </html>

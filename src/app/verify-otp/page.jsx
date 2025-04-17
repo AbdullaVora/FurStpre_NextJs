@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import apiInstance from '@/api/instance';
 import Header from '@/components/Header';
+import Swal from 'sweetalert2';
 
 const VerifyOtp = () => {
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -69,7 +70,13 @@ const VerifyOtp = () => {
 
         // Validate OTP is complete
         if (otpString.length !== 6) {
-            toast.error('Please enter the complete 6-digit OTP', { autoClose: 2000 });
+            // toast.error('Please enter the complete 6-digit OTP', { autoClose: 2000 });
+            Swal.fire({
+                icon: 'error',
+                title: 'Please enter the complete 6-digit OTP',
+                timer: 2000,
+                showConfirmButton: false
+            });
             return;
         }
 
@@ -83,13 +90,25 @@ const VerifyOtp = () => {
 
             if (response.status === 200) {
                 localStorage.setItem('resetPermission', true);
-                toast.success('OTP verified successfully', { autoClose: 2000 });
+                // toast.success('OTP verified successfully', { autoClose: 2000 });
+                Swal.fire({
+                    icon: 'success',
+                    title: 'OTP verified successfully',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 setTimeout(() => {
                     router.push('/reset-password');
                 }, 2000);
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Invalid OTP. Please try again.', { autoClose: 2000 });
+            // toast.error(error.response?.data?.message || 'Invalid OTP. Please try again.', { autoClose: 2000 });
+            Swal.fire({
+                icon: 'error',
+                title: error.response?.data?.message || 'Invalid OTP. Please try again',
+                timer: 2000,
+                showConfirmButton: false
+            });
         } finally {
             setLoading(false);
         }
@@ -97,7 +116,13 @@ const VerifyOtp = () => {
 
     const resendOtp = async () => {
         if (!email) {
-            toast.error('Email not found. Please go back to the forgot password page.', { autoClose: 2000 });
+            // toast.error('Email not found. Please go back to the forgot password page.', { autoClose: 2000 });
+            Swal.fire({
+                icon: 'error',
+                title: 'Email not found. Please go back to the forgot password page',
+                timer: 2000,
+                showConfirmButton: false
+            });
             return;
         }
 
@@ -106,10 +131,22 @@ const VerifyOtp = () => {
             const response = await apiInstance.post('/api/auth/resend-otp', { email });
 
             if (response.status === 200) {
-                toast.success('OTP resent successfully', { autoClose: 2000 });
+                // toast.success('OTP resent successfully', { autoClose: 2000 });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'OTP Resend Succesfully',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to resend OTP', { autoClose: 2000 });
+            // toast.error(error.response?.data?.message || 'Failed to resend OTP', { autoClose: 2000 });
+            Swal.fire({
+                icon: 'error',
+                title: error.response?.data?.message || 'Failed to resend OTP',
+                timer: 2000,
+                showConfirmButton: false
+            });
         } finally {
             setLoading(false);
         }
@@ -178,7 +215,7 @@ const VerifyOtp = () => {
                     </div>
                 </div>
             </div>
-            <ToastContainer />
+            {/* <ToastContainer /> */}
         </>
     )
 }

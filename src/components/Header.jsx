@@ -103,27 +103,10 @@ const Header = () => {
     const [collectionDropdown, setCollectionDropdown] = useState(false);
     const [categories, setCategories] = useState([]);
     const [cart, setCart] = useState([])
+    const [wish, setWish] = useState([])
     const [userId, setUserId] = useState('null')
-    const [dataFetched, setDataFetched] = useState(false); // Flag to track if data has been fetched
 
     const dispatch = useDispatch();
-
-    // // Get user ID on component mount - only once
-    // useEffect(() => {
-    //     const id = localStorage.getItem('userId');
-    //     setUserId(id);
-    // }, []);
-
-    // // Fetch data only once on component mount
-    // useEffect(() => {
-    //     if (!dataFetched) {
-    //         dispatch(fetchCartCart());
-    //         dispatch(fetchCategories());
-    //         setDataFetched(true);
-    //     }
-    // }, [dispatch, dataFetched]); // Only depends on dataFetched flag
-
-    // Combine into a single useEffect with a ref to track initialization
 
     // Replace your useEffect with this:
     useEffect(() => {
@@ -142,21 +125,27 @@ const Header = () => {
     }, [dispatch]); // Empty dependency array to run only once
 
     const cartData = useSelector((state) => state.addToCart.Cart);
-    const wish = useSelector((state) => state.wish.wishList);
+    const wishData = useSelector((state) => state.wish.wishList);
     const allCategories = useSelector((state) => state.Collection.categories);
 
     // Update local state when Redux state changes
+    // Fixed dependency array - changed 'wish' to 'wishData'
     useEffect(() => {
         if (userId) {
             const filterCart = cartData.filter((data) => data.userId === userId);
+            const filterWish = wishData.filter((data) => data.userId === userId);
+
             setCart(filterCart);
+            setWish(filterWish);
             setCartCount(filterCart.length);
+            setWishCount(filterWish.length);
         } else {
             setCart(cartData);
+            setWish(wishData);
             setCartCount(cartData.length);
+            setWishCount(wishData.length);
         }
-        setWishCount(wish.length);
-    }, [userId, cartData, wish]);
+    }, [userId, cartData, wishData]); // Fixed 'wish' to 'wishData'
 
 
     useEffect(() => {
@@ -204,7 +193,7 @@ const Header = () => {
                                 onMouseEnter={() => setCollectionDropdown(true)}
                                 onMouseLeave={() => setCollectionDropdown(false)}
                             >
-                                    <Link href='/collection' className='text-decoration-none px-2 py-2 px-lg-4'>Collection</Link>
+                                <Link href='/collection' className='text-decoration-none px-2 py-2 px-lg-4'>Collection</Link>
                                 {/* <div className="d-flex align-items-center cursor-pointer">
                                     <FaChevronDown className="ms-1" size={12} />
                                 </div> */}

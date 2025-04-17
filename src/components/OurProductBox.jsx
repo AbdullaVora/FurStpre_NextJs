@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { HiOutlineShoppingCart } from "react-icons/hi";
-import { RiStarSmileLine } from "react-icons/ri";
+import { RiHeart2Line, RiHeartFill, RiStarSmileLine } from "react-icons/ri";
 import { useDispatch } from 'react-redux';
 import { addProductToCart, fetchProducts } from '../redux/slice/addToCartSlice';
 import { useRouter } from 'next/navigation';
+import { HiShoppingCart } from 'react-icons/hi2';
 
 
 
@@ -14,13 +15,27 @@ const OurProductBox = ({ id, img, title, Cwidth, price }) => {
     const router = useRouter()
 
     const handleHover = () => setHover(!hover);
-    const products = useSelector(state => state.addToCart.products);
 
     useEffect(() => {
         dispatch(fetchProducts());
         const id = localStorage.getItem('userId');
         setUserId(id)
     }, [dispatch])
+
+    const cartData = useSelector(state => state.addToCart.Cart);
+    const products = useSelector(state => state.addToCart.products);
+    const wishListData = useSelector(state => state.wish.wishList);
+
+    // Check if product is in cart
+    const isInCart = cartData.some(item =>
+        item?.product?._id === id && item?.userId === userId
+    );
+
+    // Check if product is in wishlist
+    const isInWishlist = wishListData.some(item =>
+        item?.product?._id === id && item?.userId === userId
+    );
+
 
     const onDetail = (id) => {
         router.push(`/productDetails/${id}`)
@@ -56,11 +71,20 @@ const OurProductBox = ({ id, img, title, Cwidth, price }) => {
             </div>
             <div className="sideIcons">
                 <div className="cart" onClick={() => handleCart(id)}>
-                    <HiOutlineShoppingCart size={14} />
+                    {isInCart ? (
+                        <HiShoppingCart size={16} color="orange" />
+                    ) : (
+                        <HiOutlineShoppingCart size={16} />
+                    )}
                 </div>
                 <div className="star" onClick={() => handleWish(id)}>
-                    <RiStarSmileLine size={17} />
+                    {isInWishlist ? (
+                        <RiHeartFill size={18} color="red" />
+                    ) : (
+                        <RiHeart2Line size={18} />
+                    )}
                 </div>
+
             </div>
         </div>
     );

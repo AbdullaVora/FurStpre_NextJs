@@ -219,6 +219,7 @@ import { usePreventScroll } from "@/hook/usePreventScroll";
 import { useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import { fetchCartCart } from "@/redux/slice/addToCartSlice";
+import Swal from "sweetalert2";
 
 const Cart = ({ id, img, title, price, quantity }) => {
     const dispatch = useDispatch();
@@ -324,7 +325,14 @@ const CartBar = ({ openSlide, closeSideBar }) => {
             closeSideBar();
             router.push("/checkout");
         } else {
-            toast.error("Please Login First");
+            // toast.error("Please Login First");
+            Swal.fire({
+                icon: 'error',
+                title: 'Please Login',
+                timer: 2000,
+                showConfirmButton: false
+            })
+
         }
     }
 
@@ -417,7 +425,7 @@ const CartBar = ({ openSlide, closeSideBar }) => {
                     </div>
                 )}
             </div>
-            <ToastContainer />
+            {/* <ToastContainer /> */}
         </div>
     );
 };

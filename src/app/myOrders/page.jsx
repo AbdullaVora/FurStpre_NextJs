@@ -7,6 +7,7 @@ import { deleteOrder, fetchOrders } from '@/redux/slice/OrdersSlice';
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 const page = () => {
     const [userId, setUserId] = useState(null);
@@ -28,11 +29,23 @@ const page = () => {
     const handleDelete = (orderId) => {
         dispatch(deleteOrder(orderId))
             .then(() => {
-                toast.success('Order deleted successfully!');
+                // toast.success('Order deleted successfully!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Order Deleted Successfully!',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 dispatch(fetchOrders());
             })
             .catch((error) => {
-                toast.error(error.message);
+                // toast.error(error.message);
+                Swal.fire({
+                    icon: 'success',
+                    title: error.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 console.error('Failed to delete order:', error);
             });
     }
@@ -167,7 +180,7 @@ const page = () => {
                         </div>
                     }
                 </div>
-                <ToastContainer />
+                {/* <ToastContainer /> */}
             </div>
             {/* <Footer /> */}
         </>

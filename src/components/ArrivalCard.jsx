@@ -14,6 +14,13 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  useEffect(() => {
+    const id = localStorage.getItem('userId');
+    if(id) {
+      setUserId(id)
+    }
+  }, [dispatch])
+
   // Get data from Redux store
   const cartData = useSelector(state => state.addToCart.Cart);
   const products = useSelector(state => state.addToCart.products);
@@ -98,7 +105,7 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
 
   return (
     <div
-      className="arrivalCard position-relative overflow-hidden px-2"
+      className={`arrivalCard position-relative overflow-hidden px-2 mb-4 ${iswish ? 'mx-2' : ''}`}
       onMouseEnter={handleHover}
       onMouseLeave={handleHover}
     >

@@ -15,8 +15,10 @@ import Swal from 'sweetalert2';
 import { removeProductFromCart, updateProductQuantity } from '@/redux/slice/addToCartSlice';
 
 const CartPage = () => {
+    const [userId, setUserId] = useState();
+    const [cart, setCart] = useState([]);
     const { coupons, loading: Loading } = useSelector((state) => state.Collection);
-    const cart = useSelector((state) => state.addToCart.Cart);
+    const { Cart, loading: CartLoading } = useSelector((state) => state.addToCart);
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -24,6 +26,20 @@ const CartPage = () => {
     }, [dispatch])
 
     const couponsData = coupons ? coupons.filter((coupon) => coupon.status === true) : [];
+
+    useEffect(() => {
+        // console.log(cartData)
+        const id = localStorage.getItem("userId");
+        setUserId(id)
+
+        if (userId) {
+            const filterCart = Cart.filter((data) => data.userId === userId);
+            // console.log(filterCart)
+            setCart(filterCart);
+        } else {
+            setCart(cartData);
+        }
+    }, [userId, cartData, wish]);
 
     const handleinc = (id, quantity) => {
         dispatch(updateProductQuantity({ id: id, quantity: quantity + 1 }))
@@ -44,7 +60,6 @@ const CartPage = () => {
     }
 
     const handleCheckOut = () => {
-        const userId = localStorage.getItem("userId");
         if (userId) {
             closeSideBar();
             router.push("/checkout")

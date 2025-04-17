@@ -10,6 +10,7 @@ import Header from '@/components/Header';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Swal from 'sweetalert2';
 
 const Register = () => {
     const [input, setInput] = useState({});
@@ -36,11 +37,17 @@ const Register = () => {
     const registerUser = async (userData) => {
         try {
             const response = await apiInstance.post('/api/auth/register', userData);
-            console.log("response: ", response);
+            // console.log("response: ", response);
 
             if (response.status === 200) {
                 // Show success toast
-                toast.success('Account created successfully!', { autoClose: 2000 });
+                // toast.success('Account created successfully!', { autoClose: 2000 });
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Account created successfully!',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('user', response.data.name);
                 localStorage.setItem('userId', response.data.id);
@@ -49,7 +56,13 @@ const Register = () => {
             }
         } catch (error) {
             // Show error toast
-            toast.error(error.response?.data?.message || 'Registration failed. Please try again.', { autoClose: 2000 });
+            // toast.error(error.response?.data?.message || 'Registration failed. Please try again.', { autoClose: 2000 });
+            Swal.fire({
+                icon: 'error',
+                title: error.response?.data?.message,
+                timer: 2000,
+                showConfirmButton: false
+            });
         }
     };
 
@@ -112,7 +125,7 @@ const Register = () => {
                         </form>
                     </div>
                 </div>
-                <ToastContainer />
+                {/* <ToastContainer /> */}
             </div>
         </>
     )

@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import apiInstance from '@/api/instance';
 import Header from '@/components/Header';
+import Swal from 'sweetalert2';
 
 const ResetPassword = () => {
     const [input, setInput] = useState({
@@ -37,7 +38,13 @@ const ResetPassword = () => {
             setInput(prev => ({ ...prev, email: storedEmail }));
         } else {
             // If no email is found, redirect back to forgot password page
-            toast.error('Session expired. Please restart password reset process.', { autoClose: 2000 });
+            // toast.error('Session expired. Please restart password reset process.', { autoClose: 2000 });
+            Swal.fire({
+                icon: 'error',
+                title: 'Session expired. Please restart password reset process',
+                timer: 2000,
+                showConfirmButton: false
+            });
             setTimeout(() => {
                 router.push('/forgot');
             }, 2000);
@@ -52,12 +59,24 @@ const ResetPassword = () => {
     const validatePassword = () => {
         // Password validation rules
         if (input.password.length < 8) {
-            toast.error('Password must be at least 8 characters long', { autoClose: 2000 });
+            // toast.error('Password must be at least 8 characters long', { autoClose: 2000 });
+            Swal.fire({
+                icon: 'error',
+                title: 'Password must be at least 8 characters long',
+                timer: 2000,
+                showConfirmButton: false
+            });
             return false;
         }
 
         if (input.password !== input.confirmPassword) {
-            toast.error('Passwords do not match', { autoClose: 2000 });
+            // toast.error('Passwords do not match', { autoClose: 2000 });
+            Swal.fire({
+                icon: 'error',
+                title: 'Passwords not match',
+                timer: 2000,
+                showConfirmButton: false
+            });
             return false;
         }
 
@@ -80,7 +99,13 @@ const ResetPassword = () => {
             });
 
             if (response.status === 200) {
-                toast.success('Password reset successfully', { autoClose: 2000 });
+                // toast.success('Password reset successfully', { autoClose: 2000 });
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Passwords Reset Successfully',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
 
                 // Clear stored email
                 localStorage.removeItem('userEmail');
@@ -95,7 +120,13 @@ const ResetPassword = () => {
                 }, 2000);
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to reset password', { autoClose: 2000 });
+            // toast.error(error.response?.data?.message || 'Failed to reset password', { autoClose: 2000 });
+            Swal.fire({
+                icon: 'error',
+                title: error.response?.data?.message,
+                timer: 2000,
+                showConfirmButton: false
+            });
         } finally {
             setLoading(false);
         }
@@ -193,7 +224,7 @@ const ResetPassword = () => {
                     </div>
                 </div>
             </div>
-            <ToastContainer />
+            {/* <ToastContainer /> */}
         </>
     )
 }

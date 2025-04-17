@@ -104,7 +104,7 @@ const Footer = () => {
 
                         {/* Second Column - About Us */}
                         <div className="col-6 col-md-3 col-lg-2 mb-4 mb-lg-0">
-                            <h4 className='pb-2'>About Us</h4>
+                            <h4 className='pb-2 mt-3'>About Us</h4>
                             <h5 className='mt-3 fw-normal fs-6 opacity-75'>Our Storys</h5>
                             <h5 className='mt-2 fw-normal fs-6 opacity-75'>Our Teams</h5>
                             <h5 className='mt-2 fw-normal fs-6 opacity-75'>Our Designers</h5>
@@ -112,7 +112,7 @@ const Footer = () => {
 
                         {/* Third Column - Customer Service */}
                         <div className="col-6 col-md-3 col-lg-2 mb-4 mb-lg-0">
-                            <h4 className='pb-2'>Customer Service</h4>
+                            <h4 className='pb-2 mt-3'>Customer Service</h4>
                             <h5 className='mt-3 fw-normal fs-6 opacity-75'>Home</h5>
                             <h5 className='mt-2 fw-normal fs-6 opacity-75'>Products</h5>
                             <h5 className='mt-2 fw-normal fs-6 opacity-75'>Contact Us</h5>
@@ -120,7 +120,7 @@ const Footer = () => {
 
                         {/* Fourth Column - Support */}
                         <div className="col-6 col-md-3 col-lg-2 mb-4 mb-md-0">
-                            <h4 className='pb-2'>Support</h4>
+                            <h4 className='pb-2 mt-3'>Support</h4>
                             <h5 className='mt-3 fw-normal fs-6 opacity-75'>FAQ's</h5>
                             <h5 className='mt-2 fw-normal fs-6 opacity-75'>Shipping</h5>
                             <h5 className='mt-2 fw-normal fs-6 opacity-75'>Returns</h5>
@@ -128,7 +128,7 @@ const Footer = () => {
 
                         {/* Fifth Column - Newsletter and Social */}
                         <div className="col-12 col-md-6 col-lg-3">
-                            <h4 className='pb-2'>News Letter</h4>
+                            <h4 className='pb-2 mt-3'>News Letter</h4>
                             <form className='position-relative'>
                                 <input type="text" name="newsLetter" placeholder='Enter Your Email' className='p-2 rounded-2' style={{ width: '250px' }} />
                                 <button type='submit' className='position-absolute start-25 translate-middle-x py-2 px-3 rounded-2'>Submit</button>

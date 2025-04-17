@@ -83,17 +83,20 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePreventScroll } from "@/hook/usePreventScroll";
+import { useDispatch } from "react-redux";
+import { fetchCartCart, resetCart } from "@/redux/slice/addToCartSlice";
+import { getUserWishlist, resetWish } from "@/redux/slice/wishSlice";
 
 const SideBar = ({ openSlide, closeSideBar }) => {
     const [name, setName] = useState("");
     const router = useRouter();
 
+    const dispatch = useDispatch()
+
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            const storedUser = localStorage.getItem("user");
-            setName(storedUser || "");
-        }
-    }, []);
+        const storedUser = localStorage.getItem("user");
+        setName(storedUser || "");
+    }, [openSlide]);
 
     const handleLogout = () => {
         if (typeof window !== "undefined") {
@@ -102,6 +105,8 @@ const SideBar = ({ openSlide, closeSideBar }) => {
             localStorage.removeItem("userId");
             localStorage.removeItem("userEmail");
         }
+        dispatch(resetCart())
+        dispatch(resetWish())
         closeSideBar();
         router.push("/login");
     };

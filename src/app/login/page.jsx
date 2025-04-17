@@ -5,12 +5,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import { IoIosMail } from "react-icons/io";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 import apiInstance from '@/api/instance';
 import SideBar from '@/components/SideBar';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Swal from 'sweetalert2';
 
 const Login = () => {
     const [input, setInput] = useState({});
@@ -42,18 +43,33 @@ const Login = () => {
                 )
             }
             if (response.status === 200) {
-                toast.success('Login Success', { autoClose: 2000 });
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login Success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('user', response.data.name);
                 localStorage.setItem('userId', response.data.id);
                 localStorage.setItem('userEmail', response.data.email);
                 router.push('/');
             } else {
-                toast.error(response.data.message, { autoClose: 2000 });
+                Swal.fire({
+                    icon: 'error',
+                    title: response.data.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
             }
         } catch (error) {
             const errMsg = error.response?.data?.message || error.message;
-            toast.error(errMsg, { autoClose: 2000 });
+            Swal.fire({
+                icon: 'error',
+                title: errMsg,
+                timer: 2000,
+                showConfirmButton: false
+            });
         }
     }
 
@@ -107,7 +123,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-            <ToastContainer />
+            {/* <ToastContainer /> */}
         </>
     )
 }

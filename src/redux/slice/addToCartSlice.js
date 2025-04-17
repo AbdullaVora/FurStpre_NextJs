@@ -127,7 +127,7 @@ export const fetchCartCart = createAsyncThunk(
 // );
 export const addProductToCart = createAsyncThunk(
     'cart/addProductToCart',
-    async ({ userId, id, selectedVariant }, { getState, rejectWithValue }) => {
+    async ({ userId, id, selectedVariant, quantity }, { getState, rejectWithValue }) => {
         console.log('Starting addProductToCart with:', { userId, id, selectedVariant });
 
         try {
@@ -170,7 +170,7 @@ export const addProductToCart = createAsyncThunk(
                 const response = await apiInstance.post(`${API_URL}/cart`, {
                     userId,
                     product: id,
-                    quantity: 1,
+                    quantity: quantity || 1,
                     variant: selectedVariant ? {
                         id: Date.now().toString(),
                         data: selectedVariant
@@ -267,7 +267,11 @@ const initialState = {
 const cartSlice = createSlice({
     name: "cart",
     initialState,
-    reducers: {},
+    reducers: {
+        resetCart: (state) => {
+            state.Cart = []
+        }
+    },
     extraReducers: (builder) => {
         builder
             // Fetch Cart Cart
@@ -380,3 +384,4 @@ const cartSlice = createSlice({
 });
 
 export default cartSlice.reducer;
+export const { resetCart } = cartSlice.actions
