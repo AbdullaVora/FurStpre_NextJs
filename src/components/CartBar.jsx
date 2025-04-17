@@ -320,36 +320,20 @@ const CartBar = ({ openSlide, closeSideBar }) => {
 
     usePreventScroll(openSlide);
 
-    // const handleCheckOut = () => {
-    //     if (userId) {
-    //         closeSideBar();
-    //         router.push("/checkout");
-    //     } else {
-    //         // toast.error("Please Login First");
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Please Login',
-    //             timer: 2000,
-    //             showConfirmButton: false
-    //         })
-
-    //     }
-    // }
-
     const handleCheckOut = () => {
-        if (!userId) {
+        if (userId) {
+            closeSideBar();
+            router.push("/checkout");
+        } else {
+            // toast.error("Please Login First");
             Swal.fire({
                 icon: 'error',
                 title: 'Please Login',
                 timer: 2000,
                 showConfirmButton: false
-            });
-            return; // Exit the function early
-        }
+            })
 
-        // Only run this code if user is logged in
-        closeSideBar();
-        router.push("/checkout");
+        }
     }
 
     return (
