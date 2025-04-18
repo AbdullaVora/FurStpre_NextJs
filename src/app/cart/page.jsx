@@ -13,6 +13,7 @@ import Header from '@/components/Header';
 import Link from 'next/link';
 import Swal from 'sweetalert2';
 import { removeProductFromCart, updateProductQuantity } from '@/redux/slice/addToCartSlice';
+import { useRouter } from 'next/navigation';
 
 const CartPage = () => {
     // const [userId, setUserId] = useState();
@@ -21,6 +22,7 @@ const CartPage = () => {
     const { Cart, loading: CartLoading } = useSelector((state) => state.addToCart);
     const { userId } = useSelector((state) => state.userData)
     const dispatch = useDispatch()
+    const router = useRouter()
 
     useEffect(() => {
         dispatch(fetchCoupons());
@@ -40,7 +42,7 @@ const CartPage = () => {
         } else {
             setCart(Cart);
         }
-    }, [userId, Cart, wish]);
+    }, [userId, Cart]);
 
     const handleinc = (id, quantity) => {
         dispatch(updateProductQuantity({ id: id, quantity: quantity + 1 }))
@@ -62,8 +64,8 @@ const CartPage = () => {
 
     const handleCheckOut = () => {
         if (userId) {
-            closeSideBar();
-            router.push("/checkout")
+            // closeSideBar();
+            router.push("/checkOut")
         } else {
             // toast.error("Please Login First")
             Swal.fire({
