@@ -89,7 +89,7 @@ const CartPage = () => {
 
 
     // Calculate subtotal before any discounts
-    const total = Cart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
+    const total = cart.reduce((acc, curr) => acc + curr.product.price * curr.quantity, 0);
 
     if (Loading) {
         return (
