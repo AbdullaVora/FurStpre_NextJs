@@ -81,14 +81,17 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePreventScroll } from "@/hook/usePreventScroll";
+import { useSelector } from "react-redux";
 
 const SideNav = ({ openSlide, closeSideBar }) => {
     const [name, setName] = useState("");
     const router = useRouter();
 
+    const { userId, userName } = useSelector((state) => state.userData)
+
     useEffect(() => {
         if (typeof window !== "undefined") {
-            const storedUser = localStorage.getItem("user");
+            const storedUser = userName;
             setName(storedUser || "");
         }
     }, []);

@@ -10,14 +10,15 @@ import { toast, ToastContainer } from 'react-toastify';
 import Swal from 'sweetalert2';
 
 const page = () => {
-    const [userId, setUserId] = useState(null);
+    // const [userId, setUserId] = useState(null);
     const dispatch = useDispatch()
     const { orders, loading: Loading } = useSelector((state) => state.orders);
+    const { userId, userEmail } = useSelector((state) => state.userData)
 
-    useEffect(() => {
-        const userId = localStorage.getItem('userId');
-        setUserId(userId);
-    }, [dispatch])
+    // useEffect(() => {
+    //     const userId = localStorage.getItem('userId');
+    //     setUserId(userId);
+    // }, [dispatch])
 
     useEffect(() => {
         dispatch(fetchOrders());
@@ -32,7 +33,7 @@ const page = () => {
                 // toast.success('Order deleted successfully!');
                 Swal.fire({
                     icon: 'success',
-                    title: 'Order Deleted Successfully!',
+                    text: 'Order Deleted Successfully!',
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -42,7 +43,7 @@ const page = () => {
                 // toast.error(error.message);
                 Swal.fire({
                     icon: 'success',
-                    title: error.message,
+                    text: error.message,
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -101,8 +102,8 @@ const page = () => {
                                             {/* Product image and name - full width on mobile */}
                                             <div className="col-12 col-md-4 mb-3 mb-md-0 d-flex align-items-center">
                                                 <img
-                                                    src={product.thumbnail}
-                                                    alt={product.name}
+                                                    src={product.product.thumbnail}
+                                                    alt={product.product.name}
                                                     className='img-fluid rounded'
                                                     style={{
                                                         width: '120px',
@@ -117,14 +118,14 @@ const page = () => {
                                                         fontSize: '0.9rem'
                                                     }}
                                                 >
-                                                    {product.name}
+                                                    {product.product.name}
                                                 </span>
                                             </div>
 
                                             {/* Price - grid layout on mobile */}
                                             <div className="col-6 col-md-1 mb-2 mb-md-0">
                                                 <span className="d-md-none fw-bold me-2">Price:</span>
-                                                {product.price}
+                                                {product.product.price}
                                             </div>
 
                                             {/* Quantity - grid layout on mobile */}

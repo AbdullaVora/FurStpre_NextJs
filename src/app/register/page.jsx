@@ -11,12 +11,15 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Swal from 'sweetalert2';
+import { useDispatch } from 'react-redux';
+import { setUserData } from '@/redux/slice/userDataSlice';
 
 const Register = () => {
     const [input, setInput] = useState({});
     const [phone, setPhone] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
+    const dispatch = useDispatch()
 
     const handleInput = (e) => {
         const { name, value } = e.target;
@@ -44,14 +47,22 @@ const Register = () => {
                 // toast.success('Account created successfully!', { autoClose: 2000 });
                 Swal.fire({
                     icon: 'success',
-                    title: 'Account created successfully!',
+                    text: 'Account created successfully!',
                     timer: 2000,
                     showConfirmButton: false
                 });
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('user', response.data.name);
-                localStorage.setItem('userId', response.data.id);
-                localStorage.setItem('userEmail', response.data.email);
+                localStorage.setItem('token', response?.data?.token);
+                localStorage.setItem('userName', response?.data?.name);
+                localStorage.setItem('userId', response?.data?.id);
+                localStorage.setItem('userEmail', response?.data?.email);
+
+                dispatch(setUserData({
+                    userId: response?.data?.id,
+                    userName: response?.data?.name,
+                    userEmail: response?.data?.email,
+                    token: response?.data?.token
+                }))
+
                 router.push('/');
             }
         } catch (error) {
@@ -59,7 +70,7 @@ const Register = () => {
             // toast.error(error.response?.data?.message || 'Registration failed. Please try again.', { autoClose: 2000 });
             Swal.fire({
                 icon: 'error',
-                title: error.response?.data?.message,
+                text: error.response?.data?.message,
                 timer: 2000,
                 showConfirmButton: false
             });

@@ -9,8 +9,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import apiInstance from '@/api/instance';
 import Header from '@/components/Header';
 import Swal from 'sweetalert2';
+import { clearUserData } from '@/redux/slice/userDataSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ResetPassword = () => {
+    const { userId, userEmail } = useSelector((state) => state.userData)
     const [input, setInput] = useState({
         email: '',
         password: '',
@@ -20,10 +23,11 @@ const ResetPassword = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const router = useRouter();
+    const dispatch = useDispatch()
 
     useEffect(() => {
         // Get email from localStorage or sessionStorage if available
-        const email = localStorage.getItem('resetEmail');
+        const email = userEmail
         if (!email) {
             router.push('/login');
         }
@@ -41,7 +45,7 @@ const ResetPassword = () => {
             // toast.error('Session expired. Please restart password reset process.', { autoClose: 2000 });
             Swal.fire({
                 icon: 'error',
-                title: 'Session expired. Please restart password reset process',
+                text: 'Session expired. Please restart password reset process',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -62,7 +66,7 @@ const ResetPassword = () => {
             // toast.error('Password must be at least 8 characters long', { autoClose: 2000 });
             Swal.fire({
                 icon: 'error',
-                title: 'Password must be at least 8 characters long',
+                text: 'Password must be at least 8 characters long',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -73,7 +77,7 @@ const ResetPassword = () => {
             // toast.error('Passwords do not match', { autoClose: 2000 });
             Swal.fire({
                 icon: 'error',
-                title: 'Passwords not match',
+                text: 'Passwords not match',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -102,10 +106,12 @@ const ResetPassword = () => {
                 // toast.success('Password reset successfully', { autoClose: 2000 });
                 Swal.fire({
                     icon: 'success',
-                    title: 'Passwords Reset Successfully',
+                    text: 'Passwords Reset Successfully',
                     timer: 2000,
                     showConfirmButton: false
                 });
+
+                dispatch(clearUserData())
 
                 // Clear stored email
                 localStorage.removeItem('userEmail');
@@ -123,7 +129,7 @@ const ResetPassword = () => {
             // toast.error(error.response?.data?.message || 'Failed to reset password', { autoClose: 2000 });
             Swal.fire({
                 icon: 'error',
-                title: error.response?.data?.message,
+                text: error.response?.data?.message,
                 timer: 2000,
                 showConfirmButton: false
             });

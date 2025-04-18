@@ -371,21 +371,15 @@ import { toast, ToastContainer } from 'react-toastify';
 import { fetchCoupons, fetchPaymentsMethods, fetchProducts } from '@/redux/slice/CollectionSlice';
 import apiInstance from '@/api/instance';
 import OrderPlacedPopup from '@/components/OrderPlaced';
+import Swal from 'sweetalert2';
 
 const CheckoutPage = () => {
     const dispatch = useDispatch();
+    const [cart, setCart] = useState([])
 
-
-
-
-    const cart = useSelector((state) => state.Collection.Cart);
-    const { coupons, loading: Loading } = useSelector((state) => state.Collection);
-    const mockPaymentMethods = useSelector((state) => state.Collection.paymentMethods);
-
-    // console.log("final cart: ",cart)
 
     const [orderPlaced, setOrderPlaced] = useState(false)
-    const [userId, setUserId] = useState(null);
+    // const [userId, setUserId] = useState(null);
     // Form states
     const [email, setEmail] = useState('');
     const [newsletter, setNewsletter] = useState(true);
@@ -418,13 +412,34 @@ const CheckoutPage = () => {
     const [appliedCoupon, setAppliedCoupon] = useState(null);
 
 
+    const cartData = useSelector((state) => state.addToCart.Cart);
+    const { coupons, loading: Loading } = useSelector((state) => state.Collection);
+    const mockPaymentMethods = useSelector((state) => state.Collection.paymentMethods);
+    const { userId, userEmail } = useSelector((state) => state.userData)
+
     // get id and email
     useEffect(() => {
-        const userId = localStorage.getItem('userId');
-        const userEmail = localStorage.getItem('userEmail');
-        setUserId(userId);
+        // cons/t userId = localStorage.getItem('userId');
+        // const userEmail = localStorage.getItem('userEmail');
+        // setUserId(userId);
         setEmail(userEmail);
     }, [dispatch])
+
+    console.log(userEmail)
+
+    useEffect(() => {
+        if (userId) {
+            const filterCart = cartData.filter((data) => data.userId === userId);
+            setCart(filterCart);
+        } else {
+            setCart(cartData);
+        }
+    }, [userId, cartData]);
+
+
+    // console.log("final cart: ",cart)
+
+
 
 
     // Fetch coupons and payment methods on component mount
@@ -486,7 +501,7 @@ const CheckoutPage = () => {
     const couponsData = coupons ? coupons.filter((coupon) => coupon.status === true) : [];
 
     // Calculate order totals
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
     const shippingFee = subtotal > 200 ? 0 : 15; // Free shipping over $200
 
     // Format credit card number with spaces
@@ -531,7 +546,7 @@ const CheckoutPage = () => {
             // toast.error('Please enter a coupon code');
             Swal.fire({
                 icon: 'error',
-                title: 'Please Enter Coupon Code.',
+                text: 'Please Enter Coupon Code.',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -546,7 +561,7 @@ const CheckoutPage = () => {
             // toast.error('Invalid coupon code');
             Swal.fire({
                 icon: 'error',
-                title: 'Invalid Coupon Code.',
+                text: 'Invalid Coupon Code.',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -563,7 +578,7 @@ const CheckoutPage = () => {
             // toast.error('This coupon is not valid yet');
             Swal.fire({
                 icon: 'error',
-                title: 'Coupon Code Not valid.',
+                text: 'Coupon Code Not valid.',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -574,7 +589,7 @@ const CheckoutPage = () => {
             // toast.error('This coupon has expired');
             Swal.fire({
                 icon: 'error',
-                title: 'Coupon Code Expired.',
+                text: 'Coupon Code Expired.',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -585,7 +600,7 @@ const CheckoutPage = () => {
             // toast.error(`Minimum order amount of ${coupon.minAmount} required for this coupon`);
             Swal.fire({
                 icon: 'error',
-                title: `Minimum order amount of ${coupon.minAmount} required for this coupon`,
+                text: `Minimum order amount of ${coupon.minAmount} required for this coupon`,
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -596,7 +611,7 @@ const CheckoutPage = () => {
         // toast.success('Coupon applied successfully!');
         Swal.fire({
             icon: 'success',
-            title: 'Coupon Applied Successfully.',
+            text: 'Coupon Applied Successfully.',
             timer: 2000,
             showConfirmButton: false
         });
@@ -609,7 +624,7 @@ const CheckoutPage = () => {
         // toast.info('Coupon removed');
         Swal.fire({
             icon: 'success',
-            title: 'Coupon Code Removed.',
+            text: 'Coupon Code Removed.',
             timer: 2000,
             showConfirmButton: false
         });
@@ -639,7 +654,7 @@ const CheckoutPage = () => {
             // toast.error('Please select a payment method');
             Swal.fire({
                 icon: 'error',
-                title: 'Please Select Payment Method.',
+                text: 'Please Select Payment Method.',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -655,7 +670,7 @@ const CheckoutPage = () => {
                 // toast.error('Please enter a valid card number');
                 Swal.fire({
                     icon: 'error',
-                    title: 'Please Enter Valid Card Number.',
+                    text: 'Please Enter Valid Card Number.',
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -665,7 +680,7 @@ const CheckoutPage = () => {
                 // toast.error('Please enter the name on your card');
                 Swal.fire({
                     icon: 'error',
-                    title: 'Please Enter Name On Your Card.',
+                    text: 'Please Enter Name On Your Card.',
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -675,7 +690,7 @@ const CheckoutPage = () => {
                 // toast.error('Please enter a valid expiry date');
                 Swal.fire({
                     icon: 'error',
-                    title: 'Please Enter Valid Expiry Date.',
+                    text: 'Please Enter Valid Expiry Date.',
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -685,7 +700,7 @@ const CheckoutPage = () => {
                 // toast.error('Please enter a valid CVV');
                 Swal.fire({
                     icon: 'error',
-                    title: 'Please Enter Valid CVV.',
+                    text: 'Please Enter Valid CVV.',
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -699,7 +714,7 @@ const CheckoutPage = () => {
                 // toast.error('Please enter a valid UPI ID (e.g. name@upi)');
                 Swal.fire({
                     icon: 'error',
-                    title: 'Please Enter Valid UPI ID.',
+                    text: 'Please Enter Valid UPI ID.',
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -717,7 +732,7 @@ const CheckoutPage = () => {
             // toast.error('Please Login First');
             Swal.fire({
                 icon: 'error',
-                title: 'Please Login.',
+                text: 'Please Login.',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -789,12 +804,12 @@ const CheckoutPage = () => {
             }
         } catch (error) {
             console.log(error.message)
-            Swal.fire({
-                icon: 'error',
-                title: error.message,
-                timer: 2000,
-                showConfirmButton: false
-            });
+            // Swal.fire({
+            //     icon: 'error',
+            //     text: error.message,
+            //     timer: 2000,
+            //     showConfirmButton: false
+            // });
         }
     }
 
@@ -1099,22 +1114,22 @@ const CheckoutPage = () => {
                                         <div key={index} className="d-flex justify-content-between align-items-center mb-3 p-2 rounded" style={{ backgroundColor: '#f8f9fa' }}>
                                             <div className="d-flex align-items-center">
                                                 <img
-                                                    src={item.thumbnail}
-                                                    alt={item.name}
+                                                    src={item.product.thumbnail}
+                                                    alt={item.product.name}
                                                     className="rounded me-3"
                                                     style={{ width: '80px', height: '80px', objectFit: 'cover' }}
                                                 />
                                                 <div>
-                                                    <h6 className="mb-1">{item.name}</h6>
+                                                    <h6 className="mb-1">{item.product.name}</h6>
                                                     <small className="text-muted">
-                                                        {item.size && `${item.size} / `}
-                                                        {item.color}
+                                                        {item.product.size && `${item.product.size} / `}
+                                                        {item.product.color}
                                                     </small>
                                                     <div className="text-muted">Qty: {item.quantity}</div>
                                                 </div>
                                             </div>
                                             <div className="text-end">
-                                                <div className="fw-semibold">{(item.price * item.quantity).toFixed(2)}</div>
+                                                <div className="fw-semibold">{(item.product.price * item.quantity).toFixed(2)}</div>
                                             </div>
                                         </div>
                                     ))}
@@ -1191,7 +1206,7 @@ const CheckoutPage = () => {
                                 <button
                                     onClick={handleSubmit}
                                     className="btn btn-dark w-100 mt-4 py-3 fw-bold"
-                                    disabled={!address || !city || !state || !zipCode || !email || !selectedPaymentMethod}
+                                    disabled={!address || !city || !state || !zipCode || !email || !selectedPaymentMethod || !upiId}
                                 >
                                     Complete Order
                                 </button>

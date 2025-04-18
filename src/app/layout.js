@@ -5,6 +5,7 @@ import ReduxProvider from "../redux/ReduxProvider"; // Import Redux Provider
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import LoadingWrapper from "@/components/Loader";
+import UserDataStore from "@/helper/UserDataStore";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,11 +27,13 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ReduxProvider> {/* Wrap app in Redux Provider */}
-          <LoadingWrapper>
-            <Header />
-            {children}
-            <Footer />
-          </LoadingWrapper>
+          <UserDataStore>
+            <LoadingWrapper>
+              <Header />
+              {children}
+              <Footer />
+            </LoadingWrapper>
+          </UserDataStore>
         </ReduxProvider>
       </body>
     </html>

@@ -15,10 +15,11 @@ import Swal from 'sweetalert2';
 import { removeProductFromCart, updateProductQuantity } from '@/redux/slice/addToCartSlice';
 
 const CartPage = () => {
-    const [userId, setUserId] = useState();
+    // const [userId, setUserId] = useState();
     const [cart, setCart] = useState([]);
     const { coupons, loading: Loading } = useSelector((state) => state.Collection);
     const { Cart, loading: CartLoading } = useSelector((state) => state.addToCart);
+    const { userId } = useSelector((state) => state.userData)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -29,17 +30,17 @@ const CartPage = () => {
 
     useEffect(() => {
         // console.log(cartData)
-        const id = localStorage.getItem("userId");
-        setUserId(id)
+        // const id = localStorage.getItem("userId");
+        // setUserId(id)
 
         if (userId) {
             const filterCart = Cart.filter((data) => data.userId === userId);
             // console.log(filterCart)
             setCart(filterCart);
         } else {
-            setCart(cartData);
+            setCart(Cart);
         }
-    }, [userId, cartData, wish]);
+    }, [userId, Cart, wish]);
 
     const handleinc = (id, quantity) => {
         dispatch(updateProductQuantity({ id: id, quantity: quantity + 1 }))
@@ -67,7 +68,7 @@ const CartPage = () => {
             // toast.error("Please Login First")
             Swal.fire({
                 icon: 'error',
-                title: 'Please Login After Shopping.',
+                text: 'Please Login After Shopping.',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -78,7 +79,7 @@ const CartPage = () => {
         dispatch(removeProductFromCart(id))
         Swal.fire({
             icon: 'success',
-            title: 'Product Removed From Cart.',
+            text: 'Product Removed From Cart.',
             timer: 2000,
             showConfirmButton: false
         });
@@ -86,7 +87,7 @@ const CartPage = () => {
 
 
     // Calculate subtotal before any discounts
-    const total = cart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
+    const total = Cart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
 
     if (Loading) {
         return (

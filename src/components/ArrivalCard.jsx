@@ -9,17 +9,18 @@ import { fetchCategories } from '@/redux/slice/CollectionSlice';
 import Swal from 'sweetalert2';
 
 const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
+  const { userId } = useSelector((state) => state.userData)
   const [hover, setHover] = useState(false);
-  const [userId, setUserId] = useState(null);
+  // const [userId, setUserId] = useState(null);
   const dispatch = useDispatch();
   const router = useRouter();
 
-  useEffect(() => {
-    const id = localStorage.getItem('userId');
-    if(id) {
-      setUserId(id)
-    }
-  }, [dispatch])
+  // useEffect(() => {
+  //   const id = localStorage.getItem('userId');
+  //   if(id) {
+  //     setUserId(id)
+  //   }
+  // }, [dispatch])
 
   // Get data from Redux store
   const cartData = useSelector(state => state.addToCart.Cart);
@@ -66,7 +67,7 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
     if (isInCart) {
       Swal.fire({
         icon: 'info',
-        title: 'Product Already Added.',
+        text: 'Product Already Added.',
         timer: 2000,
         showConfirmButton: false
       })
@@ -74,7 +75,7 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
       dispatch(addProductToCart({ userId, id: id, products }));
       Swal.fire({
         icon: 'success',
-        title: 'Product Added Successfully.',
+        text: 'Product Added Successfully.',
         timer: 2000,
         showConfirmButton: false
       });
@@ -86,7 +87,7 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
       await dispatch(removeFromWishlist(id));
       Swal.fire({
         icon: 'success',
-        title: 'Product Removed Successfully.',
+        text: 'Product Removed Successfully.',
         timer: 2000,
         showConfirmButton: false
       });
@@ -94,7 +95,7 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
       await dispatch(addToWishlist({ userId, product: id }));
       Swal.fire({
         icon: 'success',
-        title: 'Product Added Successfully.',
+        text: 'Product Added Successfully.',
         timer: 2000,
         showConfirmButton: false
       });

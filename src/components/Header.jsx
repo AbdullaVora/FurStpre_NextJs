@@ -23,14 +23,16 @@ const Header = () => {
     const [categories, setCategories] = useState([]);
     const [cart, setCart] = useState([])
     const [wish, setWish] = useState([])
-    const [userId, setUserId] = useState('null')
+    // const [userId, setUserId] = useState('null')
 
     const dispatch = useDispatch();
 
+     const { userId } = useSelector((state) => state.userData)
+
     // Replace your useEffect with this:
     useEffect(() => {
-        const id = localStorage.getItem('userId');
-        setUserId(id);
+        // const id = localStorage.getItem('userId');
+        // setUserId(id);
 
         // Using a ref to track initialization
         const initRef = { current: false };

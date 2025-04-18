@@ -12,11 +12,14 @@ import SideBar from '@/components/SideBar';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Swal from 'sweetalert2';
+import { useDispatch } from 'react-redux';
+import { setUserData } from '@/redux/slice/userDataSlice';
 
 const Login = () => {
     const [input, setInput] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter()
+    const dispatch = useDispatch()
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -45,19 +48,27 @@ const Login = () => {
             if (response.status === 200) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Login Success',
+                    text: 'Login Success',
                     timer: 2000,
                     showConfirmButton: false
                 });
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('user', response.data.name);
-                localStorage.setItem('userId', response.data.id);
-                localStorage.setItem('userEmail', response.data.email);
+                localStorage.setItem('token', response?.data?.token);
+                localStorage.setItem('userName', response?.data?.name);
+                localStorage.setItem('userId', response?.data?.id);
+                localStorage.setItem('userEmail', response?.data?.email);
+
+                dispatch(setUserData({
+                    userId: response?.data?.id,
+                    userName: response?.data?.name,
+                    userEmail: response?.data?.email,
+                    token: response?.data?.token
+                }))
+
                 router.push('/');
             } else {
                 Swal.fire({
                     icon: 'error',
-                    title: response.data.message,
+                    text: response.data.message,
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -66,7 +77,7 @@ const Login = () => {
             const errMsg = error.response?.data?.message || error.message;
             Swal.fire({
                 icon: 'error',
-                title: errMsg,
+                text: errMsg,
                 timer: 2000,
                 showConfirmButton: false
             });

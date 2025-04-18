@@ -83,7 +83,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePreventScroll } from "@/hook/usePreventScroll";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchCartCart, resetCart } from "@/redux/slice/addToCartSlice";
 import { getUserWishlist, resetWish } from "@/redux/slice/wishSlice";
 import Swal from "sweetalert2";
@@ -92,17 +92,19 @@ const SideBar = ({ openSlide, closeSideBar }) => {
     const [name, setName] = useState("");
     const router = useRouter();
 
+    const { userId, userName } = useSelector((state) => state.userData)
+
     const dispatch = useDispatch()
 
     useEffect(() => {
-        const storedUser = localStorage.getItem("user");
+        const storedUser = userName
         setName(storedUser || "");
     }, [openSlide]);
 
     const handleLogout = () => {
         Swal.fire({
             icon: 'success',
-            title: 'Log Out Success',
+            text: 'Log Out Success',
             timer: 2000,
             showConfirmButton: false
         })

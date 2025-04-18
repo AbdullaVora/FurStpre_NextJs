@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import { RiHeart2Line, RiHeartFill, RiStarSmileLine } from "react-icons/ri";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addProductToCart, fetchProducts } from '../redux/slice/addToCartSlice';
 import { useRouter } from 'next/navigation';
 import { HiShoppingCart } from 'react-icons/hi2';
@@ -12,15 +12,17 @@ const OurProductBox = ({ id, img, title, Cwidth, price }) => {
     const [hover, setHover] = useState(false);
     const dispatch = useDispatch()
 
+    const { userId } = useSelector((state) => state.userData)
+
     const router = useRouter()
 
     const handleHover = () => setHover(!hover);
 
-    useEffect(() => {
-        dispatch(fetchProducts());
-        const id = localStorage.getItem('userId');
-        setUserId(id)
-    }, [dispatch])
+    // useEffect(() => {
+    //     dispatch(fetchProducts());
+    //     const id = localStorage.getItem('userId');
+    //     setUserId(id)
+    // }, [dispatch])
 
     const cartData = useSelector(state => state.addToCart.Cart);
     const products = useSelector(state => state.addToCart.products);

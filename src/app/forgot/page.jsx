@@ -50,7 +50,7 @@ const Forgot = () => {
                     // toast.success(response.data.message, { autoClose: 2000 });
                     Swal.fire({
                         icon: 'success',
-                        title: 'OTP Sent To Email',
+                        text: 'OTP Sent To Email',
                         timer: 2000,
                         showConfirmButton: false
                     });
@@ -61,7 +61,7 @@ const Forgot = () => {
                     // toast.success(response.data.message, { autoClose: 2000 });
                     Swal.fire({
                         icon: 'success',
-                        title: 'Email And Password Verified',
+                        text: 'Email And Password Verified',
                         timer: 2000,
                         showConfirmButton: false
                     });
@@ -75,7 +75,7 @@ const Forgot = () => {
                 // toast.error(response.data.message, { autoClose: 2000 });
                 Swal.fire({
                     icon: 'error',
-                    title: response.data.message,
+                    text: response.data.message,
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -84,7 +84,7 @@ const Forgot = () => {
             // toast.error(error.message, { autoClose: 2000 });
             Swal.fire({
                 icon: 'error',
-                title: error.message,
+                text: error.message,
                 timer: 2000,
                 showConfirmButton: false
             });

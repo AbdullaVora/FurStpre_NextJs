@@ -40,7 +40,7 @@ const ContactUs = () => {
             if (response.status === 200) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Inquiry Submited',
+                    text: 'Inquiry Submited',
                     timer: 2000,
                     showConfirmButton: false
                 });

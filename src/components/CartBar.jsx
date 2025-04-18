@@ -213,7 +213,7 @@ import { MdOutlineRemoveShoppingCart } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { TiMinusOutline, TiPlusOutline } from "react-icons/ti";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { removeProductFromCart, updateProductQuantity } from "../redux/slice/addToCartSlice";
 import { usePreventScroll } from "@/hook/usePreventScroll";
 import { useRouter } from "next/navigation";
@@ -273,33 +273,32 @@ const CartBar = ({ openSlide, closeSideBar }) => {
     const cartData = useSelector((state) => state.addToCart?.Cart || []);
     const [cart, setCart] = useState([]);
     const [total, setTotal] = useState(0);
-    const [userId, setUserId] = useState(null);
+    // const [userId, setUserId] = useState();
     const router = useRouter();
     const dispatch = useDispatch();
     const [dispatchFlag, setDispatchFlag] = useState(false)
 
+    const { userId } = useSelector((state) => state.userData)
+
+    console.log(userId)
+
+
+    // Get userId on mount
     // useEffect(() => {
-    //     const id = localStorage.getItem('userId');
-    //     setUserId(id)
-    //     if (!dispatchFlag) {
-    //         dispatch(fetchCartCart());
-    //         setDispatchFlag(true)
+    //     if (typeof window !== 'undefined') {
+    //         const id = localStorage.getItem('userId');
+    //         setUserId(id);
     //     }
-    // }, [dispatch, dispatchFlag])
+    // }, []);
 
-    // Replace your useEffect with this:
-    const id = localStorage.getItem('userId');
+    // Fetch cart only once
+    const hasFetched = useRef(false);
     useEffect(() => {
-        setUserId(id);
-        // Using a ref to track if we've dispatched
-        const hasFetched = { current: false };
-
         if (!hasFetched.current) {
             dispatch(fetchCartCart());
             hasFetched.current = true;
         }
-    }, [dispatch]); // Empty dependency array to run only once
-
+    }, [dispatch]);
 
     useEffect(() => {
         if (userId) {
@@ -328,7 +327,7 @@ const CartBar = ({ openSlide, closeSideBar }) => {
             // toast.error("Please Login First");
             Swal.fire({
                 icon: 'error',
-                title: 'Please Login',
+                text: 'Please Login',
                 timer: 2000,
                 showConfirmButton: false
             })

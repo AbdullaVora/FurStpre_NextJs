@@ -9,7 +9,7 @@ const Notification = ({ type, title, message, timer = 1500, showConfirmButton = 
     if (type && title) {
       MySwal.fire({
         icon: type,
-        title: title,
+        text: title,
         text: message,
         timer: timer,
         showConfirmButton: showConfirmButton

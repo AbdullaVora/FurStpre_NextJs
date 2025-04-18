@@ -91,6 +91,10 @@ html {
 }
 
 
+.swal2-html-container {
+  font-size: 28px;  /* Change to your preferred size */
+  font-weight: bold;
+}
 
 /* ************************************ Universal Style End ********************************** */
 

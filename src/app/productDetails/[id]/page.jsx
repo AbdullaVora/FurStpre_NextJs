@@ -598,7 +598,7 @@ const ProductDetail = () => {
     const [activeTab, setActiveTab] = useState('description');
     const [selectedVariants, setSelectedVariants] = useState({});
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
-    const [userId, setUserId] = useState('null');
+    // const [userId, setUserId] = useState('null');
     const [quantity, setQuantity] = useState(1);
 
     const { id } = useParams();
@@ -606,8 +606,8 @@ const ProductDetail = () => {
     const router = useRouter();
 
     useEffect(() => {
-        const id = localStorage.getItem('userId');
-        setUserId(id);
+        // const id = localStorage.getItem('userId');
+        // setUserId(id);
         dispatch(fetchProducts())
     }, [dispatch]);
 
@@ -615,6 +615,7 @@ const ProductDetail = () => {
     const product = products.filter(item => item._id == id);
     const productImages = product.length > 0 ? [product[0].main, ...(product[0].images || [])] : [];
     const cartData = useSelector(state => state.addToCart.Cart);
+    const { userId } = useSelector((state) => state.userData)
 
     // Check if product is in cart
     const isInCart = cartData.some(item =>
@@ -665,7 +666,7 @@ const ProductDetail = () => {
         if (isInCart) {
             Swal.fire({
                 icon: 'info',
-                title: 'Product Already Added',
+                text: 'Product Already Added',
                 timer: 2000,
                 showConfirmButton: false
             })
@@ -681,14 +682,14 @@ const ProductDetail = () => {
             })).then(() => {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Product Added Successfully',
+                    text: 'Product Added Successfully',
                     timer: 2000,
                     showConfirmButton: false
                 })
             }).catch((err) => {
                 Swal.fire({
                     icon: 'error',
-                    title: err.message,
+                    text: err.message,
                     timer: 2000,
                     showConfirmButton: false
                 })
@@ -700,7 +701,7 @@ const ProductDetail = () => {
         if (!userId) {
             Swal.fire({
                 icon: 'error',
-                title: 'Please Login',
+                text: 'Please Login',
                 timer: 2000,
                 showConfirmButton: false
             })

@@ -10,8 +10,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import apiInstance from '@/api/instance';
 import Header from '@/components/Header';
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
 
 const Profile = () => {
+    const { userId, userEmail, userName } = useSelector((state) => state.userData)
+
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -24,10 +28,12 @@ const Profile = () => {
 
     const [id, setId] = useState(null)
 
+
     useEffect(() => {
-        const name = localStorage.getItem("user");
-        const email = localStorage.getItem("userEmail");
-        const id = localStorage.getItem("userId");
+        const name = userName
+        const email = userEmail
+        const id = userId
+
         setId(id)
         setFormData({
             name: name || '',
@@ -58,7 +64,7 @@ const Profile = () => {
             // toast.info('No changes made', { autoClose: 2000 });
             Swal.fire({
                 icon: 'info',
-                title: 'No Changes Made',
+                text: 'No Changes Made',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -75,7 +81,7 @@ const Profile = () => {
                 // toast.success('Profile updated successfully', { autoClose: 2000 });
                 Swal.fire({
                     icon: 'success',
-                    title: 'Profile Updated Successfully',
+                    text: 'Profile Updated Successfully',
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -92,7 +98,7 @@ const Profile = () => {
                 // toast.error(response.data.message || 'Update failed', { autoClose: 2000 });
                 Swal.fire({
                     icon: 'error',
-                    title: response.data.messsage,
+                    text: response.data.messsage,
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -101,7 +107,7 @@ const Profile = () => {
             // toast.error(error.response?.data?.message || error.message || 'Update failed', { autoClose: 2000 });
             Swal.fire({
                 icon: 'error',
-                title: error.response?.data?.message,
+                text: error.response?.data?.message,
                 timer: 2000,
                 showConfirmButton: false
             });
