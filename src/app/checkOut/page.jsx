@@ -372,11 +372,12 @@ import { fetchCoupons, fetchPaymentsMethods, fetchProducts } from '@/redux/slice
 import apiInstance from '@/api/instance';
 import OrderPlacedPopup from '@/components/OrderPlaced';
 import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation';
 
 const CheckoutPage = () => {
     const dispatch = useDispatch();
     const [cart, setCart] = useState([])
-
+    const router = useRouter()
 
     const [orderPlaced, setOrderPlaced] = useState(false)
     // const [userId, setUserId] = useState(null);
