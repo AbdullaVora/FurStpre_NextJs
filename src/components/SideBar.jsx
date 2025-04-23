@@ -87,6 +87,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCartCart, resetCart } from "@/redux/slice/addToCartSlice";
 import { getUserWishlist, resetWish } from "@/redux/slice/wishSlice";
 import Swal from "sweetalert2";
+import { clearUserData } from "@/redux/slice/userDataSlice";
 
 const SideBar = ({ openSlide, closeSideBar }) => {
     const [name, setName] = useState("");
@@ -113,9 +114,11 @@ const SideBar = ({ openSlide, closeSideBar }) => {
             localStorage.removeItem("user");
             localStorage.removeItem("userId");
             localStorage.removeItem("userEmail");
+            localStorage.removeItem("userName");
         }
         dispatch(resetCart())
         dispatch(resetWish())
+        dispatch(clearUserData())
         closeSideBar();
         router.push("/login");
     };
