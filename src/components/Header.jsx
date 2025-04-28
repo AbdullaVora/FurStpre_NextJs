@@ -74,10 +74,10 @@ const Header = () => {
 
         // Organize categories and subcategories
         if (allCategories) {
-            const parentCategories = allCategories.filter(cat => cat.parent === 'N/A');
+            const parentCategories = allCategories.filter(cat => cat.parent === 'N/A' && cat.status === true);
             const categoriesWithSubs = parentCategories.map(parent => ({
                 ...parent,
-                subcategories: allCategories.filter(cat => cat.parent === parent.name)
+                subcategories: allCategories.filter(cat => cat.parent === parent.name && cat.status === true)
             }));
             setCategories(categoriesWithSubs);
         }

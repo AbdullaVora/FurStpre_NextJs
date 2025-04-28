@@ -426,11 +426,11 @@ const Collections = () => {
     };
 
     // Get parent categories (categories without parents)
-    const parentCategories = categories?.filter(cat => cat.parent == 'N/A') || [];
+    const parentCategories = categories?.filter(cat => cat.parent == 'N/A' && cat.status === true) || [];
 
     // Get subcategories for selected categories
     const availableSubcategories = categories?.filter(cat =>
-        cat.parent && selectedCategories.includes(cat.parent)
+        cat.parent && selectedCategories.includes(cat.parent) && cat.status === true
     ) || [];
 
     if (Loading) {
