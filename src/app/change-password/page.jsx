@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const ResetPassword = () => {
     const { userId, userEmail } = useSelector((state) => state.userData)
+    const path = window.location.pathname
+
     const [input, setInput] = useState({
         email: '',
         password: '',
@@ -27,32 +29,46 @@ const ResetPassword = () => {
 
     useEffect(() => {
         // Get email from localStorage or sessionStorage if available
-        const email = userEmail
-        if (!email) {
-            router.push('/login');
-        }
-
         const resetPermission = localStorage.getItem('resetPermission');
-        if (!resetPermission) {
-            router.push('/forgot');
-        }
-
-        const storedEmail = localStorage.getItem('resetEmail');
-        if (storedEmail) {
-            setInput(prev => ({ ...prev, email: storedEmail }));
-        } else {
-            // If no email is found, redirect back to forgot password page
-            // toast.error('Session expired. Please restart password reset process.', { autoClose: 2000 });
+        const resetEmail = localStorage.getItem('resetEmail');
+        const email = userEmail
+        if (!email && !resetPermission) {
             Swal.fire({
                 icon: 'error',
-                text: 'Session expired. Please restart password reset process',
+                text: 'Not allowed to reset password, Verify your email',
                 timer: 2000,
                 showConfirmButton: false
             });
-            setTimeout(() => {
-                router.push('/forgot');
-            }, 2000);
+            router.push('/login');
         }
+        setInput(prev => ({ ...prev, email: email || resetEmail }));
+
+        // if (!resetPermission && path !== '/change-password') {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         text: 'Not allowed to reset password, Verify your email',
+        //         timer: 2000,
+        //         showConfirmButton: false
+        //     });
+        //     router.push('/forgot');
+
+        // }
+
+        // if (storedEmail) {
+        //     setInput(prev => ({ ...prev, email: storedEmail }));
+        // } else {
+        //     // If no email is found, redirect back to forgot password page
+        //     // toast.error('Session expired. Please restart password reset process.', { autoClose: 2000 });
+        //     Swal.fire({
+        //         icon: 'error',
+        //         text: 'Session expired. Please restart password reset process',
+        //         timer: 2000,
+        //         showConfirmButton: false
+        //     });
+        //     setTimeout(() => {
+        //         router.push('/forgot');
+        //     }, 2000);
+        // }
     }, [router]);
 
     const handleChange = (e) => {
@@ -62,11 +78,11 @@ const ResetPassword = () => {
 
     const validatePassword = () => {
         // Password validation rules
-        if (input.password.length < 8) {
+        if (input.password.length < 7) {
             // toast.error('Password must be at least 8 characters long', { autoClose: 2000 });
             Swal.fire({
                 icon: 'error',
-                text: 'Password must be at least 8 characters long',
+                text: 'Password must be at least 7 characters long',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -106,24 +122,30 @@ const ResetPassword = () => {
                 // toast.success('Password reset successfully', { autoClose: 2000 });
                 Swal.fire({
                     icon: 'success',
-                    text: 'Passwords Reset Successfully',
+                    text: 'Password Change Successfully',
                     timer: 2000,
                     showConfirmButton: false
                 });
 
-                dispatch(clearUserData())
+                if (localStorage.getItem('resetPermission')) {
+                    dispatch(clearUserData())
 
-                // Clear stored email
-                localStorage.removeItem('userEmail');
-                localStorage.removeItem('userId');
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                localStorage.removeItem('resetPermission');
-                localStorage.removeItem('resetEmail');
+                    // Clear stored email
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('userId');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('resetPermission');
+                    localStorage.removeItem('resetEmail');
 
-                setTimeout(() => {
-                    router.push('/login');
-                }, 2000);
+                    setTimeout(() => {
+                        router.push('/login');
+                    }, 2000);
+                } else {
+                    setTimeout(() => {
+                        router.push('/');
+                    }, 2000);
+                }
             }
         } catch (error) {
             // toast.error(error.response?.data?.message || 'Failed to reset password', { autoClose: 2000 });
@@ -145,7 +167,7 @@ const ResetPassword = () => {
                 <h2 className='text-center fw-bolder display-5 mt-3 mt-md-5 mb-3 mb-md-5'>ACCOUNT</h2>
                 <div className="d-flex flex-column align-items-center justify-contant-center py-3 py-md-5 px-2">
                     <div className="login w-100" style={{ maxWidth: "500px" }}>
-                        <h4 className='fw-bold mb-2'>RESET PASSWORD</h4>
+                        <h4 className='fw-bold mb-2'>CHANGE PASSWORD</h4>
                         <span className='d-block' style={{ fontSize: '13px' }}>Create a new password for your account</span>
 
                         {loading ? (
@@ -213,18 +235,18 @@ const ResetPassword = () => {
                                     </div>
                                 </div>
 
+                                <button
+                                    className='d-block w-100 mt-3 mb-3 py-2 py-md-3 border-0 fw-semibold text-white rounded-1'
+                                    type='submit'
+                                >
+                                    Change Password
+                                </button>
+
                                 <span style={{ fontSize: '13px', opacity: '80%' }}>
                                     Remember your password? <Link href="/login" className='text-decoration-none text-black'>
                                         <span className='greenHover fw-bold'>Login Here.</span>
                                     </Link>
                                 </span>
-
-                                <button
-                                    className='d-block w-100 mt-3 py-2 py-md-3 border-0 fw-semibold text-white rounded-1'
-                                    type='submit'
-                                >
-                                    Reset Password
-                                </button>
                             </form>
                         )}
                     </div>

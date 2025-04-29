@@ -115,6 +115,7 @@ const SideBar = ({ openSlide, closeSideBar }) => {
             localStorage.removeItem("userId");
             localStorage.removeItem("userEmail");
             localStorage.removeItem("userName");
+            localStorage.removeItem("userPhone");
         }
         dispatch(resetCart())
         dispatch(resetWish())
@@ -170,9 +171,7 @@ const SideBar = ({ openSlide, closeSideBar }) => {
                 <ul className="list-unstyled w-100">
                     {[
                         // Only show Register if user is not logged in
-                        ...(!name ? [{ href: "/login", label: "Login" }, { href: "/register", label: "Register" }] : [{ href: "/profile", label: "Profile Update" }]),
-                        { href: "/wishlist", label: "Wishlist" },
-                        { href: "/myOrders", label: "My Orders" }
+                        ...(!name ? [{ href: "/login", label: "Login" }, { href: "/register", label: "Register" }] : [{ href: "/profile", label: "Edit Profile" }, { href: "/change-password", label: "Change Password" }, { href: "/wishlist", label: "Wishlist" }, { href: "/myOrders", label: "My Orders" }]),
                     ].map((item) => (
                         <Link
                             key={item.href}

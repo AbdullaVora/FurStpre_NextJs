@@ -162,7 +162,7 @@ export default function Home() {
       {/* Banner End */}
 
       {/* Gallery Start */}
-      <div className="gallery py-5 my-5" data-aos="fade-up">
+      <div className="gallery py-2 my-5" data-aos="fade-up">
         <div className="container">
           <div className="img-group row g-4">
             {galleryImage.map((img, index) => (
@@ -182,7 +182,7 @@ export default function Home() {
       {/* Gallery End */}
 
       {/* Policy Start */}
-      <div className="policy py-5 mt-5" data-aos="fade-up" data-aos-delay="200">
+      <div className="policy py-2 mt-5" data-aos="fade-up" data-aos-delay="200">
         <div className="container">
           <div className="row">
             {policy.map((card, key) => (
@@ -251,7 +251,7 @@ export default function Home() {
       {/* New Arrival End */}
 
       {/* ****************************** Gallery_2 Start ***************************** */}
-      <div className="gallery_2 py-5 mt-5" data-aos="fade-left">
+      <div className="gallery_2 mt-3" data-aos="fade-left">
         <div className="container">
           <div className="row">
             {gallery_2.map((box, index) => (
@@ -380,7 +380,7 @@ export default function Home() {
       {/* Our Products End */}
 
       {/* Testimonial Start */}
-      <div className="testimonial py-5 mt-5" data-aos="fade-up">
+      <div className="testimonial" data-aos="fade-up">
         <div className="container">
           <h2 className="text-center display-5 fw-normal mb-5">Testimonials</h2>
           <Swiper
@@ -464,7 +464,7 @@ export default function Home() {
           </Swiper>
         </div>
       </div> */}
-      <div className="latestNews py-5 mt-5">
+      <div className="latestNews mt-5">
         <div className="container">
           <h2 className="text-center display-5 fw-normal mb-5">Latest News</h2>
           <Swiper

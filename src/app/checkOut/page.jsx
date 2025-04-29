@@ -597,630 +597,685 @@ const CheckoutPage = () => {
             return;
         }
 
-        if (subtotal < coupon.minAmount) {
-            // toast.error(`Minimum order amount of ${coupon.minAmount} required for this coupon`);
+        //check coupon validity time
+        const currentTime = new Date().getTime();
+        const [startTime, endTime] = coupon.timeDetail.split(' To ');
+        const startTimeInMs = new Date(startTime).getTime();
+        const endTimeInMs = new Date(endTime).getTime();
+
+        if (currentTime < startTimeInMs) {
+            // toast.error('This coupon is not valid yet');
             Swal.fire({
                 icon: 'error',
-                text: `Minimum order amount of ${coupon.minAmount} required for this coupon`,
+                text: 'This coupon is not valid yet',
                 timer: 2000,
                 showConfirmButton: false
             });
             return;
         }
 
-        setAppliedCoupon(coupon);
-        // toast.success('Coupon applied successfully!');
-        Swal.fire({
-            icon: 'success',
-            text: 'Coupon Applied Successfully.',
-            timer: 2000,
-            showConfirmButton: false
-        });
-
-    };
-
-    const removeCoupon = () => {
-        setAppliedCoupon(null);
-        setCouponCode('');
-        // toast.info('Coupon removed');
-        Swal.fire({
-            icon: 'success',
-            text: 'Coupon Code Removed.',
-            timer: 2000,
-            showConfirmButton: false
-        });
-    };
-
-    const calculateDiscount = () => {
-        if (!appliedCoupon) return 0;
-
-        if (appliedCoupon.Type === 'amount') {
-            return Math.min(appliedCoupon.Value, subtotal); // Ensure discount doesn't exceed subtotal
-        } else if (appliedCoupon.Type === 'percentage') {
-            return (subtotal * appliedCoupon.Value) / 100;
-        }
-        return 0;
-    };
-
-    const discount = calculateDiscount();
-    const total = Math.max(0, subtotal - discount + shippingFee); // Ensure total doesn't go negative
-
-    // Get selected payment method details
-    const getSelectedPaymentMethod = () => {
-        return paymentMethods.find(method => method._id === selectedPaymentMethod) || null;
-    };
-
-    const validatePaymentDetails = () => {
-        if (!selectedPaymentMethod) {
-            // toast.error('Please select a payment method');
+        if (currentTime > endTimeInMs) {
+            // toast.error('This coupon has expired');
             Swal.fire({
                 icon: 'error',
-                text: 'Please Select Payment Method.',
+                text: 'This coupon has expired',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            return;
+        }
+
+        // check coupon validate days
+        const currentDay = new Date().getDay();
+        const couponDays = coupon.daysActive.split(',').map(day => day.trim().toLowerCase());
+        const daysMap = {
+            'sunday': 0,
+            'monday': 1,
+            'tuesday': 2,
+            'wednesday': 3,
+            'thursday': 4,
+            'friday': 5,
+            'saturday': 6
+        };
+        
+        const isValidDay = couponDays.some(day => daysMap[day] === currentDay);
+        if (!isValidDay) {
+            // toast.error('This coupon is not valid today');
+            Swal.fire({
+                icon: 'error',
+                text: 'This coupon is not valid today',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            return; 
+        }
+
+        
+
+    if (subtotal < coupon.minAmount) {
+        // toast.error(`Minimum order amount of ${coupon.minAmount} required for this coupon`);
+        Swal.fire({
+            icon: 'error',
+            text: `Minimum order amount of ${coupon.minAmount} required for this coupon`,
+            timer: 2000,
+            showConfirmButton: false
+        });
+        return;
+    }
+
+    setAppliedCoupon(coupon);
+    // toast.success('Coupon applied successfully!');
+    Swal.fire({
+        icon: 'success',
+        text: 'Coupon Applied Successfully.',
+        timer: 2000,
+        showConfirmButton: false
+    });
+
+};
+
+const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode('');
+    // toast.info('Coupon removed');
+    Swal.fire({
+        icon: 'success',
+        text: 'Coupon Code Removed.',
+        timer: 2000,
+        showConfirmButton: false
+    });
+};
+
+const calculateDiscount = () => {
+    if (!appliedCoupon) return 0;
+
+    if (appliedCoupon.Type === 'amount') {
+        return Math.min(appliedCoupon.Value, subtotal); // Ensure discount doesn't exceed subtotal
+    } else if (appliedCoupon.Type === 'percentage') {
+        return (subtotal * appliedCoupon.Value) / 100;
+    }
+    return 0;
+};
+
+const discount = calculateDiscount();
+const total = Math.max(0, subtotal - discount + shippingFee); // Ensure total doesn't go negative
+
+// Get selected payment method details
+const getSelectedPaymentMethod = () => {
+    return paymentMethods.find(method => method._id === selectedPaymentMethod) || null;
+};
+
+const validatePaymentDetails = () => {
+    if (!selectedPaymentMethod) {
+        // toast.error('Please select a payment method');
+        Swal.fire({
+            icon: 'error',
+            text: 'Please Select Payment Method.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+        return false;
+    }
+
+    const method = getSelectedPaymentMethod();
+    if (!method) return false;
+
+    // Validate card details for Stripe or other card-based payment methods
+    if (needsCardDetails(method.paymentMethod)) {
+        if (!cardNumber.trim() || cardNumber.replace(/\s/g, '').length < 16) {
+            // toast.error('Please enter a valid card number');
+            Swal.fire({
+                icon: 'error',
+                text: 'Please Enter Valid Card Number.',
                 timer: 2000,
                 showConfirmButton: false
             });
             return false;
         }
-
-        const method = getSelectedPaymentMethod();
-        if (!method) return false;
-
-        // Validate card details for Stripe or other card-based payment methods
-        if (needsCardDetails(method.paymentMethod)) {
-            if (!cardNumber.trim() || cardNumber.replace(/\s/g, '').length < 16) {
-                // toast.error('Please enter a valid card number');
-                Swal.fire({
-                    icon: 'error',
-                    text: 'Please Enter Valid Card Number.',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                return false;
-            }
-            if (!cardName.trim()) {
-                // toast.error('Please enter the name on your card');
-                Swal.fire({
-                    icon: 'error',
-                    text: 'Please Enter Name On Your Card.',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                return false;
-            }
-            if (!expiryDate.trim() || expiryDate.length < 5) {
-                // toast.error('Please enter a valid expiry date');
-                Swal.fire({
-                    icon: 'error',
-                    text: 'Please Enter Valid Expiry Date.',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                return false;
-            }
-            if (!cvv.trim() || cvv.length < 3) {
-                // toast.error('Please enter a valid CVV');
-                Swal.fire({
-                    icon: 'error',
-                    text: 'Please Enter Valid CVV.',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                return false;
-            }
-        }
-
-        // Validate UPI ID for UPI payment methods
-        if (needsUpiDetails(method.paymentMethod)) {
-            if (!upiId.trim() || !upiId.includes('@')) {
-                // toast.error('Please enter a valid UPI ID (e.g. name@upi)');
-                Swal.fire({
-                    icon: 'error',
-                    text: 'Please Enter Valid UPI ID.',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                return false;
-            }
-        }
-
-        return true;
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        if (!userId) {
-            // toast.error('Please Login First');
+        if (!cardName.trim()) {
+            // toast.error('Please enter the name on your card');
             Swal.fire({
                 icon: 'error',
-                text: 'Please Login.',
+                text: 'Please Enter Name On Your Card.',
                 timer: 2000,
                 showConfirmButton: false
             });
-            return;
+            return false;
         }
-
-        if (!validatePaymentDetails()) {
-            return;
+        if (!expiryDate.trim() || expiryDate.length < 5) {
+            // toast.error('Please enter a valid expiry date');
+            Swal.fire({
+                icon: 'error',
+                text: 'Please Enter Valid Expiry Date.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            return false;
         }
-
-        const selectedMethod = getSelectedPaymentMethod();
-
-        // Handle form submission and payment processing
-        const orderData = {
-            userId,
-            orderCode: `ORDER-${Date.now()}`,
-            email,
-            firstName,
-            lastName,
-            address,
-            city,
-            state,
-            zipCode,
-            paymentMethod: selectedMethod ? selectedMethod.paymentMethod : '',
-            paymentMode: selectedMethod ? selectedMethod.paymentMode : '',
-            paymentKey: selectedMethod ?
-                (selectedMethod.paymentMode === 'test' ? selectedMethod.testKey : selectedMethod.liveKey) : '',
-            cardDetails: needsCardDetails(selectedMethod?.paymentMethod) ? {
-                cardNumber: cardNumber.replace(/\s/g, ''),
-                cardName,
-                expiryDate,
-                cvv,
-                savePaymentInfo
-            } : null,
-            upiDetails: needsUpiDetails(selectedMethod?.paymentMethod) ? {
-                upiId
-            } : null,
-            cart,
-            appliedCoupon,
-            subtotal,
-            discount,
-            shippingFee,
-            total
-        };
-
-        console.log(orderData)
-
-        if (orderData) {
-            sendOrder(orderData)
+        if (!cvv.trim() || cvv.length < 3) {
+            // toast.error('Please enter a valid CVV');
+            Swal.fire({
+                icon: 'error',
+                text: 'Please Enter Valid CVV.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            return false;
         }
+    }
 
-        // toast.success('Order placed successfully!');
-        setOrderPlaced(true)
+    // Validate UPI ID for UPI payment methods
+    if (needsUpiDetails(method.paymentMethod)) {
+        if (!upiId.trim() || !upiId.includes('@')) {
+            // toast.error('Please enter a valid UPI ID (e.g. name@upi)');
+            Swal.fire({
+                icon: 'error',
+                text: 'Please Enter Valid UPI ID.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            return false;
+        }
+    }
 
+    return true;
+};
+
+const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!userId) {
+        // toast.error('Please Login First');
+        Swal.fire({
+            icon: 'error',
+            text: 'Please Login.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+        return;
+    }
+
+    if (!validatePaymentDetails()) {
+        return;
+    }
+
+    const selectedMethod = getSelectedPaymentMethod();
+
+    // Handle form submission and payment processing
+    const orderData = {
+        userId,
+        orderCode: `ORDER-${Date.now()}`,
+        email,
+        firstName,
+        lastName,
+        address,
+        city,
+        state,
+        zipCode,
+        paymentMethod: selectedMethod ? selectedMethod.paymentMethod : '',
+        paymentMode: selectedMethod ? selectedMethod.paymentMode : '',
+        paymentKey: selectedMethod ?
+            (selectedMethod.paymentMode === 'test' ? selectedMethod.testKey : selectedMethod.liveKey) : '',
+        cardDetails: needsCardDetails(selectedMethod?.paymentMethod) ? {
+            cardNumber: cardNumber.replace(/\s/g, ''),
+            cardName,
+            expiryDate,
+            cvv,
+            savePaymentInfo
+        } : null,
+        upiDetails: needsUpiDetails(selectedMethod?.paymentMethod) ? {
+            upiId
+        } : null,
+        cart,
+        appliedCoupon,
+        subtotal,
+        discount,
+        shippingFee,
+        total
     };
 
-    const sendOrder = async (orderData) => {
-        try {
-            const response = await apiInstance.post('/api/dashboard/addOrder', orderData);
-            if (response.status === 201) {
-                // toast.success('Order placed successfully!', { autoClose: 2000 });
-                // Swal.fire({
-                //     icon: 'success',
-                //     title: 'Order Placed Successfully.',
-                //     timer: 2000,
-                //     showConfirmButton: false
-                // });
-                router.push('/');
-            }
-        } catch (error) {
-            console.log(error.message)
+    console.log(orderData)
+
+    if (orderData) {
+        sendOrder(orderData)
+    }
+
+    // toast.success('Order placed successfully!');
+    setOrderPlaced(true)
+
+};
+
+const sendOrder = async (orderData) => {
+    try {
+        const response = await apiInstance.post('/api/dashboard/addOrder', orderData);
+        if (response.status === 201) {
+            // toast.success('Order placed successfully!', { autoClose: 2000 });
             // Swal.fire({
-            //     icon: 'error',
-            //     text: error.message,
+            //     icon: 'success',
+            //     title: 'Order Placed Successfully.',
             //     timer: 2000,
             //     showConfirmButton: false
             // });
+            router.push('/');
         }
+    } catch (error) {
+        console.log(error.response?.data?.message)
+        Swal.fire({
+            icon: 'error',
+            text: error.response?.data?.message,
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
+}
 
-    if (Loading) {
-        return (
-            <div className='loader-container'>
-                <span className="loader"></span>
-            </div>
-        );
-    }
-
+if (Loading) {
     return (
-        <>
-            {/* <Header /> */}
-            <div className="checkout-page py-5">
-                <div className="container">
-                    <div className="row">
-                        {/* Left column - Contact and Delivery Info */}
-                        <div className="col-md-7">
-                            <div className="checkout-form mb-5">
-                                <h2 className="mb-4">Contact</h2>
-                                <div className="mb-3">
-                                    <input
-                                        type="email"
-                                        className="form-control"
-                                        placeholder="Email or mobile phone number"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                <div className="form-check mb-4">
-                                    <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        checked={newsletter}
-                                        onChange={(e) => setNewsletter(e.target.checked)}
-                                        id="newsletterCheck"
-                                    />
-                                    <label className="form-check-label" htmlFor="newsletterCheck">
-                                        Email me with news and offers
-                                    </label>
-                                </div>
+        <div className='loader-container'>
+            <span className="loader"></span>
+        </div>
+    );
+}
 
-                                <h2 className="mb-4">Delivery</h2>
-                                <div className="row mb-3">
-                                    <div className="col-md-6">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="First name (optional)"
-                                            value={firstName}
-                                            onChange={(e) => setFirstName(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Last name"
-                                            value={lastName}
-                                            onChange={(e) => setLastName(e.target.value)}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                                <div className="mb-3">
+return (
+    <>
+        {/* <Header /> */}
+        <div className="checkout-page py-5">
+            <div className="container">
+                <div className="row">
+                    {/* Left column - Contact and Delivery Info */}
+                    <div className="col-md-7">
+                        <div className="checkout-form mb-5">
+                            <h2 className="mb-4">Contact</h2>
+                            <div className="mb-3">
+                                <input
+                                    type="email"
+                                    className="form-control"
+                                    placeholder="Email or mobile phone number"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-check mb-4">
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    checked={newsletter}
+                                    onChange={(e) => setNewsletter(e.target.checked)}
+                                    id="newsletterCheck"
+                                />
+                                <label className="form-check-label" htmlFor="newsletterCheck">
+                                    Email me with news and offers
+                                </label>
+                            </div>
+
+                            <h2 className="mb-4">Delivery</h2>
+                            <div className="row mb-3">
+                                <div className="col-md-6">
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Address"
-                                        value={address}
-                                        onChange={(e) => setAddress(e.target.value)}
-                                        required
+                                        placeholder="First name (optional)"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
                                     />
                                 </div>
-                                <div className="mb-3">
+                                <div className="col-md-6">
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Apartment, suite, etc. (optional)"
-                                        value={apartment}
-                                        onChange={(e) => setApartment(e.target.value)}
+                                        placeholder="Last name"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        required
                                     />
                                 </div>
-                                <div className="row mb-3">
-                                    <div className="col-md-5">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="City"
-                                            value={city}
-                                            onChange={(e) => setCity(e.target.value)}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-3">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="State"
-                                            value={state}
-                                            onChange={(e) => setState(e.target.value)}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="ZIP code"
-                                            value={zipCode}
-                                            onChange={(e) => setZipCode(e.target.value)}
-                                            required
-                                        />
-                                    </div>
+                            </div>
+                            <div className="mb-3">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Address"
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Apartment, suite, etc. (optional)"
+                                    value={apartment}
+                                    onChange={(e) => setApartment(e.target.value)}
+                                />
+                            </div>
+                            <div className="row mb-3">
+                                <div className="col-md-5">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="City"
+                                        value={city}
+                                        onChange={(e) => setCity(e.target.value)}
+                                        required
+                                    />
                                 </div>
+                                <div className="col-md-3">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="State"
+                                        value={state}
+                                        onChange={(e) => setState(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <div className="col-md-4">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="ZIP code"
+                                        value={zipCode}
+                                        onChange={(e) => setZipCode(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
 
-                                {/* Payment Method Section */}
-                                <h2 className="mb-4 mt-5">Payment Method</h2>
+                            {/* Payment Method Section */}
+                            <h2 className="mb-4 mt-5">Payment Method</h2>
 
-                                {isLoadingPaymentMethods ? (
-                                    <div className="text-center py-4">
-                                        <div className="spinner-border text-primary" role="status">
-                                            <span className="visually-hidden">Loading payment methods...</span>
-                                        </div>
-                                        <p className="mt-2">Loading payment methods...</p>
+                            {isLoadingPaymentMethods ? (
+                                <div className="text-center py-4">
+                                    <div className="spinner-border text-primary" role="status">
+                                        <span className="visually-hidden">Loading payment methods...</span>
                                     </div>
-                                ) : paymentMethods.length === 0 ? (
-                                    <div className="alert alert-warning">
-                                        No payment methods available. Please try again later.
-                                    </div>
-                                ) : (
-                                    <div className="payment-methods mb-4">
-                                        <div className="row">
-                                            {paymentMethods.map((method) => (
-                                                <div className="col-md-6 mb-3" key={method._id}>
-                                                    <div
-                                                        className={`payment-method-card p-3 border rounded d-flex align-items-center ${selectedPaymentMethod === method._id ? 'border-primary' : ''}`}
-                                                        onClick={() => setSelectedPaymentMethod(method._id)}
-                                                        style={{ cursor: 'pointer' }}
-                                                    >
-                                                        <div className="me-3">
-                                                            {getPaymentIcon(method.paymentMethod)}
-                                                        </div>
-                                                        <div>
-                                                            <div className="fw-bold">{method.paymentMethod}</div>
-                                                            <small className="text-muted">{method.paymentMode === 'test' ? 'Test Mode' : 'Live Mode'}</small>
-                                                        </div>
-                                                        {selectedPaymentMethod === method._id && (
-                                                            <div className="ms-auto">
-                                                                <FaCheck className="text-primary" />
-                                                            </div>
-                                                        )}
+                                    <p className="mt-2">Loading payment methods...</p>
+                                </div>
+                            ) : paymentMethods.length === 0 ? (
+                                <div className="alert alert-warning">
+                                    No payment methods available. Please try again later.
+                                </div>
+                            ) : (
+                                <div className="payment-methods mb-4">
+                                    <div className="row">
+                                        {paymentMethods.map((method) => (
+                                            <div className="col-md-6 mb-3" key={method._id}>
+                                                <div
+                                                    className={`payment-method-card p-3 border rounded d-flex align-items-center ${selectedPaymentMethod === method._id ? 'border-primary' : ''}`}
+                                                    onClick={() => setSelectedPaymentMethod(method._id)}
+                                                    style={{ cursor: 'pointer' }}
+                                                >
+                                                    <div className="me-3">
+                                                        {getPaymentIcon(method.paymentMethod)}
                                                     </div>
+                                                    <div>
+                                                        <div className="fw-bold">{method.paymentMethod}</div>
+                                                        <small className="text-muted">{method.paymentMode === 'test' ? 'Test Mode' : 'Live Mode'}</small>
+                                                    </div>
+                                                    {selectedPaymentMethod === method._id && (
+                                                        <div className="ms-auto">
+                                                            <FaCheck className="text-primary" />
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            ))}
-                                        </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                )}
+                                </div>
+                            )}
 
-                                {/* Payment method specific forms */}
-                                {selectedPaymentMethod && (
-                                    <div className="payment-details mb-4">
-                                        {(() => {
-                                            const method = getSelectedPaymentMethod();
-                                            if (!method) return null;
+                            {/* Payment method specific forms */}
+                            {selectedPaymentMethod && (
+                                <div className="payment-details mb-4">
+                                    {(() => {
+                                        const method = getSelectedPaymentMethod();
+                                        if (!method) return null;
 
-                                            const methodName = method.paymentMethod.toLowerCase();
+                                        const methodName = method.paymentMethod.toLowerCase();
 
-                                            // Stripe payment form (needs card details)
-                                            if (needsCardDetails(method.paymentMethod)) {
-                                                return (
-                                                    <div className="credit-card-details">
-                                                        <div className="mb-3">
-                                                            <label className="form-label">Card Number</label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                placeholder="1234 5678 9012 3456"
-                                                                value={cardNumber}
-                                                                onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
-                                                                maxLength={19}
-                                                                required
-                                                            />
-                                                        </div>
-                                                        <div className="mb-3">
-                                                            <label className="form-label">Name on Card</label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                placeholder="John Smith"
-                                                                value={cardName}
-                                                                onChange={(e) => setCardName(e.target.value)}
-                                                                required
-                                                            />
-                                                        </div>
-                                                        <div className="row">
-                                                            <div className="col-md-6 mb-3">
-                                                                <label className="form-label">Expiry Date (MM/YY)</label>
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    placeholder="MM/YY"
-                                                                    value={expiryDate}
-                                                                    onChange={(e) => setExpiryDate(formatExpiryDate(e.target.value))}
-                                                                    maxLength={5}
-                                                                    required
-                                                                />
-                                                            </div>
-                                                            <div className="col-md-6 mb-3">
-                                                                <label className="form-label">CVV</label>
-                                                                <input
-                                                                    type="password"
-                                                                    className="form-control"
-                                                                    placeholder="123"
-                                                                    value={cvv}
-                                                                    onChange={(e) => setCvv(e.target.value.replace(/[^0-9]/g, ''))}
-                                                                    maxLength={4}
-                                                                    required
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-check mb-3">
-                                                            <input
-                                                                className="form-check-input"
-                                                                type="checkbox"
-                                                                checked={savePaymentInfo}
-                                                                onChange={(e) => setSavePaymentInfo(e.target.checked)}
-                                                                id="savePaymentCheck"
-                                                            />
-                                                            <label className="form-check-label" htmlFor="savePaymentCheck">
-                                                                Save this payment method for future purchases
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            }
-
-                                            // UPI payment methods (Google Pay, PhonePe, Paytm, etc.)
-                                            else if (needsUpiDetails(method.paymentMethod)) {
-                                                return (
-                                                    <div className="upi-details">
-                                                        <div className="mb-3">
-                                                            <label className="form-label">UPI ID</label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                placeholder="yourname@upi"
-                                                                value={upiId}
-                                                                onChange={(e) => setUpiId(e.target.value)}
-                                                                required
-                                                            />
-                                                            <small className="text-muted">
-                                                                Enter your UPI ID (e.g., yourname@okaxis, yourname@ybl)
-                                                            </small>
-                                                        </div>
-                                                        <div className="alert alert-info">
-                                                            <small>
-                                                                You will receive a payment request on your UPI app. Please complete the payment within 5 minutes.
-                                                            </small>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            }
-
-                                            // Cash on delivery
-                                            else if (methodName.includes('cash')) {
-                                                return (
-                                                    <div className="alert alert-success">
-                                                        <strong>Cash on Delivery</strong> - Pay when your order is delivered.
-                                                        Please have the exact amount ready.
-                                                    </div>
-                                                );
-                                            }
-
-                                            // Default message for other payment methods
+                                        // Stripe payment form (needs card details)
+                                        if (needsCardDetails(method.paymentMethod)) {
                                             return (
-                                                <div className="alert alert-info">
-                                                    You will be redirected to the payment gateway after clicking "Complete Order".
+                                                <div className="credit-card-details">
+                                                    <div className="mb-3">
+                                                        <label className="form-label">Card Number</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            placeholder="1234 5678 9012 3456"
+                                                            value={cardNumber}
+                                                            onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                                                            maxLength={19}
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div className="mb-3">
+                                                        <label className="form-label">Name on Card</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            placeholder="John Smith"
+                                                            value={cardName}
+                                                            onChange={(e) => setCardName(e.target.value)}
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div className="row">
+                                                        <div className="col-md-6 mb-3">
+                                                            <label className="form-label">Expiry Date (MM/YY)</label>
+                                                            <input
+                                                                type="text"
+                                                                className="form-control"
+                                                                placeholder="MM/YY"
+                                                                value={expiryDate}
+                                                                onChange={(e) => setExpiryDate(formatExpiryDate(e.target.value))}
+                                                                maxLength={5}
+                                                                required
+                                                            />
+                                                        </div>
+                                                        <div className="col-md-6 mb-3">
+                                                            <label className="form-label">CVV</label>
+                                                            <input
+                                                                type="password"
+                                                                className="form-control"
+                                                                placeholder="123"
+                                                                value={cvv}
+                                                                onChange={(e) => setCvv(e.target.value.replace(/[^0-9]/g, ''))}
+                                                                maxLength={4}
+                                                                required
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="form-check mb-3">
+                                                        <input
+                                                            className="form-check-input"
+                                                            type="checkbox"
+                                                            checked={savePaymentInfo}
+                                                            onChange={(e) => setSavePaymentInfo(e.target.checked)}
+                                                            id="savePaymentCheck"
+                                                        />
+                                                        <label className="form-check-label" htmlFor="savePaymentCheck">
+                                                            Save this payment method for future purchases
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             );
-                                        })()}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                                        }
 
-                        {/* Right column - Order Summary with Shadow Effect */}
-                        <div className="col-md-5 end-0 rounded" style={{
-                            position: 'sticky',
-                            top: '20px',
-                            maxHeight: 'calc(100vh - 40px)',
-                            overflowY: 'auto',
-                            boxShadow: '0 0.5rem 1.0rem rgba(0, 0, 0, 0.15)'
-                        }}>
-                            <div className="order-summary p-4 rounded" style={{ backgroundColor: '#fff' }}>
-                                <h3 className="mb-4 fw-bold">Order Summary</h3>
-
-                                <div className="order-items" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                                    {cart.map((item, index) => (
-                                        <div key={index} className="d-flex justify-content-between align-items-center mb-3 p-2 rounded" style={{ backgroundColor: '#f8f9fa' }}>
-                                            <div className="d-flex align-items-center">
-                                                <img
-                                                    src={item.product.thumbnail}
-                                                    alt={item.product.name}
-                                                    className="rounded me-3"
-                                                    style={{ width: '80px', height: '80px', objectFit: 'cover' }}
-                                                />
-                                                <div>
-                                                    <h6 className="mb-1">{item.product.name}</h6>
-                                                    <small className="text-muted">
-                                                        {item.product.size && `${item.product.size} / `}
-                                                        {item.product.color}
-                                                    </small>
-                                                    <div className="text-muted">Qty: {item.quantity}</div>
+                                        // UPI payment methods (Google Pay, PhonePe, Paytm, etc.)
+                                        else if (needsUpiDetails(method.paymentMethod)) {
+                                            return (
+                                                <div className="upi-details">
+                                                    <div className="mb-3">
+                                                        <label className="form-label">UPI ID</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            placeholder="yourname@upi"
+                                                            value={upiId}
+                                                            onChange={(e) => setUpiId(e.target.value)}
+                                                            required
+                                                        />
+                                                        <small className="text-muted">
+                                                            Enter your UPI ID (e.g., yourname@okaxis, yourname@ybl)
+                                                        </small>
+                                                    </div>
+                                                    <div className="alert alert-info">
+                                                        <small>
+                                                            You will receive a payment request on your UPI app. Please complete the payment within 5 minutes.
+                                                        </small>
+                                                    </div>
                                                 </div>
+                                            );
+                                        }
+
+                                        // Cash on delivery
+                                        else if (methodName.includes('cash')) {
+                                            return (
+                                                <div className="alert alert-success">
+                                                    <strong>Cash on Delivery</strong> - Pay when your order is delivered.
+                                                    Please have the exact amount ready.
+                                                </div>
+                                            );
+                                        }
+
+                                        // Default message for other payment methods
+                                        return (
+                                            <div className="alert alert-info">
+                                                You will be redirected to the payment gateway after clicking "Complete Order".
                                             </div>
-                                            <div className="text-end">
-                                                <div className="fw-semibold">{(item.product.price * item.quantity).toFixed(2)}</div>
+                                        );
+                                    })()}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Right column - Order Summary with Shadow Effect */}
+                    <div className="col-md-5 end-0 rounded" style={{
+                        position: 'sticky',
+                        top: '20px',
+                        maxHeight: 'calc(100vh - 40px)',
+                        overflowY: 'auto',
+                        boxShadow: '0 0.5rem 1.0rem rgba(0, 0, 0, 0.15)'
+                    }}>
+                        <div className="order-summary p-4 rounded" style={{ backgroundColor: '#fff' }}>
+                            <h3 className="mb-4 fw-bold">Order Summary</h3>
+
+                            <div className="order-items" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                                {cart.map((item, index) => (
+                                    <div key={index} className="d-flex justify-content-between align-items-center mb-3 p-2 rounded" style={{ backgroundColor: '#f8f9fa' }}>
+                                        <div className="d-flex align-items-center">
+                                            <img
+                                                src={item.product.thumbnail}
+                                                alt={item.product.name}
+                                                className="rounded me-3"
+                                                style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                                            />
+                                            <div>
+                                                <h6 className="mb-1">{item.product.name}</h6>
+                                                <small className="text-muted">
+                                                    {item.product.size && `${item.product.size} / `}
+                                                    {item.product.color}
+                                                </small>
+                                                <div className="text-muted">Qty: {item.quantity}</div>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-
-                                <hr className="my-4" />
-
-                                {/* Coupon Section */}
-                                <div className="mb-4 rounded">
-                                    <div className="d-flex justify-content-between align-items-center mb-2">
-                                        <span className="fw-bold">Coupon Code</span>
-                                        {appliedCoupon ? (
-                                            <div className="d-flex align-items-center">
-                                                <span className="text-success me-2">{appliedCoupon.name}</span>
-                                                <button
-                                                    onClick={removeCoupon}
-                                                    className="btn btn-sm btn-outline-danger"
-                                                >
-                                                    Remove
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <div className="d-flex justify-content-end">
-                                                <input
-                                                    type="text"
-                                                    value={couponCode}
-                                                    onChange={(e) => setCouponCode(e.target.value)}
-                                                    className="form-control w-75 fw-semibold"
-                                                    placeholder="Enter coupon code"
-                                                />
-                                                <button
-                                                    onClick={applyCoupon}
-                                                    className="btn btn-sm btn-primary ms-2"
-                                                >
-                                                    Apply
-                                                </button>
-                                            </div>
-                                        )}
+                                        <div className="text-end">
+                                            <div className="fw-semibold">{(item.product.price * item.quantity).toFixed(2)}</div>
+                                        </div>
                                     </div>
-                                </div>
-
-                                {/* Order Totals */}
-                                <div className="mb-2 d-flex justify-content-between">
-                                    <span>Subtotal</span>
-                                    <span className="fw-semibold">{subtotal.toFixed(2)}</span>
-                                </div>
-
-                                {appliedCoupon && (
-                                    <div className="mb-2 d-flex justify-content-between text-danger">
-                                        <span>Discount ({appliedCoupon.name})</span>
-                                        <span className="fw-semibold">-{discount.toFixed(2)}</span>
-                                    </div>
-                                )}
-
-                                <div className="mb-3 d-flex justify-content-between">
-                                    <span>Shipping</span>
-                                    <span>
-                                        {shippingFee === 0 ? (
-                                            <span className="text-success">
-                                                <FaCheck className="me-1" />
-                                                Free
-                                            </span>
-                                        ) : (
-                                            `${shippingFee.toFixed(2)}`
-                                        )}
-                                    </span>
-                                </div>
-
-                                <div className="d-flex justify-content-between fw-bold fs-5 mt-3 rounded">
-                                    <span>Total</span>
-                                    <span>{total.toFixed(2)}</span>
-                                </div>
-
-                                <button
-                                    onClick={handleSubmit}
-                                    className="btn btn-dark w-100 mt-4 py-3 fw-bold"
-                                    disabled={!address || !city || !state || !zipCode || !email || !selectedPaymentMethod || !upiId}
-                                >
-                                    Complete Order
-                                </button>
+                                ))}
                             </div>
+
+                            <hr className="my-4" />
+
+                            {/* Coupon Section */}
+                            <div className="mb-4 rounded">
+                                <div className="d-flex justify-content-between align-items-center mb-2">
+                                    <span className="fw-bold">Coupon Code</span>
+                                    {appliedCoupon ? (
+                                        <div className="d-flex align-items-center">
+                                            <span className="text-success me-2">{appliedCoupon.name}</span>
+                                            <button
+                                                onClick={removeCoupon}
+                                                className="btn btn-sm btn-outline-danger"
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="d-flex justify-content-end">
+                                            <input
+                                                type="text"
+                                                value={couponCode}
+                                                onChange={(e) => setCouponCode(e.target.value)}
+                                                className="form-control w-75 fw-semibold"
+                                                placeholder="Enter coupon code"
+                                            />
+                                            <button
+                                                onClick={applyCoupon}
+                                                className="btn btn-sm btn-primary ms-2"
+                                            >
+                                                Apply
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Order Totals */}
+                            <div className="mb-2 d-flex justify-content-between">
+                                <span>Subtotal</span>
+                                <span className="fw-semibold">{subtotal.toFixed(2)}</span>
+                            </div>
+
+                            {appliedCoupon && (
+                                <div className="mb-2 d-flex justify-content-between text-danger">
+                                    <span>Discount ({appliedCoupon.name})</span>
+                                    <span className="fw-semibold">-{discount.toFixed(2)}</span>
+                                </div>
+                            )}
+
+                            <div className="mb-3 d-flex justify-content-between">
+                                <span>Shipping</span>
+                                <span>
+                                    {shippingFee === 0 ? (
+                                        <span className="text-success">
+                                            <FaCheck className="me-1" />
+                                            Free
+                                        </span>
+                                    ) : (
+                                        `${shippingFee.toFixed(2)}`
+                                    )}
+                                </span>
+                            </div>
+
+                            <div className="d-flex justify-content-between fw-bold fs-5 mt-3 rounded">
+                                <span>Total</span>
+                                <span>{total.toFixed(2)}</span>
+                            </div>
+
+                            <button
+                                onClick={handleSubmit}
+                                className="btn btn-dark w-100 mt-4 py-3 fw-bold"
+                                disabled={!address || !city || !state || !zipCode || !email || !selectedPaymentMethod}
+                            >
+                                Complete Order
+                            </button>
                         </div>
                     </div>
                 </div>
-                {/* <ToastContainer /> */}
             </div>
-            {/* <Footer /> */}
-            {orderPlaced && <OrderPlacedPopup />}
-        </>
-    );
+            {/* <ToastContainer /> */}
+        </div>
+        {/* <Footer /> */}
+        {orderPlaced && <OrderPlacedPopup />}
+    </>
+);
 };
 
 export default CheckoutPage;

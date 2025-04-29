@@ -20,7 +20,8 @@ const Collections = () => {
     const { categories, loading: CatLoading } = useSelector((state) => state.Collection);
     const { brands, loading: brdLoading } = useSelector((state) => state.Collection);
 
-    const data = products;
+    const sortedProducts = [...products].sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+    const data = sortedProducts;
 
 
     const [collection, setCollection] = useState(true);
@@ -32,14 +33,14 @@ const Collections = () => {
 
     // Filter states
     const [showFilters, setShowFilters] = useState(false);
-    const [priceRange, setPriceRange] = useState([0, 10000]);
+    const [priceRange, setPriceRange] = useState([0, 200000]);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [selectedSubcategories, setSelectedSubcategories] = useState([]);
     const [selectedBrands, setSelectedBrands] = useState([]);
     const [sortBy, setSortBy] = useState('');
     const [appliedFilters, setAppliedFilters] = useState([]);
     const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(10000);
+    const [maxPrice, setMaxPrice] = useState(200000);
 
     // Dropdown states
     const [dropdownOpen, setDropdownOpen] = useState({
@@ -49,60 +50,7 @@ const Collections = () => {
     });
 
     const searchParams = useSearchParams();
-    // Fetch products on component mount
-    // useEffect(() => {
-    //     const checklength = products.length > 0 || categories.length > 0 || brands.length > 0;
-    //     if (!checklength) {
-    //         dispatch(fetchProducts());
-    //         dispatch(fetchCategories());
-    //         dispatch(fetchBrands());
-    //     }
-    // }, [dispatch]);
 
-    // Set initial product data and price range
-    // useEffect(() => {
-    //     if (data && data.length > 0) {
-    //         const activeProducts = data.filter(product => product.status === true);
-    //         setProductData(activeProducts);
-
-    //         const prices = activeProducts.map(p => p.price).filter(price => !isNaN(price));
-    //         if (prices.length > 0) {
-    //             const min = Math.min(...prices);
-    //             const max = Math.max(...prices);
-    //             setMinPrice(min);
-    //             setMaxPrice(max);
-    //             setPriceRange([min, max]);
-    //         }
-    //     }
-    // }, [data]);
-
-    // useEffect(() => {
-    //     const categoryParam = searchParams.get('category');
-    //     const subcategoryParam = searchParams.get('subcategory');
-
-    //     // Reset filters when URL changes
-    //     setSelectedCategories([]);
-    //     setSelectedSubcategories([]);
-
-    //     if (categoryParam) {
-    //         setSelectedCategories([categoryParam]);
-    //     }
-
-    //     if (subcategoryParam) {
-    //         // If subcategory is specified but category isn't, find and set the parent category
-    //         if (!categoryParam) {
-    //             const parentCategory = categories.find(cat =>
-    //                 cat.subcategories?.some(sub => sub.name === subcategoryParam)
-    //             )?.name;
-    //             if (parentCategory) {
-    //                 setSelectedCategories([parentCategory]);
-    //             }
-    //         }
-    //         setSelectedSubcategories([subcategoryParam]);
-    //     }
-    // }, [searchParams, categories]);
-
-    // Replace your data fetching useEffect with this:
     useEffect(() => {
         // Only fetch if data is not already loaded
         const fetchInitialData = async () => {
@@ -143,70 +91,6 @@ const Collections = () => {
         }
     }, [searchParams, categories]); // Only run when these dependencies change
 
-    // Modify your filter application effect to use useCallback or memoize some values
-    // useEffect(() => {
-    //     if (!data) return;
-
-    //     let filteredProducts = data.filter(product => product.status === true);
-
-    //     // Apply filters only if they have values
-    //     if (selectedCategories.length > 0) {
-    //         filteredProducts = filteredProducts.filter(product =>
-    //             selectedCategories.includes(product.category?.name)
-    //         );
-    //     }
-
-    //     if (selectedSubcategories.length > 0) {
-    //         filteredProducts = filteredProducts.filter(product =>
-    //             selectedSubcategories.includes(product.subcategory?.name)
-    //         );
-    //     }
-
-    //     if (selectedBrands.length > 0) {
-    //         filteredProducts = filteredProducts.filter(product =>
-    //             selectedBrands.includes(product.brand?.name)
-    //         );
-    //     }
-
-    //     // Apply price range filter
-    //     filteredProducts = filteredProducts.filter(product =>
-    //         product.price >= priceRange[0] && product.price <= priceRange[1]
-    //     );
-
-    //     // Apply sorting if specified
-    //     if (sortBy) {
-    //         filteredProducts = [...filteredProducts].sort((a, b) => {
-    //             // Add null checks for all properties
-    //             if (sortBy === 'a-z') return (a.name || '').localeCompare(b.name || '');
-    //             if (sortBy === 'z-a') return (b.name || '').localeCompare(a.name || '');
-    //             if (sortBy === 'price-low') return (a.price || 0) - (b.price || 0);
-    //             if (sortBy === 'price-high') return (b.price || 0) - (a.price || 0);
-    //             if (sortBy === 'newest') return new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0);
-    //             if (sortBy === 'oldest') return new Date(a.updatedAt || 0) - new Date(b.updatedAt || 0);
-    //             return 0;
-    //         });
-    //     }
-
-    //     // Only update state if products actually changed
-    //     setProductData(prev => {
-    //         if (JSON.stringify(prev) !== JSON.stringify(filteredProducts)) {
-    //             return filteredProducts;
-    //         }
-    //         return prev;
-    //     });
-
-    //     // Update applied filters
-    //     const filters = [];
-    //     if (selectedCategories.length > 0) filters.push(`Categories: ${selectedCategories.join(', ')}`);
-    //     if (selectedSubcategories.length > 0) filters.push(`Subcategories: ${selectedSubcategories.join(', ')}`);
-    //     if (selectedBrands.length > 0) filters.push(`Brands: ${selectedBrands.join(', ')}`);
-    //     if (priceRange[0] !== minPrice || priceRange[1] !== maxPrice) {
-    //         filters.push(`Price: ₹${priceRange[0]} - ₹${priceRange[1]}`);
-    //     }
-    //     if (sortBy) filters.push(`Sort: ${getSortLabel(sortBy)}`);
-
-    //     setAppliedFilters(filters);
-    // }, [data, selectedCategories, selectedSubcategories, selectedBrands, priceRange, sortBy, minPrice, maxPrice]);
 
     useEffect(() => {
         if (!data) return;
@@ -259,9 +143,17 @@ const Collections = () => {
         }
 
         // Only update state if products changed
+        // setProductData(prev => {
+        //     if (prev.length !== sorted.length ||
+        //         prev.some((p, i) => p._id !== sorted[i]?._id)) {
+        //         return sorted;
+        //     }
+        //     return prev;
+        // });
+
         setProductData(prev => {
             if (prev.length !== sorted.length ||
-                prev.some((p, i) => p._id !== sorted[i]?._id)) {
+                !prev.every((p, i) => p._id === sorted[i]?._id)) {
                 return sorted;
             }
             return prev;
@@ -277,78 +169,17 @@ const Collections = () => {
         }
         if (sortBy) newAppliedFilters.push(`Sort: ${getSortLabel(sortBy)}`);
 
-        setAppliedFilters(newAppliedFilters);
 
+        // setAppliedFilters(newAppliedFilters);
+        setAppliedFilters(prev => {
+            if (prev.length !== newAppliedFilters.length ||
+                !prev.every((f, i) => f === newAppliedFilters[i])) {
+                return newAppliedFilters;
+            }
+            return prev;
+        });
+        
     }, [data, selectedCategories, selectedSubcategories, selectedBrands, priceRange, sortBy, minPrice, maxPrice]);
-    // Apply filters whenever any filter changes
-    // useEffect(() => {
-    //     if (!data) return;
-
-    //     let filteredProducts = data.filter(product => product.status === true);
-
-    //     console.log(filteredProducts)
-    //     // Apply category filter
-    //     if (selectedCategories.length > 0) {
-    //         filteredProducts = filteredProducts.filter(product =>
-    //             selectedCategories.includes(product.category.name)
-    //         );
-    //     }
-
-    //     // Apply subcategory filter
-    //     if (selectedSubcategories.length > 0) {
-    //         filteredProducts = filteredProducts.filter(product =>
-    //             selectedSubcategories.includes(product.subcategory.name)
-    //         );
-    //     }
-
-    //     // Apply brand filter
-    //     if (selectedBrands.length > 0) {
-    //         filteredProducts = filteredProducts.filter(product =>
-    //             selectedBrands.includes(product.brand.name)
-    //         );
-    //     }
-
-    //     // Apply price range filter
-    //     filteredProducts = filteredProducts.filter(product =>
-    //         product.price >= priceRange[0] && product.price <= priceRange[1]
-    //     );
-
-    //     // Apply sorting
-    //     if (sortBy === 'a-z') {
-    //         filteredProducts.sort((a, b) => (a.name && b.name ? a.name.localeCompare(b.name) : 0));
-    //     } else if (sortBy === 'z-a') {
-    //         filteredProducts.sort((a, b) => (a.name && b.name ? b.name.localeCompare(a.name) : 0));
-    //     } else if (sortBy === 'price-low') {
-    //         filteredProducts.sort((a, b) => (a.price && b.price ? a.price - b.price : 0));
-    //     } else if (sortBy === 'price-high') {
-    //         filteredProducts.sort((a, b) => (a.price && b.price ? b.price - a.price : 0));
-    //     } else if (sortBy === 'newest') {
-    //         filteredProducts.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-    //     } else if (sortBy === 'oldest') {
-    //         filteredProducts.sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt));
-    //     }
-
-    //     setProductData(filteredProducts);
-
-    //     // Update applied filters
-    //     const filters = [];
-    //     if (selectedCategories.length > 0) {
-    //         filters.push(`Categories: ${selectedCategories.join(', ')}`);
-    //     }
-    //     if (selectedSubcategories.length > 0) {
-    //         filters.push(`Subcategories: ${selectedSubcategories.join(', ')}`);
-    //     }
-    //     if (selectedBrands.length > 0) {
-    //         filters.push(`Brands: ${selectedBrands.join(', ')}`);
-    //     }
-    //     if (priceRange[0] !== minPrice || priceRange[1] !== maxPrice) {
-    //         filters.push(`Price: ₹${priceRange[0]} - ₹${priceRange[1]}`);
-    //     }
-    //     if (sortBy) {
-    //         filters.push(`Sort: ${getSortLabel(sortBy)}`);
-    //     }
-    //     setAppliedFilters(filters);
-    // }, [selectedCategories, selectedSubcategories, selectedBrands, priceRange, sortBy, data, minPrice, maxPrice]);
 
     const getSortLabel = (value) => {
         switch (value) {

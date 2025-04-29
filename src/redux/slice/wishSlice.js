@@ -128,7 +128,14 @@ const wishSlice = createSlice({
             .addCase(checkWishlistItem.rejected, (state, action) => {
                 const { productId } = action.meta.arg;
                 state.checking[productId] = false;
-            });
+            })
+            .addMatcher(
+                () => !localStorage.getItem('userId'), // Condition to check if userId is missing
+                (state) => {
+                    state.Cart = []; // Clear the Cart
+                    state.error = "User not logged in. Cart cleared.";
+                }
+            );
     },
 });
 

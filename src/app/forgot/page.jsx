@@ -11,6 +11,7 @@ import apiInstance from '@/api/instance';
 import SideBar from '@/components/SideBar';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Swal from 'sweetalert2';
 
 const Forgot = () => {
     const [input, setInput] = useState({});
@@ -46,7 +47,7 @@ const Forgot = () => {
             if (response.status === 200) {
                 if (response.data.message === "OTP sent to email") {
                     localStorage.setItem('resetEmail', response.data.email);
-                    localStorage.setItem('resetPermission', true);
+                    // localStorage.setItem('resetPermission', true);
                     // toast.success(response.data.message, { autoClose: 2000 });
                     Swal.fire({
                         icon: 'success',
@@ -57,19 +58,19 @@ const Forgot = () => {
                     setTimeout(() => {
                         router.push('/verify-otp');
                     }, 1000);
-                } else {
-                    // toast.success(response.data.message, { autoClose: 2000 });
-                    Swal.fire({
-                        icon: 'success',
-                        text: 'Email And Password Verified',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    localStorage.setItem('resetEmail', response.data.email);
-                    localStorage.setItem('resetPermission', true);
-                    setTimeout(() => {
-                        router.push('/reset-password');
-                    }, 1000);
+                    // } else {
+                    //     // toast.success(response.data.message, { autoClose: 2000 });
+                    //     Swal.fire({
+                    //         icon: 'success',
+                    //         text: 'Email And Password Verified',
+                    //         timer: 2000,
+                    //         showConfirmButton: false
+                    //     });
+                    //     // localStorage.setItem('resetEmail', response.data.email);
+                    //     // localStorage.setItem('resetPermission', true);
+                    //     setTimeout(() => {
+                    //         router.push('/change-password');
+                    //     }, 1000);
                 }
             } else {
                 // toast.error(response.data.message, { autoClose: 2000 });
@@ -100,7 +101,10 @@ const Forgot = () => {
                     <div className="col-12 col-sm-10 col-md-8 col-lg-6 py-3 py-md-5">
                         <div className="login px-3 px-sm-4">
                             <h4 className='fw-bold mb-2'>FORGOT PASSWORD</h4>
-                            <span className='d-block' style={{ fontSize: '13px' }}>{otpSend ? "Insert Your Email And Password : " : "Insert Your Email: "}</span>
+                            <span className='d-block' style={{ fontSize: '13px' }}>
+                                Insert Your Email:
+                            </span>
+                            {/* {otpSend ? "Insert Your Email And Password : " : "Insert Your Email: "} */}
                             <form onSubmit={handleSubmit}>
                                 <input
                                     type="text"
@@ -111,7 +115,7 @@ const Forgot = () => {
                                     className='form-control mt-3 py-3'
                                     placeholder='ENTER YOUR EMAIL'
                                 />
-                                {
+                                {/* {
                                     otpSend && (
                                         <div className="position-relative">
                                             <input
@@ -133,17 +137,17 @@ const Forgot = () => {
                                             </button>
                                         </div>
                                     )
-                                }
+                                } */}
 
-                                {
+                                {/* {
                                     otpSend ? (
                                         <span style={{ fontSize: '13px', opacity: '80%', cursor: 'pointer' }}>Forgot using <span className='greenHover fw-bold' onClick={() => setOtpSend(false)}>OTP Send.</span></span>
                                     ) : (
                                         <span style={{ fontSize: '13px', opacity: '80%', cursor: 'pointer' }}>Forgot using <span className='greenHover fw-bold' onClick={() => setOtpSend(true)}>Password.</span></span>
                                     )
-                                }
+                                } */}
+                                <button className='d-block w-100 mt-3 mb-2 py-3 border-0 fw-semibold text-white rounded-1' type='submit'>{otpSend ? "Verify Email" : "Send OTP"}</button>
                                 <span className='d-block' style={{ fontSize: '13px', opacity: '80%' }}>Return to login page <Link href="/login" className='text-decoration-none text-black'><span className='greenHover fw-bold'>Login Here.</span></Link></span>
-                                <button className='d-block w-100 mt-2 py-3 border-0 fw-semibold text-white rounded-1' type='submit'>{otpSend ? "Verify Email" : "Send OTP"}</button>
                             </form>
                         </div>
                     </div>

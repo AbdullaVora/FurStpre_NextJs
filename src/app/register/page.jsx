@@ -55,11 +55,13 @@ const Register = () => {
                 localStorage.setItem('userName', response?.data?.name);
                 localStorage.setItem('userId', response?.data?.id);
                 localStorage.setItem('userEmail', response?.data?.email);
+                localStorage.setItem('userPhone', response?.data?.mobile);
 
                 dispatch(setUserData({
                     userId: response?.data?.id,
                     userName: response?.data?.name,
                     userEmail: response?.data?.email,
+                    userPhone: response?.data?.mobile,
                     token: response?.data?.token
                 }))
 
@@ -129,10 +131,10 @@ const Register = () => {
                                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                                 </button>
                             </div>
+                            <button className='d-block w-100 mt-3 py-3 border-0 fw-semibold text-white rounded-1' type='submit'>Register</button>
                             <span style={{ fontSize: '13px', opacity: '80%' }}>
                                 If you have an account, please <Link href='/login' className='text-decoration-none text-black'><span className='greenHover fw-bold'>Login Here.</span></Link>
                             </span>
-                            <button className='d-block w-100 mt-3 py-3 border-0 fw-semibold text-white rounded-1' type='submit'>Register</button>
                         </form>
                     </div>
                 </div>

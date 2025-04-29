@@ -11,18 +11,24 @@ import apiInstance from '@/api/instance';
 import Header from '@/components/Header';
 import Swal from 'sweetalert2';
 import { useSelector } from 'react-redux';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+
 
 const Profile = () => {
-    const { userId, userEmail, userName } = useSelector((state) => state.userData)
+    const { userId, userEmail, userName, userPhone } = useSelector((state) => state.userData)
+    const [phone, setPhone] = useState('');
 
 
     const [formData, setFormData] = useState({
         name: '',
         email: '',
+        phone: ''
     });
     const [originalData, setOriginalData] = useState({
         name: '',
-        email: ''
+        email: '',
+        phone: ''
     });
     const [isLoading, setIsLoading] = useState(false);
 
@@ -30,20 +36,25 @@ const Profile = () => {
 
 
     useEffect(() => {
-        const name = userName
-        const email = userEmail
-        const id = userId
+        const name = userName;
+        const email = userEmail;
+        const usermobile = userPhone; // Replace with actual userPhone from Redux if available
+        const id = userId;
 
-        setId(id)
+        setId(id);
+        setPhone(userPhone || ''); // Initialize phone here
         setFormData({
             name: name || '',
             email: email || '',
+            phone: usermobile || ''
         });
         setOriginalData({
             name: name || '',
-            email: email || ''
+            email: email || '',
+            phone: usermobile || ''
         });
     }, []);
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -54,9 +65,13 @@ const Profile = () => {
     };
 
     const hasChanges = () => {
-        return formData.name !== originalData.name ||
-            formData.email !== originalData.email
+        return (
+            formData.name !== originalData.name ||
+            formData.email !== originalData.email ||
+            phone !== originalData.phone
+        );
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -75,7 +90,7 @@ const Profile = () => {
 
         setIsLoading(true);
         try {
-            const response = await apiInstance.put(`/api/auth/editUser/${id}`, formData);
+            const response = await apiInstance.put(`/api/auth/editUser/${id}`, {...formData, mobile: phone});
 
             if (response.status === 200) {
                 // toast.success('Profile updated successfully', { autoClose: 2000 });
@@ -87,9 +102,11 @@ const Profile = () => {
                 });
                 localStorage.setItem('user', response.data.name);
                 localStorage.setItem('userEmail', response.data.email);
+                localStorage.setItem('userPhone', response.data.mobile);
                 setOriginalData({
                     name: response.data.name,
-                    email: response.data.email
+                    email: response.data.email,
+                    phone: response.data.mobile
                 });
                 setFormData(prev => ({
                     ...prev
@@ -123,7 +140,7 @@ const Profile = () => {
                 <h2 className='text-center fw-bolder display-5 mt-4 mb-4'>PROFILE</h2>
                 <div className="d-flex flex-column align-items-center justify-contant-center py-3 py-md-5">
                     <div className="login w-100" style={{ maxWidth: "500px" }}>
-                        <h4 className='fw-bold mb-2'>USER DATA</h4>
+                        <h4 className='fw-bold mb-2'>Update Profile</h4>
                         <form onSubmit={handleSubmit}>
                             <label className='mt-3'>Full Name: </label>
                             <input
@@ -145,6 +162,16 @@ const Profile = () => {
                                 placeholder='ENTER YOUR EMAIL'
                                 value={formData.email}
                             />
+                            <div className='mt-3'>
+                                <PhoneInput
+                                    international
+                                    defaultCountry="US"
+                                    value={phone}
+                                    onChange={setPhone}
+                                    className='form-control py-3'
+                                    placeholder="ENTER YOUR PHONE NUMBER"
+                                />
+                            </div>
                             {/* <div className="position-relative mt-3">
                                 <input
                                     type={showPassword ? "text" : "password"}
@@ -163,12 +190,6 @@ const Profile = () => {
                                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                                 </button>
                             </div> */}
-                            <Link href="/forgot" className='text-decoration-none text-black'>
-                                <span style={{ fontSize: '12px' }} className='d-flex mb-2 align-items-center mt-2'>
-                                    <IoIosMail color='#0a5d5d' size={20} className='me-1' />
-                                    Forgot Your <span className='fw-bold greenHover'>&nbsp;Password ?</span>
-                                </span>
-                            </Link>
                             <button
                                 className='d-block w-100 mt-3 py-3 border-0 fw-semibold text-white rounded-1'
                                 type='submit'

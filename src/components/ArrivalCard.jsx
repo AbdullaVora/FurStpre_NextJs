@@ -71,11 +71,18 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
         timer: 2000,
         showConfirmButton: false
       })
-    } else {
+    } else if(userId) {
       dispatch(addProductToCart({ userId, id: id, products }));
       Swal.fire({
         icon: 'success',
         text: 'Product Added Successfully.',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        text: 'Please Login First.',
         timer: 2000,
         showConfirmButton: false
       });
@@ -91,11 +98,18 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
         timer: 2000,
         showConfirmButton: false
       });
-    } else {
+    } else if(userId) {
       await dispatch(addToWishlist({ userId, product: id }));
       Swal.fire({
         icon: 'success',
         text: 'Product Added Successfully.',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        text: 'Please Login First.',
         timer: 2000,
         showConfirmButton: false
       });
@@ -107,14 +121,14 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
   return (
     <div
       className={`arrivalCard position-relative overflow-hidden px-2 mb-4 ${iswish ? 'mx-2' : ''}`}
-      onMouseEnter={handleHover}
-      onMouseLeave={handleHover}
     >
-      <div className="img shadow-lg" onClick={onDetail}>
+      <div className="img shadow-lg " style={{ width: isCollection || iswish ? '288px' : '225px', height: isCollection || iswish ? '350px' : '280px' }} onMouseEnter={handleHover}
+      onMouseLeave={handleHover} onClick={onDetail}>
         <img
           src={img}
           alt="arrival-img"
-          style={{ cursor: 'pointer', width: isCollection || iswish ? '280px' : '195px', height: isCollection || iswish ? '350px' : '240px' }}
+          // style={{ cursor: 'pointer', width: isCollection || iswish ? '280px' : '195px', height: isCollection || iswish ? '350px' : '240px' }}
+          style={{ cursor: 'pointer', width: '100%', height: '100%' }}
           className="img-fluid"
         />
       </div>

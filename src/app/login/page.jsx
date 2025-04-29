@@ -56,11 +56,13 @@ const Login = () => {
                 localStorage.setItem('userName', response?.data?.name);
                 localStorage.setItem('userId', response?.data?.id);
                 localStorage.setItem('userEmail', response?.data?.email);
+                localStorage.setItem('userPhone', response?.data?.mobile);
 
                 dispatch(setUserData({
                     userId: response?.data?.id,
                     userName: response?.data?.name,
                     userEmail: response?.data?.email,
+                    userPhone: response?.data?.mobile,
                     token: response?.data?.token
                 }))
 

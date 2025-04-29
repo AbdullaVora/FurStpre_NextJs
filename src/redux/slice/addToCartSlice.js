@@ -380,6 +380,13 @@ const cartSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+            .addMatcher(
+                () => !localStorage.getItem('userId'), // Condition to check if userId is missing
+                (state) => {
+                    state.Cart = []; // Clear the Cart
+                    state.error = "User not logged in. Cart cleared.";
+                }
+            );
     }
 });
 

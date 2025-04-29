@@ -7,13 +7,16 @@ import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import apiInstance from '@/api/instance';
 import Swal from 'sweetalert2';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+
 
 const ContactUs = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         number: '',
-        message: ''
+        message: '',
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState({
@@ -22,30 +25,47 @@ const ContactUs = () => {
     });
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        // If the change is from PhoneInput, update number directly
+        if (e.target) {
+            const { name, value } = e.target;
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        } else if (e) {
+            // If it's from PhoneInput, the value is directly passed as an argument
+            setFormData(prev => ({
+                ...prev,
+                number: e
+            }));
+        }
     };
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         setSubmitStatus({ success: false, message: '' });
 
+        const formattedPhone = formData.number
+            ? `+${formData.number.replace(/\D/g, '').replace(/(\d{2})(\d+)/, '$1 $2')}`
+            : '';
+
         try {
-            const response = await apiInstance.post('/api/e-commerce/inquiry', formData);
+            const response = await apiInstance.post('/api/e-commerce/inquiry', {
+                ...formData,
+                number: formattedPhone
+            });
 
             if (response.status === 200) {
                 Swal.fire({
                     icon: 'success',
-                    text: 'Inquiry Submited',
+                    text: 'Inquiry Submitted',
                     timer: 2000,
                     showConfirmButton: false
                 });
             }
-            // Reset form after successful submission
+
             setFormData({
                 name: '',
                 email: '',
@@ -62,6 +82,7 @@ const ContactUs = () => {
             setIsSubmitting(false);
         }
     };
+
 
     return (
         <>
@@ -117,15 +138,16 @@ const ContactUs = () => {
                                         />
                                     </div>
                                 </div>
-                                <input
-                                    type="number"
-                                    name="number"
-                                    className='form-control mb-3 fw-semibold opacity-75'
-                                    placeholder='YOUR PHONE NUMBER'
-                                    value={formData.number}
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <div className='mt-3'>
+                                    <PhoneInput
+                                        international
+                                        defaultCountry="US"
+                                        value={formData.number}
+                                        onChange={handleChange}
+                                        className='form-control fw-semibold opacity-75 mb-3'
+                                        placeholder="ENTER YOUR PHONE NUMBER"
+                                    />
+                                </div>
                                 <textarea
                                     rows={5}
                                     name="message"

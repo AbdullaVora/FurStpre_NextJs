@@ -21,6 +21,16 @@ const VerifyOtp = () => {
     const inputRefs = useRef([]);
 
     useEffect(() => {
+        const checkPermission = localStorage.getItem('resetEmail');
+        if (!checkPermission) {
+            router.push('/forgot');
+            Swal.fire({
+                icon: 'error',
+                text: 'You are not allowed to access this page',
+                timer: 1000,
+                showConfirmButton: false
+            })
+        }
         // Focus the first input on component mount
         if (inputRefs.current[0]) {
             inputRefs.current[0].focus();
@@ -102,7 +112,7 @@ const VerifyOtp = () => {
                     showConfirmButton: false
                 });
                 setTimeout(() => {
-                    router.push('/reset-password');
+                    router.push('/change-password');
                 }, 2000);
             }
         } catch (error) {
@@ -195,6 +205,13 @@ const VerifyOtp = () => {
                                         ))}
                                     </div>
 
+                                    <button
+                                        className='d-block w-100 mb-2 mt-4 py-3 border-0 fw-semibold text-white rounded-1'
+                                        type='submit'
+                                        disabled={loading}
+                                    >
+                                        Verify OTP
+                                    </button>
                                     <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-2">
                                         <span style={{ fontSize: '13px', opacity: '80%' }}>
                                             Didn't receive code? <span className='greenHover fw-bold cursor-pointer' onClick={resendOtp}>Resend OTP</span>
@@ -206,13 +223,6 @@ const VerifyOtp = () => {
                                         </span>
                                     </div>
 
-                                    <button
-                                        className='d-block w-100 mt-4 py-3 border-0 fw-semibold text-white rounded-1'
-                                        type='submit'
-                                        disabled={loading}
-                                    >
-                                        Verify OTP
-                                    </button>
                                 </form>
                             )}
                         </div>

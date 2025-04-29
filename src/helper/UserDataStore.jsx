@@ -11,6 +11,7 @@ export default function UserDataStore({children}) {
     const userId = localStorage.getItem("userId");
     const userName = localStorage.getItem("userName");
     const userEmail = localStorage.getItem("userEmail");
+    const userPhone = localStorage.getItem("userPhone");
     const token = localStorage.getItem("token");
 
     if (userId && userName && userEmail && token) {
@@ -18,6 +19,7 @@ export default function UserDataStore({children}) {
         userId,
         userName,
         userEmail,
+        userPhone,
         token,
       }));
     }
