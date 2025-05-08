@@ -221,7 +221,7 @@ export const removeProductFromCart = createAsyncThunk(
     'cart/removeProductFromCart',
     async (productId, { rejectWithValue }) => {
         try {
-            const response = await apiInstance.delete(`${API_URL}/${productId}`);
+            const response = await apiInstance.delete(`${API_URL}/removeCart/${productId}`);
             return { productId, ...response.data };
         } catch (error) {
             return rejectWithValue(error.response?.data || "Failed to remove product from cart");
