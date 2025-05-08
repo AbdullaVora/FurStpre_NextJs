@@ -1,15 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { HiOutlineShoppingCart, HiShoppingCart } from "react-icons/hi";
 import { RiHeart2Line, RiHeartFill } from "react-icons/ri";
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/navigation';
-import { addProductToCart, fetchCartCart, fetchProducts } from "@/redux/slice/addToCartSlice";
-import { addToWishlist, getUserWishlist, removeFromWishlist } from '@/redux/slice/wishSlice';
-import { fetchCategories } from '@/redux/slice/CollectionSlice';
-import Swal from 'sweetalert2';
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import {
+  addProductToCart,
+  fetchCartCart,
+  fetchProducts,
+} from "@/redux/slice/addToCartSlice";
+import {
+  addToWishlist,
+  getUserWishlist,
+  removeFromWishlist,
+} from "@/redux/slice/wishSlice";
+import { fetchCategories } from "@/redux/slice/CollectionSlice";
+import Swal from "sweetalert2";
 
 const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
-  const { userId } = useSelector((state) => state.userData)
+  const { userId } = useSelector((state) => state.userData);
   const [hover, setHover] = useState(false);
   // const [userId, setUserId] = useState(null);
   const dispatch = useDispatch();
@@ -23,18 +31,18 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
   // }, [dispatch])
 
   // Get data from Redux store
-  const cartData = useSelector(state => state.addToCart.Cart);
-  const products = useSelector(state => state.addToCart.products);
-  const wishListData = useSelector(state => state.wish.wishList);
+  const cartData = useSelector((state) => state.addToCart.Cart);
+  const products = useSelector((state) => state.addToCart.products);
+  const wishListData = useSelector((state) => state.wish.wishList);
 
   // Check if product is in cart
-  const isInCart = cartData.some(item =>
-    item?.product?._id === id && item?.userId === userId
+  const isInCart = cartData.some(
+    (item) => item?.product?._id === id && item?.userId === userId
   );
 
   // Check if product is in wishlist
-  const isInWishlist = wishListData.some(item =>
-    item?.product?._id === id && item?.userId === userId
+  const isInWishlist = wishListData.some(
+    (item) => item?.product?._id === id && item?.userId === userId
   );
 
   const handleHover = () => setHover(!hover);
@@ -66,25 +74,25 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
   const handleCart = (id) => {
     if (isInCart) {
       Swal.fire({
-        icon: 'info',
-        text: 'Product Already Added.',
+        icon: "info",
+        text: "Product Already Added.",
         timer: 2000,
-        showConfirmButton: false
-      })
-    } else if(userId) {
+        showConfirmButton: false,
+      });
+    } else if (userId) {
       dispatch(addProductToCart({ userId, id: id, products }));
       Swal.fire({
-        icon: 'success',
-        text: 'Product Added Successfully.',
+        icon: "success",
+        text: "Product Added Successfully.",
         timer: 2000,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
     } else {
       Swal.fire({
-        icon: 'error',
-        text: 'Please Login First.',
+        icon: "error",
+        text: "Please Login First.",
         timer: 2000,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
     }
   };
@@ -93,25 +101,25 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
     if (isInWishlist) {
       await dispatch(removeFromWishlist(id));
       Swal.fire({
-        icon: 'success',
-        text: 'Product Removed Successfully.',
+        icon: "success",
+        text: "Product Removed Successfully.",
         timer: 2000,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
-    } else if(userId) {
+    } else if (userId) {
       await dispatch(addToWishlist({ userId, product: id }));
       Swal.fire({
-        icon: 'success',
-        text: 'Product Added Successfully.',
+        icon: "success",
+        text: "Product Added Successfully.",
         timer: 2000,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
     } else {
       Swal.fire({
-        icon: 'error',
-        text: 'Please Login First.',
+        icon: "error",
+        text: "Please Login First.",
         timer: 2000,
-        showConfirmButton: false
+        showConfirmButton: false,
       });
     }
     // Refresh the wishlist data
@@ -119,30 +127,108 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
   };
 
   return (
+    // <div
+    //   className={`arrivalCard position-relative overflow-hidden px-2 mb-4 ${
+    //     iswish ? "mx-2" : ""
+    //   }`}
+    // >
+    //   <div className="img shadow-lg" style={{ width: isCollection || iswish ? '288px' : '225px', height: isCollection || iswish ? '350px' : '280px' }} onMouseEnter={handleHover}
+    //     onMouseLeave={handleHover}
+    //     onClick={onDetail}
+    //   >
+    //     <img
+    //       src={img}
+    //       alt="arrival-img"
+    //       // style={{ cursor: 'pointer', width: isCollection || iswish ? '280px' : '195px', height: isCollection || iswish ? '350px' : '240px' }}
+    //       style={{ cursor: "pointer", width: "100%", height: "100%" }}
+    //       className="img-fluid"
+    //     />
+    //   </div>
+    //   <div
+    //     className={`content text-center ${
+    //       isCollection || iswish ? "mb-5 mt-3" : "mb-5 mt-3"
+    //     }`}
+    //   >
+    //     <h6
+    //       className="fw-normal text-truncate"
+    //       style={{ cursor: "pointer" }}
+    //       onClick={onDetail}
+    //     >
+    //       {title}
+    //     </h6>
+    //     <span style={{ display: hover && !isCollection ? "none" : "block" }}>
+    //       {price}
+    //     </span>
+    //   </div>
+
+    //   {!isCollection && (
+    //     <button
+    //       onClick={() => (iswish ? handleWish(id) : onDetail(id))}
+    //       className="bg-transparent rounded-1 mx-auto w-100 py-2 mb-3 mt-5"
+    //     >
+    //       {iswish ? "Remove Wish" : "Quick Add"}
+    //     </button>
+    //   )}
+
+    //   <div className="sideIcons">
+    //     <div className="cart" onClick={() => handleCart(id)}>
+    //       {isInCart ? (
+    //         <HiShoppingCart size={16} color="orange" />
+    //       ) : (
+    //         <HiOutlineShoppingCart size={16} />
+    //       )}
+    //     </div>
+    //     {!iswish && (
+    //       <div className="star" onClick={() => handleWish(id)}>
+    //         {isInWishlist ? (
+    //           <RiHeartFill size={18} color="red" />
+    //         ) : (
+    //           <RiHeart2Line size={18} />
+    //         )}
+    //       </div>
+    //     )}
+    //   </div>
+    // </div>
+
     <div
-      className={`arrivalCard position-relative overflow-hidden px-2 mb-4 ${iswish ? 'mx-2' : ''}`}
+      className={`arrivalCard position-relative ${ iswish ? 'overflow-visible' : 'overflow-hidden' } px-2 mb-4 ${
+        iswish ? "mx-2" : ""
+      }`}
     >
-      <div className="img shadow-lg " style={{ width: isCollection || iswish ? '288px' : '225px', height: isCollection || iswish ? '350px' : '280px' }} onMouseEnter={handleHover}
-      onMouseLeave={handleHover} onClick={onDetail}>
+      <div
+        className="img shadow-lg"
+        onMouseEnter={handleHover}
+        onMouseLeave={handleHover}
+        onClick={onDetail}
+        style={{height: iswish ? '350px' : ''}}
+      >
         <img
           src={img}
           alt="arrival-img"
-          // style={{ cursor: 'pointer', width: isCollection || iswish ? '280px' : '195px', height: isCollection || iswish ? '350px' : '240px' }}
-          style={{ cursor: 'pointer', width: '100%', height: '100%' }}
+          style={{ width: "100%", height: "auto", objectFit: "cover" }}
           className="img-fluid"
         />
       </div>
-      <div className={`content text-center ${isCollection || iswish ? "mb-5 mt-3" : "mb-5 mt-3"}`}>
-        <h6 className="fw-normal text-truncate" style={{ cursor: 'pointer' }} onClick={onDetail}>{title}</h6>
-        <span style={{ display: hover && !isCollection ? 'none' : 'block' }}>{price}</span>
+
+      <div className="content text-center mb-5 mt-3">
+        <h6
+          className="fw-normal text-truncate"
+          style={{ cursor: "pointer" }}
+          onClick={onDetail}
+        >
+          {title}
+        </h6>
+        <span style={{ display: hover && !isCollection ? "none" : "block" }}>
+          {price}
+        </span>
       </div>
 
       {!isCollection && (
         <button
-          onClick={() => iswish ? (handleWish(id)) : onDetail(id)}
+          onClick={() => (iswish ? handleWish(id) : onDetail(id))}
           className="bg-transparent rounded-1 mx-auto w-100 py-2 mb-3 mt-5"
         >
-          {iswish ? 'Remove Wish' : 'Quick Add'}
+          {iswish ? "Remove Wish" : "Quick Add"}
         </button>
       )}
 
@@ -154,24 +240,21 @@ const ArrivalCard = ({ id, img, title, price, isCollection, iswish }) => {
             <HiOutlineShoppingCart size={16} />
           )}
         </div>
-        {
-          !iswish && (
-            <div className="star" onClick={() => handleWish(id)}>
-              {isInWishlist ? (
-                <RiHeartFill size={18} color="red" />
-              ) : (
-                <RiHeart2Line size={18} />
-              )}
-            </div>
-          )
-        }
+        {!iswish && (
+          <div className="star" onClick={() => handleWish(id)}>
+            {isInWishlist ? (
+              <RiHeartFill size={18} color="red" />
+            ) : (
+              <RiHeart2Line size={18} />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default ArrivalCard;
-
 
 // import React, { useEffect, useState } from 'react';
 // import { HiOutlineShoppingCart, HiShoppingCart } from "react-icons/hi";

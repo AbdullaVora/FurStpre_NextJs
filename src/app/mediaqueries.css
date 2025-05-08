@@ -8,9 +8,9 @@
         font-size: 16px !important;
     }
 
-    .arrivalCard img {
+    .arrivalCard .img {
         width: 100% !important;
-        height: 100% !important;
+        height: 100% ;
     }
 
     h2 {
@@ -37,6 +37,10 @@
 
     h1{
         font-size: 60px !important;
+    }
+
+    .arrivalCard .img {
+        height: 350px;
     }
 
 
@@ -78,6 +82,14 @@
     .loader {
         font-size: 75px;
     }
+     .arrivalCard .img {
+       max-width: 265px;
+       margin-left: 17%;
+    }
+
+    .arrivalCard .img img{
+        height: 350px !important;
+    }
 
 }
 
@@ -94,6 +106,10 @@
     .gallery p {
         top: 50%;
         left: 28%;
+    }
+    .arrivalCard .img {
+        max-width: 288px;
+        margin-left: 0%;
     }
 
 }

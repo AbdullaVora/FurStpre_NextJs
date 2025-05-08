@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiInstance from "@/api/instance";
-const API_URL = '/api';
+const API_URL = '/api/e-commerce';
 
 // Async thunk for fetching cart Cart
 export const fetchCartCart = createAsyncThunk(

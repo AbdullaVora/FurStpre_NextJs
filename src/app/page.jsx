@@ -234,8 +234,8 @@ export default function Home() {
             {arrival.map((card, index) => (
               <div
                 key={index}
-                className="col-6 col-sm-4 col-md-3 col-lg-3 col-xl-3 p-1"
-                style={{ maxWidth: '250px' }}
+                className="col-6 col-sm-6 col-md-4 col-lg-4 col-xl-3 p-1"
+                style={{ maxWidth: '240px' }}
               >
                 <ArrivalCard
                   id={card._id}

@@ -2,7 +2,7 @@ import apiInstance from '@/api/instance';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_URL = '/api'; // Adjust based on your API endpoint
+const API_URL = '/api/e-commerce'; // Adjust based on your API endpoint
 
 // Async Thunks
 export const addToWishlist = createAsyncThunk(

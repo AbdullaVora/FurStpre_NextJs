@@ -280,7 +280,7 @@ const CartBar = ({ openSlide, closeSideBar }) => {
 
     const { userId } = useSelector((state) => state.userData)
 
-    console.log(userId)
+    // console.log(userId)
 
 
     // Get userId on mount
@@ -303,9 +303,10 @@ const CartBar = ({ openSlide, closeSideBar }) => {
     useEffect(() => {
         if (userId) {
             const filterCart = cartData.filter((data) => data.userId === userId);
+
             setCart(filterCart);
         } else {
-            setCart(cartData);
+            setCart([]);
         }
     }, [userId, cartData]);
 

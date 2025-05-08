@@ -377,6 +377,14 @@ h2 {
   transform: scale(1);
 }
 
+.arrivalCard .img img {
+  height: 350px !important;
+}
+
+.arrivalCard.iswish .img img {
+  height: 250px !important; /* Reduce image height when iswish */
+}
+
 /* ************************************ New Arrival Style End ********************************** */
 
 /* ************************************ Gallery_2 Style Start ********************************** */
